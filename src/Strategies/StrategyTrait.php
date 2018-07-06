@@ -32,7 +32,7 @@ trait StrategyTrait
             'Web'
         ])) {
             $clazz = "App\\Strategies\\".$driveName;
-            $componentsStrategy = "App\\TemplateFramework\\Strategies\\".$driveName."ComponentsStrategy";
+            $componentsStrategy = "BotTemplateFramework\\Strategies\\".$driveName."ComponentsStrategy";
 
             $is_class_exists = class_exists($clazz);
             if ($is_class_exists) {
