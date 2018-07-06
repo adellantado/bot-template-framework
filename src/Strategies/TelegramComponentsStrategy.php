@@ -171,7 +171,8 @@ class TelegramComponentsStrategy implements IComponentsStrategy,IStrategy
                     $buttons
                 ],
                 'one_time_keyboard' => false,
-                'resize_keyboard' => false
+                'resize_keyboard' => false,
+                'parse_mode' => 'Markdown'
             ]);
         }
 
