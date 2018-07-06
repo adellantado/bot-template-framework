@@ -27,6 +27,7 @@ class TelegramComponentsStrategy implements IComponentsStrategy,IStrategy
     }
 
     public function reply($message, $additionalParameters = []) {
+        $additionalParameters = array_merge($additionalParameters, ['parse_mode' => 'Markdown']);
         return $this->bot->reply($message, $additionalParameters);
     }
 
