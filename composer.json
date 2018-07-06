@@ -15,8 +15,8 @@
     ],
     "minimum-stability": "dev",
     "autoload": {
-        "psr-0": {
-            "BotTemplateFramework": "src/"
+        "psr-4": {
+            "BotTemplateFramework\\": "src/"
         }
     }
 }
