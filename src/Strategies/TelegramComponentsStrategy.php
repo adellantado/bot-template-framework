@@ -108,7 +108,7 @@ class TelegramComponentsStrategy implements IComponentsStrategy,IStrategy
         if (array_key_exists('description', $element)) {
             $text .= $element['description'].PHP_EOL;
         }
-        $text .= $element['url'];
+        $text .= '[link]('.$element['url'].')';
         if (array_key_exists('buttons', $element)) {
             /** @var Response $response */
             $response = $this->sendMenu($text, [
@@ -149,7 +149,7 @@ class TelegramComponentsStrategy implements IComponentsStrategy,IStrategy
         if (array_key_exists('description', $element)) {
             $text .= $element['description'].PHP_EOL;
         }
-        $text .= $element['url'];
+        $text .= '[link]('.$element['url'].')';
 
         $payload = [
             'chat_id' => $bot->getUser()->getId(),
