@@ -4,11 +4,13 @@ namespace BotTemplateFramework\Strategies;
 
 
 use BotMan\BotMan\BotMan;
+use BotMan\BotMan\Http\Curl;
 use BotMan\BotMan\Messages\Attachments\Audio;
 use BotMan\BotMan\Messages\Attachments\File;
 use BotMan\BotMan\Messages\Attachments\Image;
 use BotMan\BotMan\Messages\Attachments\Video;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
+use BotMan\Drivers\Telegram\TelegramDriver;
 use BotMan\Drivers\Telegram\Extensions\Keyboard;
 use BotMan\Drivers\Telegram\Extensions\KeyboardButton;
 use Illuminate\Support\Collection;
@@ -125,6 +127,43 @@ class TelegramComponentsStrategy implements IComponentsStrategy,IStrategy
         }
 
         $this->sendMenu('Select button to switch among carousel elements', $carouselButtonsLine);
+    }
+
+    /**
+     * Method servers only as way of implementing carousel in telegram. No need to call it directly
+     *
+     * @param BotMan $bot
+     * @param $messageId
+     * @param $element
+     */
+    public function carouselSwitch(BotMan $bot, $messageId, $element) {
+        $buttons = [];
+        foreach($element['buttons'] as $callback=>$title) {
+            if (in_array(parse_url($callback, PHP_URL_SCHEME), ['mailto', 'http', 'https','tel'])) {
+                $buttons[] = KeyboardButton::create($title)->url($callback);
+                continue;
+            }
+            $buttons[] = KeyboardButton::create($title)->callbackData($callback);
+        }
+
+        $payload = [
+            'chat_id' => $bot->getUser()->getId(),
+            'message_id' => $messageId,
+            'text' => $element['title'].PHP_EOL.$element['description'].PHP_EOL.$element['url'],
+            'reply_markup' => json_encode([
+                'inline_keyboard' => [
+                    $buttons
+                ],
+                'one_time_keyboard' => false,
+                'resize_keyboard' => false
+            ])
+        ];
+
+        $bot->middleware->applyMiddleware('sending', $payload, [], function ($payload) {
+            $this->outgoingMessage = null;
+
+            return (new Curl())->post(TelegramDriver::API_URL.$this->bot->getDriver()->getConfig()->get('token').'/editMessageText', [], $payload);
+        });
     }
 
     public function sendAudio($url, $text = null)

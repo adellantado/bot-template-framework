@@ -71,6 +71,10 @@ class TemplateEngine
         return $this->template['name'];
     }
 
+    public function getDriverName() {
+        return strtolower($this->bot->getDriver()->getName());
+    }
+
     public function setStrategy($strategy) {
         $this->strategy = $strategy;
         return $this;
@@ -115,6 +119,10 @@ class TemplateEngine
                 }
             }
 
+            if ($block['type'] == 'carousel' && $this->getDriverName() == 'telegram') {
+                $this->bot->hears('carousel_{messageId}_{index}', [$this, 'carousel_'.$block['name']]);
+            }
+
             if (array_key_exists('provider', $block) && $block['provider'] == 'amazon') {
                 $this->bot->hears($block['name'], $this->getCallback($block, $callback));
             }
@@ -132,6 +140,10 @@ class TemplateEngine
         if (preg_match('/reply_(.*)/',$name, $matches)) {
             $blockName = preg_replace('/_+/', ' ', $matches[1]);
             $this->reply($blockName);
+        } elseif ($this->getDriverName() == 'telegram' && preg_match('/carousel_(.*)/',$name, $matches)) {
+            $blockName = preg_replace('/_+/', ' ', $matches[1]);
+            $element = $this->getBlock($blockName)['content'][$arguments[2]];
+            $this->strategy($this->bot)->carouselSwitch($this->bot, $arguments[1], $element);
         }
     }
 
@@ -341,15 +353,14 @@ class TemplateEngine
 
     protected function validBlock($block) {
         $valid = false;
-        $driverName = strtolower($this->bot->getDriver()->getName());
         if (array_key_exists('drivers', $block)) {
             $drivers = explode(';', $block['drivers']);
             foreach($drivers as $driver) {
-                if ($driver == '!'.$driverName) {
+                if ($driver == '!'.$this->getDriverName()) {
                     return false;
                 }
 
-                if ($driver == '*' || $driver == 'any' || $driver == $driverName) {
+                if ($driver == '*' || $driver == 'any' || $driver == $this->getDriverName()) {
                     $valid = true;
                 }
             }
