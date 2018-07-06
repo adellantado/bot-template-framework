@@ -2,6 +2,8 @@
 
 namespace BotTemplateFramework\Blocks;
 
+use BotTemplateFramework\Drivers\Driver;
+
 abstract class Block implements \JsonSerializable {
 
     protected $name;
@@ -21,6 +23,8 @@ abstract class Block implements \JsonSerializable {
     protected $next;
 
     protected $template;
+
+    protected $drivers;
 
 
 
@@ -62,6 +66,15 @@ abstract class Block implements \JsonSerializable {
         return $this;
     }
 
+    /**
+     * @param string[]|Driver[] $drivers
+     * @return $this
+     */
+    public function drivers($drivers) {
+        $this->drivers = $drivers;
+        return $this;
+    }
+
     public function getName() {
         return $this->name;
     }
@@ -98,6 +111,13 @@ abstract class Block implements \JsonSerializable {
 
         if ($this->next) {
             $array['next'] = $this->next->getName();
+        }
+
+        if ($this->drivers) {
+            $array['drivers'] = '';
+            foreach($this->drivers as $driver) {
+                $array['drivers'] .= ($driver instanceof Driver ? strtolower($driver->getName()) : $driver).';';
+            }
         }
 
         return $array;

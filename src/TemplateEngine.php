@@ -95,8 +95,12 @@ class TemplateEngine
         }))[0];
     }
 
-    public function addHears($callback = null) {
+    public function listen($callback = null) {
         foreach ($this->template['blocks'] as $block) {
+            if (!$this->validBlock($block)) {
+                continue;
+            }
+
             if (array_key_exists('template', $block)) {
                 $templates = explode(';', $block['template']);
                 foreach ($templates as $template) {
@@ -131,6 +135,10 @@ class TemplateEngine
     }
 
     public function executeBlock($block) {
+        if (!$this->validBlock($block)) {
+            return $this;
+        }
+
         $type = $block['type'];
         $content = array_key_exists('content', $block) ? $block['content'] : null;
         $result = null;
@@ -146,6 +154,12 @@ class TemplateEngine
             } else {
                 $this->strategy($this->bot)->sendImage($this->parseText($content['url']), array_key_exists('text', $content) ? $this->parseText($content['text']) : null);
             }
+        } elseif ($type == 'video') {
+            $this->strategy($this->bot)->sendVideo($this->parseText($content['url']), array_key_exists('text', $content) ? $this->parseText($content['text']) : null);
+        } elseif ($type == 'audio') {
+            $this->strategy($this->bot)->sendAudio($this->parseText($content['url']), array_key_exists('text', $content) ? $this->parseText($content['text']) : null);
+        } elseif ($type == 'file') {
+            $this->strategy($this->bot)->sendFile($this->parseText($content['url']), array_key_exists('text', $content) ? $this->parseText($content['text']) : null);
         } elseif ($type == 'menu') {
             $this->strategy($this->bot)->sendMenu($this->parseText($content['text']), $this->parseArray($content['buttons']));
         } elseif ($type == 'list') {
@@ -318,6 +332,26 @@ class TemplateEngine
         } else {
             throw new \Exception(self::class." accepts only array, Template or json string");
         }
+    }
+
+    protected function validBlock($block) {
+        $valid = false;
+        $driverName = strtolower($this->bot->getDriver()->getName());
+        if (array_key_exists('drivers', $block)) {
+            $drivers = explode(';', $block['drivers']);
+            foreach($drivers as $driver) {
+                if ($driver == '!'.$driverName) {
+                    return false;
+                }
+
+                if ($driver == '*' || $driver == 'any' || $driver == $driverName) {
+                    $valid = true;
+                }
+            }
+        } else {
+            $valid = true;
+        }
+        return $valid;
     }
 
     public function __wakeup()

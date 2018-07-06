@@ -41,7 +41,11 @@ class Template implements \JsonSerializable {
         return $this->drivers;
     }
 
-    public function addFallbackMessage($message) {
+    /**
+     * @param string|Block $message
+     * @return $this
+     */
+    public function fallback($message) {
         $this->fallback = $message;
         return $this;
     }
@@ -53,7 +57,7 @@ class Template implements \JsonSerializable {
     public function toArray() {
         return [
             'name' => $this->name,
-            'fallback' => $this->fallback,
+            'fallback' => $this->fallback instanceof Block ? ['type' => 'block', 'name'=> $this->fallback->getName()] : $this->fallback,
             'blocks' => array_map(function(Block $block){return $block->jsonSerialize();}, $this->blocks),
             'drivers' => array_map(function(Driver $driver){return $driver->jsonSerialize();}, $this->drivers)
         ];

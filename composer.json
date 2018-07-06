@@ -1,6 +1,7 @@
 {
     "name": "adellantado/bot-template-framework",
     "description": "Easy to build bot scenarios and run them on top of Botman",
+    "keywords": ["Chatbot", "Botman", "Bot Template Framework"],
     "type": "library",
     "require": {
         "botman/botman": "^2.3"

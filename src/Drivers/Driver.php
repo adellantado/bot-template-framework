@@ -14,6 +14,10 @@ abstract class Driver implements \JsonSerializable
         $this->name = $name;
     }
 
+    public function getName() {
+        return $this->name;
+    }
+
     /**
      * @param bool $bool
      * @return Driver

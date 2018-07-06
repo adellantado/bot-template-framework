@@ -3,20 +3,16 @@
 namespace BotTemplateFramework\Blocks;
 
 
-use BotTemplateFramework\Button;
-
-class ImageBlock extends Block
+class FileBlock extends Block
 {
 
     protected $url;
-
-    protected $buttons;
 
     protected $text;
 
     public function __construct($name = null)
     {
-        parent::__construct('image', $name);
+        parent::__construct('file', $name);
     }
 
     public function url($url) {
@@ -26,15 +22,6 @@ class ImageBlock extends Block
 
     public function text($text) {
         $this->text = $text;
-        return $this;
-    }
-
-    /**
-     * @param Button[] $buttons
-     * @return ImageBlock
-     */
-    public function buttons($buttons) {
-        $this->buttons = $buttons;
         return $this;
     }
 
@@ -48,14 +35,6 @@ class ImageBlock extends Block
 
         if ($this->text) {
             $content['text'] = $this->text;
-        }
-
-        if ($this->buttons) {
-            $content['buttons'] = [];
-            foreach($this->buttons as $button) {
-                /** @var Button $button */
-                $content['buttons'][$button->getCallback()] = $button->getTitle();
-            }
         }
 
         $array['content'] = $content;
