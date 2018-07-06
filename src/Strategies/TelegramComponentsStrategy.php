@@ -75,7 +75,7 @@ class TelegramComponentsStrategy implements IComponentsStrategy,IStrategy
 
 
     public function sendText($text) {
-        $this->reply($text);
+        return $this->reply($text);
     }
 
     protected function buildMenu(array $markup) {
@@ -104,11 +104,19 @@ class TelegramComponentsStrategy implements IComponentsStrategy,IStrategy
     public function sendCarousel(array $elements)
     {
         $element = $elements[0];
-        $text = $element['title'].PHP_EOL.$element['description'].PHP_EOL.$element['url'];
-        /** @var Response $response */
-        $response = $this->sendMenu($text, [
-            $element['buttons'],
-        ]);
+        $text = $element['title'].PHP_EOL;
+        if (array_key_exists('description', $element)) {
+            $text .= $element['description'].PHP_EOL;
+        }
+        $text .= $element['url'];
+        if (array_key_exists('buttons', $element)) {
+            /** @var Response $response */
+            $response = $this->sendMenu($text, [
+                $element['buttons'],
+            ]);
+        } else {
+            $response = $this->sendText($text);
+        }
 
         $data = json_decode($response->getContent(), true);
         $carouselButtonsLine = [];
@@ -137,31 +145,37 @@ class TelegramComponentsStrategy implements IComponentsStrategy,IStrategy
      * @param $element
      */
     public function carouselSwitch(BotMan $bot, $messageId, $element) {
-        $buttons = [];
-        foreach($element['buttons'] as $callback=>$title) {
-            if (in_array(parse_url($callback, PHP_URL_SCHEME), ['mailto', 'http', 'https','tel'])) {
-                $buttons[] = KeyboardButton::create($title)->url($callback);
-                continue;
-            }
-            $buttons[] = KeyboardButton::create($title)->callbackData($callback);
+        $text = $element['title'].PHP_EOL;
+        if (array_key_exists('description', $element)) {
+            $text .= $element['description'].PHP_EOL;
         }
+        $text .= $element['url'];
 
         $payload = [
             'chat_id' => $bot->getUser()->getId(),
             'message_id' => $messageId,
-            'text' => $element['title'].PHP_EOL.$element['description'].PHP_EOL.$element['url'],
-            'reply_markup' => json_encode([
+            'text' => $text
+        ];
+
+        if (array_key_exists('buttons', $element)) {
+            $buttons = [];
+            foreach($element['buttons'] as $callback=>$title) {
+                if (in_array(parse_url($callback, PHP_URL_SCHEME), ['mailto', 'http', 'https','tel'])) {
+                    $buttons[] = KeyboardButton::create($title)->url($callback);
+                    continue;
+                }
+                $buttons[] = KeyboardButton::create($title)->callbackData($callback);
+            }
+            $payload['reply_markup'] =  json_encode([
                 'inline_keyboard' => [
                     $buttons
                 ],
                 'one_time_keyboard' => false,
                 'resize_keyboard' => false
-            ])
-        ];
+            ]);
+        }
 
         $bot->middleware->applyMiddleware('sending', $payload, [], function ($payload) {
-            $this->outgoingMessage = null;
-
             return (new Curl())->post(TelegramDriver::API_URL.$this->bot->getDriver()->getConfig()->get('token').'/editMessageText', [], $payload);
         });
     }
