@@ -154,7 +154,8 @@ class TelegramComponentsStrategy implements IComponentsStrategy,IStrategy
         $payload = [
             'chat_id' => $bot->getUser()->getId(),
             'message_id' => $messageId,
-            'text' => $text
+            'text' => $text,
+            'resize_keyboard' => false
         ];
 
         if (array_key_exists('buttons', $element)) {
@@ -171,8 +172,7 @@ class TelegramComponentsStrategy implements IComponentsStrategy,IStrategy
                     $buttons
                 ],
                 'one_time_keyboard' => false,
-                'resize_keyboard' => false,
-                'parse_mode' => 'Markdown'
+                'resize_keyboard' => false
             ]);
         }
 
