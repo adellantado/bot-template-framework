@@ -90,9 +90,14 @@ class TemplateEngine
     }
 
     public function getBlock($name, $locale = null) {
-        return array_values(array_filter($this->template['blocks'], function($block) use ($name, $locale) {
-            return strtolower($block['name']) == strtolower($name) && ($locale ? $block['locale'] == $locale : true);
-        }))[0];
+        $filtered = array_filter($this->template['blocks'], function($block) use ($name, $locale) {
+            return $this->validBlock($block) && strtolower($block['name']) == strtolower($name) && ($locale ? $block['locale'] == $locale : true);
+        });
+
+        if ($filtered) {
+            return array_values($filtered)[0];
+        }
+        return null;
     }
 
     public function listen($callback = null) {
@@ -135,7 +140,7 @@ class TemplateEngine
     }
 
     public function executeBlock($block) {
-        if (!$this->validBlock($block)) {
+        if (!$block || !$this->validBlock($block)) {
             return $this;
         }
 
