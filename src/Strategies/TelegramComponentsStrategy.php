@@ -155,7 +155,7 @@ class TelegramComponentsStrategy implements IComponentsStrategy,IStrategy
             'chat_id' => $bot->getUser()->getId(),
             'message_id' => $messageId,
             'text' => $text,
-            'resize_keyboard' => false
+            'parse_mode' => 'Markdown'
         ];
 
         if (array_key_exists('buttons', $element)) {
