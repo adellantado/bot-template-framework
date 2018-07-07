@@ -189,6 +189,8 @@ class TemplateEngine {
             $this->strategy($this->bot)->sendList($this->parseArray($content));
         } elseif ($type == 'carousel') {
             $this->strategy($this->bot)->sendCarousel($this->parseArray($content));
+        } elseif ($type == 'location') {
+            $this->strategy($this->bot)->sendLocation($this->parseText($content));
         } elseif ($type == 'request') {
             $result = $this->executeRequest($block);
         } elseif ($type == 'method') {

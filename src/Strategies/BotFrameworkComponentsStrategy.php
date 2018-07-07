@@ -164,7 +164,7 @@ class BotFrameworkComponentsStrategy implements IComponentsStrategy, IStrategy {
         $this->reply(OutgoingMessage::create($text, new File($url)));
     }
 
-    public function sendLocation() {
+    public function sendLocation($text) {
         // TODO: Implement sendLocation() method.
     }
 

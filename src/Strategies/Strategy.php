@@ -73,8 +73,8 @@ abstract class Strategy implements IStrategy, IComponentsStrategy {
         $this->componentsStrategy->sendFile($url, $text);
     }
 
-    public function sendLocation() {
-        $this->componentsStrategy->sendLocation();
+    public function sendLocation($text) {
+        $this->componentsStrategy->sendLocation($text);
     }
 
     public function sendPhone() {

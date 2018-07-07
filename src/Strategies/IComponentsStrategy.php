@@ -23,7 +23,7 @@ interface IComponentsStrategy {
 
     public function sendFile($url, $text = null);
 
-    public function sendLocation();
+    public function sendLocation($text);
 
     public function sendPhone();
 

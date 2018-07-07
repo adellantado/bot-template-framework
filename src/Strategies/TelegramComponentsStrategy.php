@@ -188,8 +188,14 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
         $this->reply(OutgoingMessage::create($text, new File($url)));
     }
 
-    public function sendLocation() {
-        // TODO: Implement sendLocation() method.
+    public function sendLocation($text) {
+        return $this->reply($text, [
+            'reply_markup' => [
+                Keyboard::TYPE_INLINE => [
+                    KeyboardButton::create('Share Your Location')->requestLocation()
+                ],
+            ]
+        ]);
     }
 
     public function sendPhone() {
