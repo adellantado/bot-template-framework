@@ -3,13 +3,11 @@
 namespace BotTemplateFramework\Blocks;
 
 
-class MethodBlock extends Block
-{
+class MethodBlock extends Block {
 
     protected $method;
 
-    public function __construct($name = null)
-    {
+    public function __construct($name = null) {
         parent::__construct('method', $name);
     }
 
@@ -18,8 +16,7 @@ class MethodBlock extends Block
         return $this;
     }
 
-    public function toArray()
-    {
+    public function toArray() {
         $array = parent::toArray();
 
         $array['method'] = $this->method;

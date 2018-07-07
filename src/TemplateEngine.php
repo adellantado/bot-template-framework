@@ -7,8 +7,7 @@ use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Http\Curl;
 use BotMan\BotMan\Interfaces\StorageInterface;
 
-class TemplateEngine
-{
+class TemplateEngine {
     use StrategyTrait;
 
     /**
@@ -34,14 +33,15 @@ class TemplateEngine
         } elseif ($template instanceof Template) {
             $template = $template->jsonSerialize();
         } else {
-            throw new \Exception(self::class." accepts only array, Template or json string");
+            throw new \Exception(self::class . " accepts only array, Template or json string");
         }
 
         foreach ($template['drivers'] as $driver) {
             $config[strtolower($driver['name'])] = [];
-            foreach($driver as $key=>$value) {
+            foreach ($driver as $key => $value) {
                 if ($key != 'name') {
-                    $config[strtolower($driver['name'])][$key] = (array_key_exists('config', $driver) && $driver['config'] == 'true') ? env($value) : $value;
+                    $config[strtolower($driver['name'])][$key] = (array_key_exists('config',
+                            $driver) && $driver['config'] == 'true') ? env($value) : $value;
                 }
             }
         }
@@ -81,20 +81,20 @@ class TemplateEngine
     }
 
     public function getDrivers() {
-        return array_map(function($driver){
+        return array_map(function ($driver) {
             return $driver['name'];
         }, $this->template['drivers']);
     }
 
 
     public function getDriver($name) {
-        return array_values(array_filter($this->template['drivers'], function($driver, $index) use ($name) {
+        return array_values(array_filter($this->template['drivers'], function ($driver, $index) use ($name) {
             return strtolower($driver['name']) == strtolower($name);
         }))[0];
     }
 
     public function getBlock($name, $locale = null) {
-        $filtered = array_filter($this->template['blocks'], function($block) use ($name, $locale) {
+        $filtered = array_filter($this->template['blocks'], function ($block) use ($name, $locale) {
             return $this->validBlock($block) && strtolower($block['name']) == strtolower($name) && ($locale ? $block['locale'] == $locale : true);
         });
 
@@ -120,7 +120,7 @@ class TemplateEngine
             }
 
             if ($block['type'] == 'carousel' && $this->getDriverName() == 'telegram') {
-                $this->bot->hears('carousel_{messageId}_{index}', [$this, 'carousel_'.$block['name']]);
+                $this->bot->hears('carousel_{messageId}_{index}', [$this, 'carousel_' . $block['name']]);
             }
 
             if (array_key_exists('provider', $block) && $block['provider'] == 'amazon') {
@@ -137,10 +137,10 @@ class TemplateEngine
 
     public function __call($name, $arguments) {
         $matches = [];
-        if (preg_match('/reply_(.*)/',$name, $matches)) {
+        if (preg_match('/reply_(.*)/', $name, $matches)) {
             $blockName = preg_replace('/_+/', ' ', $matches[1]);
             $this->reply($blockName);
-        } elseif ($this->getDriverName() == 'telegram' && preg_match('/carousel_(.*)/',$name, $matches)) {
+        } elseif ($this->getDriverName() == 'telegram' && preg_match('/carousel_(.*)/', $name, $matches)) {
             $blockName = preg_replace('/_+/', ' ', $matches[1]);
             $element = $this->getBlock($blockName)['content'][$arguments[2]];
             $this->strategy($this->bot)->carouselSwitch($this->bot, $arguments[1], $element);
@@ -167,18 +167,24 @@ class TemplateEngine
             $this->strategy($this->bot)->sendText($this->parseText($content));
         } elseif ($type == 'image') {
             if (array_key_exists('buttons', $content)) {
-                $this->strategy($this->bot)->sendMenuAndImage($this->parseText($content['url']), $this->parseText($content['text']), $this->parseArray($content['buttons']));
+                $this->strategy($this->bot)->sendMenuAndImage($this->parseText($content['url']),
+                    $this->parseText($content['text']), $this->parseArray($content['buttons']));
             } else {
-                $this->strategy($this->bot)->sendImage($this->parseText($content['url']), array_key_exists('text', $content) ? $this->parseText($content['text']) : null);
+                $this->strategy($this->bot)->sendImage($this->parseText($content['url']),
+                    array_key_exists('text', $content) ? $this->parseText($content['text']) : null);
             }
         } elseif ($type == 'video') {
-            $this->strategy($this->bot)->sendVideo($this->parseText($content['url']), array_key_exists('text', $content) ? $this->parseText($content['text']) : null);
+            $this->strategy($this->bot)->sendVideo($this->parseText($content['url']),
+                array_key_exists('text', $content) ? $this->parseText($content['text']) : null);
         } elseif ($type == 'audio') {
-            $this->strategy($this->bot)->sendAudio($this->parseText($content['url']), array_key_exists('text', $content) ? $this->parseText($content['text']) : null);
+            $this->strategy($this->bot)->sendAudio($this->parseText($content['url']),
+                array_key_exists('text', $content) ? $this->parseText($content['text']) : null);
         } elseif ($type == 'file') {
-            $this->strategy($this->bot)->sendFile($this->parseText($content['url']), array_key_exists('text', $content) ? $this->parseText($content['text']) : null);
+            $this->strategy($this->bot)->sendFile($this->parseText($content['url']),
+                array_key_exists('text', $content) ? $this->parseText($content['text']) : null);
         } elseif ($type == 'menu') {
-            $this->strategy($this->bot)->sendMenu($this->parseText($content['text']), $this->parseArray($content['buttons']));
+            $this->strategy($this->bot)->sendMenu($this->parseText($content['text']),
+                $this->parseArray($content['buttons']));
         } elseif ($type == 'list') {
             $this->strategy($this->bot)->sendList($this->parseArray($content));
         } elseif ($type == 'carousel') {
@@ -201,6 +207,63 @@ class TemplateEngine
         return $this;
     }
 
+    public function executeNextBlock($currentBlock, $key = null) {
+        if (is_array($currentBlock['next'])) {
+            if ($key && array_key_exists($key, $currentBlock['next'])) {
+                $this->executeBlock($this->getBlock($currentBlock['next'][$key],
+                    array_key_exists('locale', $currentBlock) ? $currentBlock['locale'] : null));
+            } elseif (array_key_exists('fallback', $currentBlock['next'])) {
+                $this->executeBlock($this->getBlock($currentBlock['next']['fallback'],
+                    array_key_exists('locale', $currentBlock) ? $currentBlock['locale'] : null));
+            }
+        } else {
+            $this->executeBlock($this->getBlock($currentBlock['next'],
+                array_key_exists('locale', $currentBlock) ? $currentBlock['locale'] : null));
+        }
+    }
+
+    public function saveVariable($name, $value) {
+        $matches = [];
+        if (preg_match_all('/{{(.+?)}}/', $name, $matches)) {
+            $name = $matches[1][0];
+        }
+        $this->storage->save([$value], $name);
+    }
+
+    public function getVariable($name) {
+        switch ($name) {
+            case 'user.firstName':
+                return $this->bot->getUser()->getFirstName();
+            case 'user.lastName':
+                return $this->bot->getUser()->getLastName();
+            case 'bot.name':
+                return $this->getBotName();
+        }
+
+        return $this->storage->get($name)->toArray()[0];
+    }
+
+    public function parseText($text) {
+        $matches = [];
+        if (preg_match_all('/{{(.+?)}}/', $text, $matches)) {
+            foreach ($matches[1] as $match) {
+                $text = preg_replace('/{{' . $match . '}}/', $this->getVariable($match), $text);
+            }
+        }
+        return $text;
+    }
+
+    protected function parseArray($array) {
+        foreach ($array as $key => $item) {
+            if (is_array($item)) {
+                $this->parseArray($item);
+            } else {
+                $array[$key] = $this->parseText($item);
+            }
+        }
+        return $array;
+    }
+
     protected function executeRequest($block) {
         $response = null;
         try {
@@ -210,17 +273,11 @@ class TemplateEngine
                 $json = $this->parseArray($block['body']);
             }
             if (strtolower($block['method']) == "get") {
-                $response = $client->get(
-                    $this->parseText($block['url']),
-                    $json, [], true
-                );
+                $response = $client->get($this->parseText($block['url']), $json, [], true);
             } elseif (strtolower($block['method']) == "post") {
-                $response = $client->post(
-                    $this->parseText($block['url']),
-                    $json, [], true
-                );
+                $response = $client->post($this->parseText($block['url']), $json, [], true);
             }
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return null;
         }
 
@@ -228,7 +285,7 @@ class TemplateEngine
             $body = json_decode($response->getContent(), true);
             if (array_key_exists('field', $block['result'])) {
                 $fields = explode('.', $block['result']['field']);
-                foreach($fields as $field) {
+                foreach ($fields as $field) {
                     if ($body) {
                         $body = $body[$field];
                     }
@@ -245,25 +302,13 @@ class TemplateEngine
         return null;
     }
 
-    public function executeAsk($block) {
+    protected function executeAsk($block) {
         $conversation = new TemplateConversation($this);
         $conversation->blockName = $block['name'];
         $this->bot->startConversation($conversation);
     }
 
-    public function executeNextBlock($currentBlock, $key = null) {
-        if (is_array($currentBlock['next'])) {
-            if ($key && array_key_exists($key, $currentBlock['next'])) {
-                $this->executeBlock($this->getBlock($currentBlock['next'][$key], array_key_exists('locale', $currentBlock) ? $currentBlock['locale'] : null));
-            } elseif (array_key_exists('fallback', $currentBlock['next'])) {
-                $this->executeBlock($this->getBlock($currentBlock['next']['fallback'], array_key_exists('locale', $currentBlock) ? $currentBlock['locale'] : null));
-            }
-        } else {
-            $this->executeBlock($this->getBlock($currentBlock['next'], array_key_exists('locale', $currentBlock) ? $currentBlock['locale'] : null));
-        }
-    }
-
-    public function executeIntent($block) {
+    protected function executeIntent($block) {
         if ($block['provider'] == 'amazon') {
             $result = null;
             if (array_key_exists('result', $block) && array_key_exists('save', $block['result'])) {
@@ -280,55 +325,13 @@ class TemplateEngine
         return null;
     }
 
-    public function saveVariable($name, $value) {
-        $matches = [];
-        if (preg_match_all('/{{(.+?)}}/', $name, $matches)) {
-            $name = $matches[1][0];
-        }
-        $this->storage->save([$value], $name);
-    }
-
-    protected function getVariable($name) {
-        switch($name) {
-            case 'user.firstName':
-                return $this->bot->getUser()->getFirstName();
-            case 'user.lastName':
-                return $this->bot->getUser()->getLastName();
-            case 'bot.name':
-                return $this->getBotName();
-        }
-
-        return $this->storage->get($name)->toArray()[0];
-    }
-
-    protected function parseArray($array) {
-        foreach($array as $key=>$item) {
-            if (is_array($item)) {
-                $this->parseArray($item);
-            } else {
-                $array[$key] = $this->parseText($item);
-            }
-        }
-        return $array;
-    }
-
-    public function parseText($text) {
-        $matches = [];
-        if (preg_match_all('/{{(.+?)}}/', $text, $matches)) {
-            foreach($matches[1] as $match) {
-                $text = preg_replace('/{{'.$match.'}}/', $this->getVariable($match), $text);
-            }
-        }
-        return $text;
-    }
-
     protected function getCallback($block, $callback = null) {
         $blockName = preg_replace('/\s+/', '_', $block['name']);
-        return $callback ? $callback : [$this, 'reply_'.$blockName];
+        return $callback ? $callback : [$this, 'reply_' . $blockName];
     }
 
     protected function hearFallback() {
-        $this->bot->fallback(function($bot) {
+        $this->bot->fallback(function ($bot) {
             $fallback = $this->template['fallback'];
             if (is_string($fallback)) {
                 $this->strategy($this->bot)->sendText($this->parseText($fallback));
@@ -347,7 +350,7 @@ class TemplateEngine
         } elseif ($template instanceof Template) {
             $this->template = $template->jsonSerialize();
         } else {
-            throw new \Exception(self::class." accepts only array, Template or json string");
+            throw new \Exception(self::class . " accepts only array, Template or json string");
         }
     }
 
@@ -355,8 +358,8 @@ class TemplateEngine
         $valid = false;
         if (array_key_exists('drivers', $block)) {
             $drivers = explode(';', $block['drivers']);
-            foreach($drivers as $driver) {
-                if ($driver == '!'.$this->getDriverName()) {
+            foreach ($drivers as $driver) {
+                if ($driver == '!' . $this->getDriverName()) {
                     return false;
                 }
 
@@ -370,16 +373,14 @@ class TemplateEngine
         return $valid;
     }
 
-    public function __wakeup()
-    {
+    public function __wakeup() {
 
     }
 
     /**
      * @return array
      */
-    public function __sleep()
-    {
+    public function __sleep() {
         return [
             'template',
             'bot',

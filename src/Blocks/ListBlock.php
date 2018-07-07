@@ -5,12 +5,10 @@ namespace BotTemplateFramework\Blocks;
 
 use BotTemplateFramework\Items\ListItem;
 
-class ListBlock extends Block
-{
+class ListBlock extends Block {
     protected $items;
 
-    public function __construct($name = null)
-    {
+    public function __construct($name = null) {
         parent::__construct('list', $name);
     }
 
@@ -23,11 +21,12 @@ class ListBlock extends Block
         return $this;
     }
 
-    public function toArray()
-    {
+    public function toArray() {
         $array = parent::toArray();
 
-        $array['content'] = array_map(function(ListItem $item){return $item->toArray();}, $this->items);
+        $array['content'] = array_map(function (ListItem $item) {
+            return $item->toArray();
+        }, $this->items);
 
         return $array;
     }

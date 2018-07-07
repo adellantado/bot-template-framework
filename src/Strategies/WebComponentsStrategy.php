@@ -11,16 +11,14 @@ use BotMan\Drivers\Facebook\Extensions\Element;
 use BotMan\Drivers\Facebook\Extensions\ElementButton;
 use BotMan\Drivers\Facebook\Extensions\ListTemplate;
 
-class WebComponentsStrategy implements IComponentsStrategy,IStrategy
-{
+class WebComponentsStrategy implements IComponentsStrategy, IStrategy {
     protected $bot;
 
     public function __construct(BotMan $bot) {
         $this->bot = $bot;
     }
 
-    public function getBot()
-    {
+    public function getBot() {
         return $this->bot;
     }
 
@@ -28,33 +26,28 @@ class WebComponentsStrategy implements IComponentsStrategy,IStrategy
         $this->bot->reply($message, $additionalParameters);
     }
 
-    public function sendImage($imageUrl, $text = null)
-    {
+    public function sendImage($imageUrl, $text = null) {
         if ($text) {
             $this->sendMenuAndImage($imageUrl, $text, []);
         } else {
-            $message = OutgoingMessage::create()
-                ->withAttachment(new Image($imageUrl));
+            $message = OutgoingMessage::create()->withAttachment(new Image($imageUrl));
             $this->reply($message);
         }
     }
 
-    public function sendMenu($text, array $markup)
-    {
-        foreach($markup as $submenu) {
+    public function sendMenu($text, array $markup) {
+        foreach ($markup as $submenu) {
             $menu = ButtonTemplate::create($text)->addButtons($this->buildButtons($submenu));
             $this->reply($menu);
         }
     }
 
-    public function sendMenuAndImage($imageUrl, $text, array $markup)
-    {
+    public function sendMenuAndImage($imageUrl, $text, array $markup) {
         $attachment = new Image($imageUrl, [
             'custom_payload' => true,
         ]);
 
-        $message = OutgoingMessage::create($text)
-            ->withAttachment($attachment);
+        $message = OutgoingMessage::create($text)->withAttachment($attachment);
 
         $this->reply($message);
         $this->sendMenu('', $markup);
@@ -88,38 +81,31 @@ class WebComponentsStrategy implements IComponentsStrategy,IStrategy
         }
     }
 
-    public function sendCarousel(array $elements)
-    {
+    public function sendCarousel(array $elements) {
         $this->sendList($elements);
     }
 
-    public function sendText($text)
-    {
+    public function sendText($text) {
         $this->reply($text);
     }
 
-    public function sendAudio($url, $text = null)
-    {
+    public function sendAudio($url, $text = null) {
         $this->reply(OutgoingMessage::create($text, new Audio($url)));
     }
 
-    public function sendVideo($url, $text = null)
-    {
+    public function sendVideo($url, $text = null) {
         $this->reply(OutgoingMessage::create($text, new Video($url)));
     }
 
-    public function sendFile($url, $text = null)
-    {
+    public function sendFile($url, $text = null) {
         $this->reply(OutgoingMessage::create($text, new File($url)));
     }
 
-    public function sendLocation()
-    {
+    public function sendLocation() {
         // TODO: Implement sendLocation() method.
     }
 
-    public function sendPhone()
-    {
+    public function sendPhone() {
         // TODO: Implement sendPhone() method.
     }
 
@@ -129,8 +115,8 @@ class WebComponentsStrategy implements IComponentsStrategy,IStrategy
      */
     protected function buildButtons(array $markup) {
         $buttons = [];
-        foreach($markup as $callback=>$title) {
-            if (in_array(parse_url($callback, PHP_URL_SCHEME), ['mailto', 'http', 'https','tel'])) {
+        foreach ($markup as $callback => $title) {
+            if (in_array(parse_url($callback, PHP_URL_SCHEME), ['mailto', 'http', 'https', 'tel'])) {
                 $buttons[] = ElementButton::create($title)->type(ElementButton::TYPE_WEB_URL)->url($callback);
                 continue;
             }

@@ -3,8 +3,7 @@
 namespace BotTemplateFramework\Strategies;
 
 
-interface IComponentsStrategy
-{
+interface IComponentsStrategy {
 
     public function sendImage($imageUrl, $text = null);
 

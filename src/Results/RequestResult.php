@@ -3,8 +3,7 @@
 namespace BotTemplateFramework\Results;
 
 
-class RequestResult extends Result
-{
+class RequestResult extends Result {
 
     protected $field;
 

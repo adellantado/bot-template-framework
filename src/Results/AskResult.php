@@ -4,8 +4,7 @@ namespace BotTemplateFramework\Results;
 
 use BotTemplateFramework\Prompt;
 
-class AskResult extends Result
-{
+class AskResult extends Result {
     protected $prompts;
 
     public function prompts(array $prompts) {
@@ -16,7 +15,9 @@ class AskResult extends Result
     public function toArray() {
         if ($this->prompts) {
             $array = [
-                'prompt' => implode(';', array_map(function(Prompt $prompt){return $prompt->getText();},$this->prompts)),
+                'prompt' => implode(';', array_map(function (Prompt $prompt) {
+                    return $prompt->getText();
+                }, $this->prompts)),
             ];
             return array_merge(parent::toArray(), $array);
         }

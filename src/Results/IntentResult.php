@@ -3,7 +3,6 @@
 namespace BotTemplateFramework\Results;
 
 
-class IntentResult extends Result
-{
+class IntentResult extends Result {
 
 }

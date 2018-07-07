@@ -3,15 +3,13 @@
 namespace BotTemplateFramework\Blocks;
 
 
-class TextBlock extends Block
-{
+class TextBlock extends Block {
     /**
      * @var string
      */
     protected $text;
 
-    public function __construct($name = null)
-    {
+    public function __construct($name = null) {
         parent::__construct('text', $name);
     }
 
@@ -24,8 +22,7 @@ class TextBlock extends Block
         return $this;
     }
 
-    public function toArray()
-    {
+    public function toArray() {
         return array_merge(parent::toArray(), [
             'content' => $this->text
         ]);

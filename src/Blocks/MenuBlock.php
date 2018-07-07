@@ -5,14 +5,12 @@ namespace BotTemplateFramework\Blocks;
 
 use BotTemplateFramework\Button;
 
-class MenuBlock extends Block
-{
+class MenuBlock extends Block {
     protected $buttons;
 
     protected $text;
 
-    public function __construct($name = null)
-    {
+    public function __construct($name = null) {
         parent::__construct('menu', $name);
     }
 
@@ -30,8 +28,7 @@ class MenuBlock extends Block
         return $this;
     }
 
-    public function toArray()
-    {
+    public function toArray() {
         $array = parent::toArray();
 
         $content = [
@@ -41,7 +38,7 @@ class MenuBlock extends Block
         if ($this->buttons) {
             $content['buttons'] = [];
             $content['buttons'][] = [];
-            foreach($this->buttons as $button) {
+            foreach ($this->buttons as $button) {
                 /** @var Button $button */
                 $content['buttons'][0][$button->getCallback()] = $button->getTitle();
             }

@@ -3,7 +3,6 @@
 namespace BotTemplateFramework\Items;
 
 
-class CarouselItem extends ListItem
-{
+class CarouselItem extends ListItem {
 
 }

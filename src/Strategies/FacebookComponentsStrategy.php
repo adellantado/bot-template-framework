@@ -16,8 +16,7 @@ use BotMan\Drivers\Facebook\Extensions\GenericTemplate;
 use BotMan\Drivers\Facebook\Extensions\ListTemplate;
 use Mockery\CountValidator\Exception;
 
-class FacebookComponentsStrategy implements IComponentsStrategy,IStrategy
-{
+class FacebookComponentsStrategy implements IComponentsStrategy, IStrategy {
     protected $bot;
 
     public function __construct(BotMan $bot) {
@@ -36,14 +35,13 @@ class FacebookComponentsStrategy implements IComponentsStrategy,IStrategy
         if ($text) {
             $this->sendMenuAndImage($imageUrl, $text, []);
         } else {
-            $message = OutgoingMessage::create()
-                ->withAttachment(new Image($imageUrl));
+            $message = OutgoingMessage::create()->withAttachment(new Image($imageUrl));
             $this->reply($message);
         }
     }
 
     public function sendMenu($text, array $markup) {
-        foreach($markup as $submenu) {
+        foreach ($markup as $submenu) {
             if (count($submenu) > 3) {
                 throw new Exception('Too many elements');
             }
@@ -56,14 +54,7 @@ class FacebookComponentsStrategy implements IComponentsStrategy,IStrategy
         if (count($markup) > 3) {
             throw new Exception('Too many elements');
         }
-        $this->reply(GenericTemplate::create()
-            ->addImageAspectRatio(GenericTemplate::RATIO_SQUARE)
-            ->addElement(
-                Element::create($text)
-                    ->subtitle('')
-                    ->image($imageUrl)
-                    ->addButtons($this->buildButtons($markup))
-            ));
+        $this->reply(GenericTemplate::create()->addImageAspectRatio(GenericTemplate::RATIO_SQUARE)->addElement(Element::create($text)->subtitle('')->image($imageUrl)->addButtons($this->buildButtons($markup))));
     }
 
     public function sendText($text) {
@@ -74,14 +65,10 @@ class FacebookComponentsStrategy implements IComponentsStrategy,IStrategy
         if (count($elements) > 10) {
             throw new Exception('Facebook Generic Template component must include up to 10 elements');
         }
-        $template = GenericTemplate::create()
-            ->addImageAspectRatio(GenericTemplate::RATIO_SQUARE);
+        $template = GenericTemplate::create()->addImageAspectRatio(GenericTemplate::RATIO_SQUARE);
 
         foreach ($elements as $item) {
-            $element = Element::create($item['title'])
-                ->subtitle($item['description'])
-                ->image($item['url'])
-                ->addButtons($this->buildButtons($item['buttons']));
+            $element = Element::create($item['title'])->subtitle($item['description'])->image($item['url'])->addButtons($this->buildButtons($item['buttons']));
             $template->addElement($element);
         }
         $this->reply($template);
@@ -91,44 +78,35 @@ class FacebookComponentsStrategy implements IComponentsStrategy,IStrategy
         if (count($elements) < 2 || count($elements) > 4) {
             throw new Exception('Facebook List component must include 2-4 elements');
         }
-        $list = ListTemplate::create()
-            ->useCompactView();
+        $list = ListTemplate::create()->useCompactView();
         if ($globalButton) {
             $list->addGlobalButton($this->buildButtons($globalButton)[0]);
         }
 
         foreach ($elements as $item) {
-            $element = Element::create($item['title'])
-                ->subtitle($item['description'])
-                ->image($item['url'])
-                ->addButtons($this->buildButtons($item['buttons']));
+            $element = Element::create($item['title'])->subtitle($item['description'])->image($item['url'])->addButtons($this->buildButtons($item['buttons']));
             $list->addElement($element);
         }
         $this->reply($list);
     }
 
-    public function sendAudio($url, $text = null)
-    {
+    public function sendAudio($url, $text = null) {
         $this->reply(OutgoingMessage::create($text, new Audio($url)));
     }
 
-    public function sendVideo($url, $text = null)
-    {
+    public function sendVideo($url, $text = null) {
         $this->reply(OutgoingMessage::create($text, new Video($url)));
     }
 
-    public function sendFile($url, $text = null)
-    {
+    public function sendFile($url, $text = null) {
         $this->reply(OutgoingMessage::create($text, new File($url)));
     }
 
-    public function sendLocation()
-    {
+    public function sendLocation() {
         // TODO: Implement sendLocation() method.
     }
 
-    public function sendPhone()
-    {
+    public function sendPhone() {
         // TODO: Implement sendPhone() method.
     }
 
@@ -138,8 +116,8 @@ class FacebookComponentsStrategy implements IComponentsStrategy,IStrategy
      */
     protected function buildButtons(array $markup) {
         $buttons = [];
-        foreach($markup as $callback=>$title) {
-            if (in_array(parse_url($callback, PHP_URL_SCHEME), ['mailto', 'http', 'https','tel'])) {
+        foreach ($markup as $callback => $title) {
+            if (in_array(parse_url($callback, PHP_URL_SCHEME), ['mailto', 'http', 'https', 'tel'])) {
                 $buttons[] = ElementButton::create($title)->type(ElementButton::TYPE_WEB_URL)->url($callback);
                 continue;
             }

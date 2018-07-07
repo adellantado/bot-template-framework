@@ -2,15 +2,13 @@
 
 namespace BotTemplateFramework\Drivers;
 
-abstract class Driver implements \JsonSerializable
-{
+abstract class Driver implements \JsonSerializable {
 
     protected $name;
 
     protected $config;
 
-    public function __construct($name)
-    {
+    public function __construct($name) {
         $this->name = $name;
     }
 

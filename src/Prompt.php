@@ -3,15 +3,13 @@
 namespace BotTemplateFramework;
 
 
-use App\TemplateFramework\Blocks\Block;
+use BotTemplateFramework\Blocks\Block;
 
-class Prompt
-{
+class Prompt {
     protected $text;
     protected $nextBlock;
 
-    public function __construct(string $text, Block $nextBlock)
-    {
+    public function __construct(string $text, Block $nextBlock) {
         $this->text = $text;
         $this->nextBlock = $nextBlock;
     }

@@ -4,8 +4,7 @@ namespace BotTemplateFramework\Items;
 
 use BotTemplateFramework\Button;
 
-class ListItem implements \JsonSerializable
-{
+class ListItem implements \JsonSerializable {
     protected $title;
 
     protected $description;
@@ -14,8 +13,7 @@ class ListItem implements \JsonSerializable
 
     protected $buttons;
 
-    public function __construct($title, $url)
-    {
+    public function __construct($title, $url) {
         $this->title = $title;
         $this->url = $url;
     }
@@ -39,13 +37,11 @@ class ListItem implements \JsonSerializable
         return $this;
     }
 
-    function jsonSerialize()
-    {
+    function jsonSerialize() {
         return $this->toArray();
     }
 
-    public function toArray()
-    {
+    public function toArray() {
         $content = [
             'url' => $this->url,
             'title' => $this->title
@@ -57,7 +53,7 @@ class ListItem implements \JsonSerializable
 
         if ($this->buttons) {
             $content['buttons'] = [];
-            foreach($this->buttons as $button) {
+            foreach ($this->buttons as $button) {
                 /** @var Button $button */
                 $content['buttons'][$button->getCallback()] = $button->getTitle();
             }

@@ -57,9 +57,16 @@ class Template implements \JsonSerializable {
     public function toArray() {
         return [
             'name' => $this->name,
-            'fallback' => $this->fallback instanceof Block ? ['type' => 'block', 'name'=> $this->fallback->getName()] : $this->fallback,
-            'blocks' => array_map(function(Block $block){return $block->jsonSerialize();}, $this->blocks),
-            'drivers' => array_map(function(Driver $driver){return $driver->jsonSerialize();}, $this->drivers)
+            'fallback' => $this->fallback instanceof Block ? [
+                'type' => 'block',
+                'name' => $this->fallback->getName()
+            ] : $this->fallback,
+            'blocks' => array_map(function (Block $block) {
+                return $block->jsonSerialize();
+            }, $this->blocks),
+            'drivers' => array_map(function (Driver $driver) {
+                return $driver->jsonSerialize();
+            }, $this->drivers)
         ];
     }
 

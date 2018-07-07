@@ -2,8 +2,7 @@
 
 namespace BotTemplateFramework\Results;
 
-abstract class Result implements \JsonSerializable
-{
+abstract class Result implements \JsonSerializable {
 
     protected $variable;
 

@@ -9,8 +9,7 @@ use BotMan\BotMan\Messages\Attachments\File;
 use BotMan\BotMan\Messages\Attachments\Video;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
 
-class BotFrameworkComponentsStrategy implements IComponentsStrategy,IStrategy
-{
+class BotFrameworkComponentsStrategy implements IComponentsStrategy, IStrategy {
     protected $bot;
 
     public function __construct(BotMan $bot) {
@@ -25,8 +24,7 @@ class BotFrameworkComponentsStrategy implements IComponentsStrategy,IStrategy
         $this->bot->reply($message, $additionalParameters);
     }
 
-    public function sendImage($imageUrl, $text = null)
-    {
+    public function sendImage($imageUrl, $text = null) {
         // TODO what if text == null
         $menu = [
             "title" => $text,
@@ -38,35 +36,37 @@ class BotFrameworkComponentsStrategy implements IComponentsStrategy,IStrategy
             "buttons" => []
         ];
 
-        $this->bot->reply('', ["attachments" => [
-            [
-                "contentType" => "application/vnd.microsoft.card.hero",
-                "content" => $menu
+        $this->bot->reply('', [
+            "attachments" => [
+                [
+                    "contentType" => "application/vnd.microsoft.card.hero",
+                    "content" => $menu
+                ]
             ]
-        ]]);
+        ]);
     }
 
-    public function sendMenu($text, array $markup)
-    {
+    public function sendMenu($text, array $markup) {
         $menu = [
             "title" => $text,
             "images" => [],
             "buttons" => []
         ];
-        foreach($markup as $submenu) {
+        foreach ($markup as $submenu) {
             $menu["buttons"] = array_merge($this->buildButtons($submenu), $menu["buttons"]);
         }
 
-        $this->bot->reply('', ["attachments" => [
-            [
-                "contentType" => "application/vnd.microsoft.card.hero",
-                "content" => $menu
+        $this->bot->reply('', [
+            "attachments" => [
+                [
+                    "contentType" => "application/vnd.microsoft.card.hero",
+                    "content" => $menu
+                ]
             ]
-        ]]);
+        ]);
     }
 
-    public function sendMenuAndImage($imageUrl, $text, array $markup)
-    {
+    public function sendMenuAndImage($imageUrl, $text, array $markup) {
         $menu = [
             "title" => $text,
             "images" => [
@@ -76,27 +76,27 @@ class BotFrameworkComponentsStrategy implements IComponentsStrategy,IStrategy
             ],
             "buttons" => []
         ];
-        foreach($markup as $submenu) {
+        foreach ($markup as $submenu) {
             $menu["buttons"] = array_merge($this->buildButtons($submenu), $menu["buttons"]);
         }
 
-        $this->bot->reply('', ["attachments" => [
-            [
-                "contentType" => "application/vnd.microsoft.card.hero",
-                "content" => $menu
+        $this->bot->reply('', [
+            "attachments" => [
+                [
+                    "contentType" => "application/vnd.microsoft.card.hero",
+                    "content" => $menu
+                ]
             ]
-        ]]);
+        ]);
     }
 
-    public function sendText($text)
-    {
+    public function sendText($text) {
         $this->reply($text);
     }
 
-    public function sendList(array $elements, array $globalButton = null)
-    {
+    public function sendList(array $elements, array $globalButton = null) {
         $attachments = [];
-        foreach($elements as $element) {
+        foreach ($elements as $element) {
             $attachment = [
                 "contentType" => "application/vnd.microsoft.card.hero",
                 "content" => [
@@ -110,8 +110,9 @@ class BotFrameworkComponentsStrategy implements IComponentsStrategy,IStrategy
                     "buttons" => []
                 ]
             ];
-            foreach($element['buttons'] as $submenu) {
-                $attachment["content"]["buttons"] = array_merge($this->buildButtons($submenu), $attachment["content"]["buttons"]);
+            foreach ($element['buttons'] as $submenu) {
+                $attachment["content"]["buttons"] = array_merge($this->buildButtons($submenu),
+                    $attachment["content"]["buttons"]);
             }
             $attachments[] = $attachment;
         }
@@ -122,10 +123,9 @@ class BotFrameworkComponentsStrategy implements IComponentsStrategy,IStrategy
         ]);
     }
 
-    public function sendCarousel(array $elements)
-    {
+    public function sendCarousel(array $elements) {
         $attachments = [];
-        foreach($elements as $element) {
+        foreach ($elements as $element) {
             $attachment = [
                 "contentType" => "application/vnd.microsoft.card.hero",
                 "content" => [
@@ -139,8 +139,9 @@ class BotFrameworkComponentsStrategy implements IComponentsStrategy,IStrategy
                     "buttons" => []
                 ]
             ];
-            foreach($element['buttons'] as $submenu) {
-                $attachment["content"]["buttons"] = array_merge($this->buildButtons($submenu), $attachment["content"]["buttons"]);
+            foreach ($element['buttons'] as $submenu) {
+                $attachment["content"]["buttons"] = array_merge($this->buildButtons($submenu),
+                    $attachment["content"]["buttons"]);
             }
             $attachments[] = $attachment;
         }
@@ -151,28 +152,23 @@ class BotFrameworkComponentsStrategy implements IComponentsStrategy,IStrategy
         ]);
     }
 
-    public function sendAudio($url, $text = null)
-    {
+    public function sendAudio($url, $text = null) {
         $this->reply(OutgoingMessage::create($text, new Audio($url)));
     }
 
-    public function sendVideo($url, $text = null)
-    {
+    public function sendVideo($url, $text = null) {
         $this->reply(OutgoingMessage::create($text, new Video($url)));
     }
 
-    public function sendFile($url, $text = null)
-    {
+    public function sendFile($url, $text = null) {
         $this->reply(OutgoingMessage::create($text, new File($url)));
     }
 
-    public function sendLocation()
-    {
+    public function sendLocation() {
         // TODO: Implement sendLocation() method.
     }
 
-    public function sendPhone()
-    {
+    public function sendPhone() {
         // TODO: Implement sendPhone() method.
     }
 
@@ -182,8 +178,8 @@ class BotFrameworkComponentsStrategy implements IComponentsStrategy,IStrategy
      */
     protected function buildButtons(array $markup) {
         $buttons = [];
-        foreach($markup as $callback=>$title) {
-            if (in_array(parse_url($callback, PHP_URL_SCHEME), ['mailto', 'http', 'https','tel'])) {
+        foreach ($markup as $callback => $title) {
+            if (in_array(parse_url($callback, PHP_URL_SCHEME), ['mailto', 'http', 'https', 'tel'])) {
                 $buttons[] = [
                     "type" => "openUrl",
                     "title" => $title,

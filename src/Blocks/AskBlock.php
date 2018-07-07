@@ -6,8 +6,7 @@ namespace BotTemplateFramework\Blocks;
 use BotTemplateFramework\Prompt;
 use BotTemplateFramework\Results\AskResult;
 
-class AskBlock extends Block
-{
+class AskBlock extends Block {
 
     /**
      * @var AskResult
@@ -21,8 +20,7 @@ class AskBlock extends Block
      */
     protected $text;
 
-    public function __construct($name = null)
-    {
+    public function __construct($name = null) {
         parent::__construct('ask', $name);
     }
 
@@ -44,8 +42,7 @@ class AskBlock extends Block
      * @param Block|array $next
      * @return Block
      */
-    public function next($next)
-    {
+    public function next($next) {
         if ($next instanceof Block) {
             parent::next($next);
         } else {
@@ -55,8 +52,7 @@ class AskBlock extends Block
         return $this;
     }
 
-    public function toArray()
-    {
+    public function toArray() {
         $array = array_merge(parent::toArray(), [
             'content' => $this->text
         ]);
@@ -67,7 +63,7 @@ class AskBlock extends Block
 
         if ($this->prompts) {
             $array['next'] = [];
-            foreach($this->prompts as $prompt) {
+            foreach ($this->prompts as $prompt) {
                 /** @var Prompt $prompt */
                 $array['next'][$prompt->getText()] = $prompt->getNextBlock()->getName();
             }

@@ -3,7 +3,6 @@
 namespace BotTemplateFramework\Strategies;
 
 
-interface IStrategy
-{
+interface IStrategy {
     public function getBot();
 }

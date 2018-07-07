@@ -5,8 +5,7 @@ namespace BotTemplateFramework\Blocks;
 
 use BotTemplateFramework\Button;
 
-class ImageBlock extends Block
-{
+class ImageBlock extends Block {
 
     protected $url;
 
@@ -14,8 +13,7 @@ class ImageBlock extends Block
 
     protected $text;
 
-    public function __construct($name = null)
-    {
+    public function __construct($name = null) {
         parent::__construct('image', $name);
     }
 
@@ -38,8 +36,7 @@ class ImageBlock extends Block
         return $this;
     }
 
-    public function toArray()
-    {
+    public function toArray() {
         $array = parent::toArray();
 
         $content = [
@@ -52,7 +49,7 @@ class ImageBlock extends Block
 
         if ($this->buttons) {
             $content['buttons'] = [];
-            foreach($this->buttons as $button) {
+            foreach ($this->buttons as $button) {
                 /** @var Button $button */
                 $content['buttons'][$button->getCallback()] = $button->getTitle();
             }

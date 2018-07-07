@@ -27,7 +27,6 @@ abstract class Block implements \JsonSerializable {
     protected $drivers;
 
 
-
     public function __construct($type, $name = null) {
         if (is_null($name)) {
             $name = uniqid();
@@ -40,8 +39,7 @@ abstract class Block implements \JsonSerializable {
      * @param int $typing
      * @return Block
      */
-    public function typing($typing)
-    {
+    public function typing($typing) {
         $this->typing = $typing;
         return $this;
     }
@@ -50,8 +48,7 @@ abstract class Block implements \JsonSerializable {
      * @param mixed $locale
      * @return Block
      */
-    public function locale($locale)
-    {
+    public function locale($locale) {
         $this->locale = $locale;
         return $this;
     }
@@ -60,8 +57,7 @@ abstract class Block implements \JsonSerializable {
      * @param Block $next
      * @return Block
      */
-    public function next($next)
-    {
+    public function next($next) {
         $this->next = $next;
         return $this;
     }
@@ -83,8 +79,7 @@ abstract class Block implements \JsonSerializable {
      * @param array $template
      * @return Block
      */
-    public function template($template)
-    {
+    public function template($template) {
         $this->template = $template;
         return $this;
     }
@@ -115,8 +110,8 @@ abstract class Block implements \JsonSerializable {
 
         if ($this->drivers) {
             $array['drivers'] = '';
-            foreach($this->drivers as $driver) {
-                $array['drivers'] .= ($driver instanceof Driver ? strtolower($driver->getName()) : $driver).';';
+            foreach ($this->drivers as $driver) {
+                $array['drivers'] .= ($driver instanceof Driver ? strtolower($driver->getName()) : $driver) . ';';
             }
         }
 

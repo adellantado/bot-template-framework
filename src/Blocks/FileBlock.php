@@ -3,15 +3,13 @@
 namespace BotTemplateFramework\Blocks;
 
 
-class FileBlock extends Block
-{
+class FileBlock extends Block {
 
     protected $url;
 
     protected $text;
 
-    public function __construct($name = null)
-    {
+    public function __construct($name = null) {
         parent::__construct('file', $name);
     }
 
@@ -25,8 +23,7 @@ class FileBlock extends Block
         return $this;
     }
 
-    public function toArray()
-    {
+    public function toArray() {
         $array = parent::toArray();
 
         $content = [

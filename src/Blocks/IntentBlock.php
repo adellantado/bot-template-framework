@@ -6,8 +6,7 @@ namespace BotTemplateFramework\Blocks;
 use BotTemplateFramework\Prompt;
 use BotTemplateFramework\Results\IntentResult;
 
-class IntentBlock extends Block
-{
+class IntentBlock extends Block {
 
     const AMAZON_PROVIDER = "amazon";
 
@@ -20,8 +19,7 @@ class IntentBlock extends Block
     protected $result;
     protected $prompts;
 
-    public function __construct($name)
-    {
+    public function __construct($name) {
         parent::__construct($name);
         $this->type = 'intents';
     }
@@ -45,8 +43,7 @@ class IntentBlock extends Block
      * @param Block|Prompt[] $next
      * @return Block
      */
-    public function next($next)
-    {
+    public function next($next) {
         if ($next instanceof Block) {
             parent::next($next);
         } else {
@@ -57,8 +54,7 @@ class IntentBlock extends Block
     }
 
 
-    public function toArray()
-    {
+    public function toArray() {
         $array = parent::toArray();
         $array['provider'] = $this->provider;
         $array['content'] = $this->content;
@@ -69,7 +65,7 @@ class IntentBlock extends Block
 
         if ($this->prompts) {
             $array['next'] = [];
-            foreach($this->prompts as $prompt) {
+            foreach ($this->prompts as $prompt) {
                 /** @var Prompt $prompt */
                 $array['next'][$prompt->getText()] = $prompt->getNextBlock()->getName();
             }

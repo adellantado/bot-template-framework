@@ -10,8 +10,7 @@ use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\Question;
 
-class TemplateConversation extends Conversation
-{
+class TemplateConversation extends Conversation {
     use StrategyTrait;
 
     public $blockName;
@@ -39,10 +38,8 @@ class TemplateConversation extends Conversation
                 }
             }
         }
-        $this->ask($question, function(Answer $answer){
-            $this->engine->setStrategy(
-                $this->strategy($this->getBot())
-            );
+        $this->ask($question, function (Answer $answer) {
+            $this->engine->setStrategy($this->strategy($this->getBot()));
             $block = $this->engine->getBlock($this->blockName);
 
             if (array_key_exists('save', $block['result'])) {

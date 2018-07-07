@@ -4,15 +4,13 @@ namespace BotTemplateFramework\Strategies;
 
 use BotMan\BotMan\BotMan;
 
-trait StrategyTrait
-{
+trait StrategyTrait {
     /**
      * @var IComponentsStrategy
      */
     protected $strategy;
 
-    public function strategy(BotMan $bot)
-    {
+    public function strategy(BotMan $bot) {
         if ($this->strategy) {
             return $this->strategy;
         }
@@ -31,8 +29,8 @@ trait StrategyTrait
             'Viber',
             'Web'
         ])) {
-            $clazz = "App\\Strategies\\".$driveName;
-            $componentsStrategy = "BotTemplateFramework\\Strategies\\".$driveName."ComponentsStrategy";
+            $clazz = "App\\Strategies\\" . $driveName;
+            $componentsStrategy = "BotTemplateFramework\\Strategies\\" . $driveName . "ComponentsStrategy";
 
             $is_class_exists = class_exists($clazz);
             if ($is_class_exists) {

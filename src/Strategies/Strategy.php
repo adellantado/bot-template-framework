@@ -4,8 +4,7 @@ namespace BotTemplateFramework\Strategies;
 
 use \BotMan\BotMan\BotMan;
 
-abstract class Strategy implements IStrategy,IComponentsStrategy
-{
+abstract class Strategy implements IStrategy, IComponentsStrategy {
     /** @var BotMan IComponentsStrategy */
     protected $bot;
     /** @var  IComponentsStrategy */
@@ -62,28 +61,23 @@ abstract class Strategy implements IStrategy,IComponentsStrategy
         $this->componentsStrategy->sendCarousel($elements);
     }
 
-    public function sendAudio($url, $text = null)
-    {
+    public function sendAudio($url, $text = null) {
         $this->componentsStrategy->sendAudio($url, $text);
     }
 
-    public function sendVideo($url, $text = null)
-    {
+    public function sendVideo($url, $text = null) {
         $this->componentsStrategy->sendVideo($url, $text);
     }
 
-    public function sendFile($url, $text = null)
-    {
+    public function sendFile($url, $text = null) {
         $this->componentsStrategy->sendFile($url, $text);
     }
 
-    public function sendLocation()
-    {
+    public function sendLocation() {
         $this->componentsStrategy->sendLocation();
     }
 
-    public function sendPhone()
-    {
+    public function sendPhone() {
         $this->componentsStrategy->sendPhone();
     }
 

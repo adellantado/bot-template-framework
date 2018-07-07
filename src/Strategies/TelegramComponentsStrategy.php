@@ -16,8 +16,7 @@ use BotMan\Drivers\Telegram\Extensions\KeyboardButton;
 use Illuminate\Support\Collection;
 use Symfony\Component\HttpFoundation\Response;
 
-class TelegramComponentsStrategy implements IComponentsStrategy,IStrategy
-{
+class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
     protected $bot;
 
     public function __construct(BotMan $bot) {
@@ -37,8 +36,7 @@ class TelegramComponentsStrategy implements IComponentsStrategy,IStrategy
         if ($text) {
             $this->sendMenuAndImage($imageUrl, $text, []);
         } else {
-            $message = OutgoingMessage::create()
-                ->withAttachment(new Image($imageUrl));
+            $message = OutgoingMessage::create()->withAttachment(new Image($imageUrl));
             $this->reply($message);
         }
     }
@@ -49,14 +47,11 @@ class TelegramComponentsStrategy implements IComponentsStrategy,IStrategy
 
     public function sendMenuAndImage($imageUrl, $text, array $markup) {
         $recipient = $this->bot->getMessage()->getRecipient() === '' ? $this->bot->getMessage()->getSender() : $this->bot->getMessage()->getRecipient();
-        $this->bot->sendRequest('sendPhoto', array_merge(
-            [
-                'chat_id' => $recipient,
-                'photo' => $imageUrl,
-                'caption' => $text
-            ],
-            $this->buildMenu([$markup])
-        ));
+        $this->bot->sendRequest('sendPhoto', array_merge([
+            'chat_id' => $recipient,
+            'photo' => $imageUrl,
+            'caption' => $text
+        ], $this->buildMenu([$markup])));
     }
 
     public function sendList(array $elements, array $globalButton = null) {
@@ -80,10 +75,10 @@ class TelegramComponentsStrategy implements IComponentsStrategy,IStrategy
 
     protected function buildMenu(array $markup) {
         $menu = [];
-        foreach($markup as $submenu) {
+        foreach ($markup as $submenu) {
             $rows = [];
-            foreach($submenu as $callback=>$title) {
-                if (in_array(parse_url($callback, PHP_URL_SCHEME), ['mailto', 'http', 'https','tel'])) {
+            foreach ($submenu as $callback => $title) {
+                if (in_array(parse_url($callback, PHP_URL_SCHEME), ['mailto', 'http', 'https', 'tel'])) {
                     $rows[] = KeyboardButton::create($title)->url($callback);
                     continue;
                 }
@@ -101,14 +96,13 @@ class TelegramComponentsStrategy implements IComponentsStrategy,IStrategy
         ];
     }
 
-    public function sendCarousel(array $elements)
-    {
+    public function sendCarousel(array $elements) {
         $element = $elements[0];
-        $text = $element['title'].PHP_EOL;
+        $text = $element['title'] . PHP_EOL;
         if (array_key_exists('description', $element)) {
-            $text .= $element['description'].PHP_EOL;
+            $text .= $element['description'] . PHP_EOL;
         }
-        $text .= '[link]('.$element['url'].')';
+        $text .= '[link](' . $element['url'] . ')';
         if (array_key_exists('buttons', $element)) {
             /** @var Response $response */
             $response = $this->sendMenu($text, [
@@ -121,13 +115,13 @@ class TelegramComponentsStrategy implements IComponentsStrategy,IStrategy
         $data = json_decode($response->getContent(), true);
         $carouselButtonsLine = [];
         $carouselButtons = [];
-        $numberInLine = ceil(count($elements) / ceil(count($elements)/8));
-        foreach($elements as $index=>$element) {
+        $numberInLine = ceil(count($elements) / ceil(count($elements) / 8));
+        foreach ($elements as $index => $element) {
             if ($index % $numberInLine == 0) {
                 $carouselButtonsLine[] = $carouselButtons;
                 $carouselButtons = [];
             }
-            $carouselButtons['carousel_'.$data['result']['message_id'].'_'.$index] = $index+1;
+            $carouselButtons['carousel_' . $data['result']['message_id'] . '_' . $index] = $index + 1;
         }
 
         if ($carouselButtons) {
@@ -145,11 +139,11 @@ class TelegramComponentsStrategy implements IComponentsStrategy,IStrategy
      * @param $element
      */
     public function carouselSwitch(BotMan $bot, $messageId, $element) {
-        $text = $element['title'].PHP_EOL;
+        $text = $element['title'] . PHP_EOL;
         if (array_key_exists('description', $element)) {
-            $text .= $element['description'].PHP_EOL;
+            $text .= $element['description'] . PHP_EOL;
         }
-        $text .= '[link]('.$element['url'].')';
+        $text .= '[link](' . $element['url'] . ')';
 
         $payload = [
             'chat_id' => $bot->getUser()->getId(),
@@ -160,14 +154,14 @@ class TelegramComponentsStrategy implements IComponentsStrategy,IStrategy
 
         if (array_key_exists('buttons', $element)) {
             $buttons = [];
-            foreach($element['buttons'] as $callback=>$title) {
-                if (in_array(parse_url($callback, PHP_URL_SCHEME), ['mailto', 'http', 'https','tel'])) {
+            foreach ($element['buttons'] as $callback => $title) {
+                if (in_array(parse_url($callback, PHP_URL_SCHEME), ['mailto', 'http', 'https', 'tel'])) {
                     $buttons[] = KeyboardButton::create($title)->url($callback);
                     continue;
                 }
                 $buttons[] = KeyboardButton::create($title)->callbackData($callback);
             }
-            $payload['reply_markup'] =  json_encode([
+            $payload['reply_markup'] = json_encode([
                 'inline_keyboard' => [
                     $buttons
                 ],
@@ -177,32 +171,28 @@ class TelegramComponentsStrategy implements IComponentsStrategy,IStrategy
         }
 
         $bot->middleware->applyMiddleware('sending', $payload, [], function ($payload) {
-            return (new Curl())->post(TelegramDriver::API_URL.$this->bot->getDriver()->getConfig()->get('token').'/editMessageText', [], $payload);
+            return (new Curl())->post(TelegramDriver::API_URL . $this->bot->getDriver()->getConfig()->get('token') . '/editMessageText',
+                [], $payload);
         });
     }
 
-    public function sendAudio($url, $text = null)
-    {
+    public function sendAudio($url, $text = null) {
         $this->reply(OutgoingMessage::create($text, new Audio($url)));
     }
 
-    public function sendVideo($url, $text = null)
-    {
+    public function sendVideo($url, $text = null) {
         $this->reply(OutgoingMessage::create($text, new Video($url)));
     }
 
-    public function sendFile($url, $text = null)
-    {
+    public function sendFile($url, $text = null) {
         $this->reply(OutgoingMessage::create($text, new File($url)));
     }
 
-    public function sendLocation()
-    {
+    public function sendLocation() {
         // TODO: Implement sendLocation() method.
     }
 
-    public function sendPhone()
-    {
+    public function sendPhone() {
         // TODO: Implement sendPhone() method.
     }
 

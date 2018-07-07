@@ -3,15 +3,13 @@
 namespace BotTemplateFramework;
 
 
-class Button
-{
+class Button {
 
     protected $title;
 
     protected $callback;
 
-    public function __construct($title)
-    {
+    public function __construct($title) {
         $this->title = $title;
     }
 
