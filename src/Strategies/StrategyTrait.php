@@ -19,16 +19,22 @@ trait StrategyTrait {
     }
 
     public static function initStrategy(BotMan $bot) {
-        $driveName = $bot->getDriver()->getName();
+        $driver = $bot->getDriver();
+        $driveName = null;
 
-        if (in_array($driveName, [
-            'BotFramework',
-            'Facebook',
-            'Telegram',
-            'Slack',
-            'Viber',
-            'Web'
-        ])) {
+        if ($driver instanceof \BotMan\Drivers\BotFramework\BotFrameworkDriver) {
+            $driveName = 'BotFramework';
+        } elseif ($driver instanceof \BotMan\Drivers\Facebook\FacebookDriver) {
+            $driveName = 'Facebook';
+        } elseif ($driver instanceof \BotMan\Drivers\Telegram\TelegramDriver) {
+            $driveName = 'Telegram';
+        } elseif ($driver instanceof \TheArdent\Drivers\Viber\ViberDriver) {
+            $driveName = 'Viber';
+        } elseif ($driver instanceof \BotMan\Drivers\Web\WebDriver) {
+            $driveName = 'Web';
+        }
+
+        if ($driveName) {
             $clazz = "App\\Strategies\\" . $driveName;
             $componentsStrategy = "BotTemplateFramework\\Strategies\\" . $driveName . "ComponentsStrategy";
 
