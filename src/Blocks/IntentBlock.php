@@ -8,7 +8,8 @@ use BotTemplateFramework\Results\IntentResult;
 
 class IntentBlock extends Block {
 
-    const AMAZON_PROVIDER = "amazon";
+    const ALEXA_PROVIDER = "alexa";
+    const DIALOGFLOW_PROVIDER = "dialogflow";
 
     protected $provider;
     protected $content;
@@ -21,7 +22,7 @@ class IntentBlock extends Block {
 
     public function __construct($name) {
         parent::__construct($name);
-        $this->type = 'intents';
+        $this->type = 'intent';
     }
 
     public function provider($provider) {

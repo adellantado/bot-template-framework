@@ -3,9 +3,9 @@
 namespace BotTemplateFramework\Drivers;
 
 
-class AmazonDriver extends Driver {
+class AlexaDriver extends Driver {
     public function __construct() {
-        parent::__construct('Amazon');
+        parent::__construct('Alexa');
     }
 
 }

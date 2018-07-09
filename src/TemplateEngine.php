@@ -3,6 +3,7 @@
 namespace BotTemplateFramework;
 
 use BotMan\BotMan\Messages\Attachments\Location;
+use BotMan\BotMan\Middleware\ApiAi;
 use BotTemplateFramework\Strategies\StrategyTrait;
 use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Http\Curl;
@@ -128,8 +129,13 @@ class TemplateEngine {
                 $this->bot->hears('carousel_{messageId}_{index}', $this->getCallback($block, 'carousel_', $callback));
             }
 
-            if (array_key_exists('provider', $block) && $block['provider'] == 'amazon') {
-                $this->bot->hears($block['name'], $this->getCallback($block, 'reply_', $callback));
+            if ($block['type'] == 'intent') {
+                $command = $this->bot->hears($block['template'], $this->getCallback($block, 'reply_', $callback));
+                if ($block['provider'] == 'dialogflow') {
+                    $dialogflow = ApiAi::create($this->getDriver('dialogflow')['token'])->listenForAction();
+                    $this->bot->middleware->received($dialogflow);
+                    $command->middleware($dialogflow);
+                }
             }
         }
 
@@ -204,7 +210,7 @@ class TemplateEngine {
         } elseif ($type == 'carousel') {
             $this->strategy($this->bot)->sendCarousel($this->parseArray($content));
         } elseif ($type == 'location') {
-            $this->strategy($this->bot)->sendLocation($this->parseText($content));
+            $this->strategy($this->bot)->requireLocation($this->parseText($content));
         } elseif ($type == 'request') {
             $result = $this->executeRequest($block);
         } elseif ($type == 'method') {
@@ -212,7 +218,7 @@ class TemplateEngine {
         } elseif ($type == 'ask') {
             $this->executeAsk($block);
         } elseif ($type == 'intent') {
-            $this->executeIntent($block);
+            $result = $this->executeIntent($block);
         } else {
             throw new \Exception('Can\'t find any suitable block type');
         }
@@ -325,8 +331,8 @@ class TemplateEngine {
     }
 
     protected function executeIntent($block) {
-        if ($block['provider'] == 'amazon') {
-            $result = null;
+        $result = null;
+        if ($block['provider'] == 'alexa') {
             if (array_key_exists('result', $block) && array_key_exists('save', $block['result'])) {
                 $result = $this->bot->getMessage()->getExtras('slots');
                 $this->saveVariable($block['result']['save'], $result);
@@ -334,11 +340,19 @@ class TemplateEngine {
             if (array_key_exists('content', $block)) {
                 $this->bot->reply($this->parseText($block['content']));
             }
-
-            return $result;
+        } elseif ($block['provider'] == 'dialogflow') {
+            if (array_key_exists('result', $block) && array_key_exists('save', $block['result'])) {
+                $result = $this->bot->getMessage()->getExtras()['apiParameters'];
+                $this->saveVariable($block['result']['save'], $result);
+            }
+            if (array_key_exists('content', $block)) {
+                $this->bot->reply($this->parseText($block['content']));
+            } else {
+                $this->bot->reply($this->bot->getMessage()->getExtras()['apiReply']);
+            }
         }
 
-        return null;
+        return $result;
     }
 
     protected function getCallback($block, $prefix, $callback = null) {
