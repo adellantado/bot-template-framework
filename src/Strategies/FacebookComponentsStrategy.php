@@ -9,11 +9,13 @@ use BotMan\BotMan\Messages\Attachments\File;
 use BotMan\BotMan\Messages\Attachments\Image;
 use BotMan\BotMan\Messages\Attachments\Video;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
+use BotMan\BotMan\Messages\Outgoing\Question;
 use BotMan\Drivers\Facebook\Extensions\ButtonTemplate;
 use BotMan\Drivers\Facebook\Extensions\Element;
 use BotMan\Drivers\Facebook\Extensions\ElementButton;
 use BotMan\Drivers\Facebook\Extensions\GenericTemplate;
 use BotMan\Drivers\Facebook\Extensions\ListTemplate;
+use BotMan\Drivers\Facebook\Extensions\QuickReplyButton;
 use Mockery\CountValidator\Exception;
 
 class FacebookComponentsStrategy implements IComponentsStrategy, IStrategy {
@@ -102,12 +104,16 @@ class FacebookComponentsStrategy implements IComponentsStrategy, IStrategy {
         $this->reply(OutgoingMessage::create($text, new File($url)));
     }
 
-    public function sendLocation($text) {
-        // TODO: Implement sendLocation() method.
+    public function requireLocation($text) {
+        $this->reply(Question::create($text)->addAction(QuickReplyButton::create()->type('location')));
     }
 
-    public function sendPhone() {
-        // TODO: Implement sendPhone() method.
+    public function requirePhone($text) {
+        $this->reply(Question::create($text)->addAction(QuickReplyButton::create()->type('user_phone_number')));
+    }
+
+    public function requireEmail($text) {
+        $this->reply(Question::create($text)->addAction(QuickReplyButton::create()->type('user_email')));
     }
 
     /**

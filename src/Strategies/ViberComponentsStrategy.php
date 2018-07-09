@@ -78,11 +78,11 @@ class ViberComponentsStrategy implements IComponentsStrategy, IStrategy {
         $this->reply(OutgoingMessage::create($text, new File($url)));
     }
 
-    public function sendLocation($text) {
+    public function requireLocation($text) {
         // TODO: Implement sendLocation() method.
     }
 
-    public function sendPhone() {
+    public function requirePhone($text) {
         // TODO: Implement sendPhone() method.
     }
 

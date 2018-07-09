@@ -188,7 +188,7 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
         $this->reply(OutgoingMessage::create($text, new File($url)));
     }
 
-    public function sendLocation($text) {
+    public function requireLocation($text) {
         return $this->reply($text, [
             'reply_markup' => json_encode([
                 Keyboard::TYPE_KEYBOARD => [
@@ -201,8 +201,17 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
         ]);
     }
 
-    public function sendPhone() {
-        // TODO: Implement sendPhone() method.
+    public function requirePhone($text) {
+        return $this->reply($text, [
+            'reply_markup' => json_encode([
+                Keyboard::TYPE_KEYBOARD => [
+                    [[
+                        'request_contact' => true,
+                        'text' => 'Share Your Phone'
+                    ]]
+                ],
+            ])
+        ]);
     }
 
 
