@@ -168,10 +168,6 @@ class BotFrameworkComponentsStrategy implements IComponentsStrategy, IStrategy {
         // TODO: Implement sendLocation() method.
     }
 
-    public function requirePhone($text) {
-        // TODO: Implement sendPhone() method.
-    }
-
     /**
      * @param array $markup
      * @return array

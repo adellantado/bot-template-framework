@@ -25,6 +25,4 @@ interface IComponentsStrategy {
 
     public function requireLocation($text);
 
-    public function requirePhone($text);
-
 }

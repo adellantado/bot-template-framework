@@ -77,8 +77,4 @@ abstract class Strategy implements IStrategy, IComponentsStrategy {
         $this->componentsStrategy->requireLocation($text);
     }
 
-    public function requirePhone($text) {
-        $this->componentsStrategy->requirePhone($text);
-    }
-
 }
