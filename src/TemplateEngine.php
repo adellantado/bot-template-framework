@@ -2,6 +2,7 @@
 
 namespace BotTemplateFramework;
 
+use BotMan\BotMan\Messages\Attachments\Location;
 use BotTemplateFramework\Strategies\StrategyTrait;
 use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Http\Curl;
@@ -114,17 +115,21 @@ class TemplateEngine {
                 $templates = explode(';', $block['template']);
                 foreach ($templates as $template) {
                     if ($template) {
-                        $this->bot->hears($template, $this->getCallback($block, $callback));
+                        $this->bot->hears($template, $this->getCallback($block, 'reply_', $callback));
                     }
                 }
             }
 
+            if ($block['type'] == 'location') {
+                $this->bot->receivesLocation($this->getCallback($block, 'location_', $callback));
+            }
+
             if ($block['type'] == 'carousel' && $this->getDriverName() == 'telegram') {
-                $this->bot->hears('carousel_{messageId}_{index}', [$this, 'carousel_' . $block['name']]);
+                $this->bot->hears('carousel_{messageId}_{index}', $this->getCallback($block, 'carousel_', $callback));
             }
 
             if (array_key_exists('provider', $block) && $block['provider'] == 'amazon') {
-                $this->bot->hears($block['name'], $this->getCallback($block, $callback));
+                $this->bot->hears($block['name'], $this->getCallback($block, 'reply_', $callback));
             }
         }
 
@@ -144,6 +149,15 @@ class TemplateEngine {
             $blockName = preg_replace('/_+/', ' ', $matches[1]);
             $element = $this->getBlock($blockName)['content'][$arguments[2]];
             $this->strategy($this->bot)->carouselSwitch($this->bot, $arguments[1], $element);
+        } elseif (preg_match('/location_(.*)/', $name, $matches)) {
+            $blockName = preg_replace('/_+/', ' ', $matches[1]);
+            $block = $this->getBlock($blockName);
+            /** @var Location $location */
+            $location = $arguments[1];
+            $this->saveVariable($block['result']['save'], json_encode([
+                'latitude'=> $location->getLatitude(),
+                'longitude'=> $location->getLongitude()
+            ]));
         }
     }
 
@@ -327,9 +341,12 @@ class TemplateEngine {
         return null;
     }
 
-    protected function getCallback($block, $callback = null) {
+    protected function getCallback($block, $prefix, $callback = null) {
+        if ($callback) {
+            return $callback;
+        }
         $blockName = preg_replace('/\s+/', '_', $block['name']);
-        return $callback ? $callback : [$this, 'reply_' . $blockName];
+        return [$this, $prefix . $blockName];
     }
 
     protected function hearFallback() {

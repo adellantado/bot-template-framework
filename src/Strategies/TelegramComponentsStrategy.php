@@ -190,11 +190,14 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
 
     public function sendLocation($text) {
         return $this->reply($text, [
-            'reply_markup' => [
-                Keyboard::TYPE_INLINE => [
-                    KeyboardButton::create('Share Your Location')->requestLocation()
+            'reply_markup' => json_encode([
+                Keyboard::TYPE_KEYBOARD => [
+                    [[
+                        'request_location' => true,
+                        'text' => 'Share Your Location'
+                    ]]
                 ],
-            ]
+            ])
         ]);
     }
 
