@@ -90,7 +90,7 @@ class TemplateEngine {
 
 
     public function getDriver($name) {
-        return array_values(array_filter($this->template['drivers'], function ($driver, $index) use ($name) {
+        return array_values(array_filter($this->template['drivers'], function ($driver) use ($name) {
             return strtolower($driver['name']) == strtolower($name);
         }))[0];
     }
