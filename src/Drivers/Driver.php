@@ -8,12 +8,18 @@ abstract class Driver implements \JsonSerializable {
 
     protected $config;
 
+    protected $events;
+
     public function __construct($name) {
         $this->name = $name;
     }
 
     public function getName() {
         return $this->name;
+    }
+
+    public function events($array) {
+        $this->events = $array;
     }
 
     /**
@@ -35,6 +41,10 @@ abstract class Driver implements \JsonSerializable {
         $array = [
             'name' => $this->name
         ];
+
+        if ($this->events) {
+            $array['events'] = $this->events;
+        }
 
         if ($this->config) {
             $array['config'] = "true";

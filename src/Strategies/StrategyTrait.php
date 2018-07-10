@@ -19,20 +19,7 @@ trait StrategyTrait {
     }
 
     public static function initStrategy(BotMan $bot) {
-        $driver = $bot->getDriver();
-        $driveName = null;
-
-        if ($driver instanceof \BotMan\Drivers\BotFramework\BotFrameworkDriver) {
-            $driveName = 'BotFramework';
-        } elseif ($driver instanceof \BotMan\Drivers\Facebook\FacebookDriver) {
-            $driveName = 'Facebook';
-        } elseif ($driver instanceof \BotMan\Drivers\Telegram\TelegramDriver) {
-            $driveName = 'Telegram';
-        } elseif ($driver instanceof \TheArdent\Drivers\Viber\ViberDriver) {
-            $driveName = 'Viber';
-        } elseif ($driver instanceof \BotMan\Drivers\Web\WebDriver) {
-            $driveName = 'Web';
-        }
+        $driveName = self::driverName($bot);
 
         if ($driveName) {
             $clazz = "App\\Strategies\\" . $driveName;
@@ -50,5 +37,25 @@ trait StrategyTrait {
             return $instance;
         }
         return null;
+    }
+
+    public static function driverName(BotMan $bot) {
+        $driver = $bot->getDriver();
+        $driveName = null;
+        if ($driver instanceof \BotMan\Drivers\BotFramework\BotFrameworkDriver) {
+            $driveName = 'BotFramework';
+        } elseif ($driver instanceof \BotMan\Drivers\Facebook\FacebookDriver) {
+            $driveName = 'Facebook';
+        } elseif ($driver instanceof \BotMan\Drivers\Telegram\TelegramDriver) {
+            $driveName = 'Telegram';
+        } elseif ($driver instanceof \TheArdent\Drivers\Viber\ViberDriver) {
+            $driveName = 'Viber';
+        } elseif ($driver instanceof \BotMan\Drivers\Web\WebDriver) {
+            $driveName = 'Web';
+        } elseif ($driver instanceof \BotMan\Drivers\AmazonAlexa\AmazonAlexaDriver) {
+            $driveName = 'Alexa';
+        }
+        return $driveName;
+
     }
 }

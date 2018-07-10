@@ -74,12 +74,7 @@ class TemplateEngine {
     }
 
     public function getDriverName() {
-        return strtolower($this->bot->getDriver()->getName());
-    }
-
-    public function setStrategy($strategy) {
-        $this->strategy = $strategy;
-        return $this;
+        return strtolower(self::driverName($this->bot));
     }
 
     public function getDrivers() {
@@ -116,26 +111,33 @@ class TemplateEngine {
                 $templates = explode(';', $block['template']);
                 foreach ($templates as $template) {
                     if ($template) {
-                        $this->bot->hears($template, $this->getCallback($block, 'reply_', $callback));
+                        $this->bot->hears($template, $this->getCallback($block['name'], 'reply_', $callback));
                     }
                 }
             }
 
             if ($block['type'] == 'location') {
-                $this->bot->receivesLocation($this->getCallback($block, 'location_', $callback));
+                $this->bot->receivesLocation($this->getCallback($block['name'], 'location_', $callback));
             }
 
             if ($block['type'] == 'carousel' && $this->getDriverName() == 'telegram') {
-                $this->bot->hears('carousel_{messageId}_{index}', $this->getCallback($block, 'carousel_', $callback));
+                $this->bot->hears('carousel_{messageId}_{index}', $this->getCallback($block['name'], 'carousel_', $callback));
             }
 
             if ($block['type'] == 'intent') {
-                $command = $this->bot->hears($block['template'], $this->getCallback($block, 'reply_', $callback));
+                $command = $this->bot->hears($block['template'], $this->getCallback($block['name'], 'reply_', $callback));
                 if ($block['provider'] == 'dialogflow') {
                     $dialogflow = ApiAi::create($this->getDriver('dialogflow')['token'])->listenForAction();
                     $this->bot->middleware->received($dialogflow);
                     $command->middleware($dialogflow);
                 }
+            }
+        }
+
+        $driver = $this->getDriver($this->getDriverName());
+        if (array_key_exists('events', $driver)) {
+            foreach ($driver['events'] as $event=>$blockName) {
+                $this->bot->on($event, $this->getCallback($blockName, 'reply_', $callback));
             }
         }
 
@@ -355,11 +357,11 @@ class TemplateEngine {
         return $result;
     }
 
-    protected function getCallback($block, $prefix, $callback = null) {
+    protected function getCallback($blockName, $prefix, $callback = null) {
         if ($callback) {
             return $callback;
         }
-        $blockName = preg_replace('/\s+/', '_', $block['name']);
+        $blockName = preg_replace('/\s+/', '_', $blockName);
         return [$this, $prefix . $blockName];
     }
 
