@@ -16,7 +16,7 @@ use BotMan\Drivers\Facebook\Extensions\ElementButton;
 use BotMan\Drivers\Facebook\Extensions\GenericTemplate;
 use BotMan\Drivers\Facebook\Extensions\ListTemplate;
 use BotMan\Drivers\Facebook\Extensions\QuickReplyButton;
-use Mockery\CountValidator\Exception;
+use Exception;
 
 class FacebookComponentsStrategy implements IComponentsStrategy, IStrategy {
     protected $bot;
@@ -70,7 +70,13 @@ class FacebookComponentsStrategy implements IComponentsStrategy, IStrategy {
         $template = GenericTemplate::create()->addImageAspectRatio(GenericTemplate::RATIO_SQUARE);
 
         foreach ($elements as $item) {
-            $element = Element::create($item['title'])->subtitle($item['description'])->image($item['url'])->addButtons($this->buildButtons($item['buttons']));
+            $element = Element::create($item['title'])->image($item['url']);
+            if (array_key_exists('description', $item)) {
+                $element->subtitle($item['description']);
+            }
+            if (array_key_exists('buttons', $item)) {
+                $element->addButtons($this->buildButtons($item['buttons']));
+            }
             $template->addElement($element);
         }
         $this->reply($template);
@@ -86,7 +92,13 @@ class FacebookComponentsStrategy implements IComponentsStrategy, IStrategy {
         }
 
         foreach ($elements as $item) {
-            $element = Element::create($item['title'])->subtitle($item['description'])->image($item['url'])->addButtons($this->buildButtons($item['buttons']));
+            $element = Element::create($item['title'])->image($item['url']);
+            if (array_key_exists('description', $item)) {
+                $element->subtitle($item['description']);
+            }
+            if (array_key_exists('buttons', $item)) {
+                $element->addButtons($this->buildButtons($item['buttons']));
+            }
             $list->addElement($element);
         }
         $this->reply($list);
