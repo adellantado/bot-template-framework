@@ -254,12 +254,16 @@ class TemplateEngine {
 
     public function getVariable($name) {
         switch ($name) {
+            case 'user.id':
+                return $this->bot->getUser()->getId();
             case 'user.firstName':
                 return $this->bot->getUser()->getFirstName();
             case 'user.lastName':
                 return $this->bot->getUser()->getLastName();
             case 'bot.name':
                 return $this->getBotName();
+            case 'bot.driver':
+                return self::driverName($this->bot);
         }
 
         return $this->storage->get($name);
