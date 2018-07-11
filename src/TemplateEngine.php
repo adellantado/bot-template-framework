@@ -4,7 +4,6 @@ namespace BotTemplateFramework;
 
 use BotMan\BotMan\Messages\Attachments\Location;
 use BotMan\BotMan\Middleware\ApiAi;
-use BotMan\BotMan\Storages\Storage;
 use BotTemplateFramework\Strategies\StrategyTrait;
 use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Http\Curl;
@@ -21,11 +20,6 @@ class TemplateEngine {
      * @var BotMan
      */
     protected $bot;
-
-    /**
-     * @var Storage
-     */
-    protected $storage;
 
     public static function getConfig($template, $config = []) {
         if (is_string($template)) {
@@ -54,7 +48,6 @@ class TemplateEngine {
     public function __construct($template, BotMan $bot) {
         $this->bot = $bot;
         $this->setTemplate($template);
-        $this->storage = $bot->userStorage();
     }
 
     public function getTemplate() {
@@ -247,9 +240,9 @@ class TemplateEngine {
         if (preg_match_all('/{{(.+?)}}/', $name, $matches)) {
             $name = $matches[1][0];
         }
-        $data = $this->storage->find()->toArray();
+        $data = $this->bot->userStorage()->find()->toArray();
         $data[$name] = $value;
-        $this->storage->save($data);
+        $this->bot->userStorage()->save($data);
     }
 
     public function getVariable($name) {
@@ -266,7 +259,7 @@ class TemplateEngine {
                 return self::driverName($this->bot);
         }
 
-        return $this->storage->get($name);
+        return $this->bot->userStorage()->get($name);
     }
 
     public function parseText($text) {
@@ -420,8 +413,7 @@ class TemplateEngine {
     public function __sleep() {
         return [
             'template',
-            'bot',
-            'storage'
+            'bot'
         ];
     }
 }
