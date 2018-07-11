@@ -4,10 +4,13 @@ namespace BotTemplateFramework\Strategies;
 
 
 use BotMan\BotMan\BotMan;
-use App\BotMan\viber\ViberCarouselTemplate;
-use App\BotMan\viber\ViberMenuTemplate;
+use BotMan\BotMan\Messages\Attachments\Audio;
+use BotMan\BotMan\Messages\Attachments\File;
 use BotMan\BotMan\Messages\Attachments\Image;
+use BotMan\BotMan\Messages\Attachments\Video;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
+use BotTemplateFramework\Distinct\Viber\ViberCarouselTemplate;
+use BotTemplateFramework\Distinct\Viber\ViberMenuTemplate;
 use TheArdent\Drivers\Viber\Extensions\KeyboardTemplate;
 use TheArdent\Drivers\Viber\Extensions\PictureTemplate;
 
