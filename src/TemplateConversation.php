@@ -3,7 +3,6 @@
 namespace BotTemplateFramework;
 
 
-use BotTemplateFramework\Strategies\StrategyTrait;
 use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
@@ -11,7 +10,6 @@ use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\Question;
 
 class TemplateConversation extends Conversation {
-    use StrategyTrait;
 
     public $blockName;
 
@@ -39,7 +37,6 @@ class TemplateConversation extends Conversation {
             }
         }
         $this->ask($question, function (Answer $answer) {
-            $this->engine->setStrategy($this->strategy($this->getBot()));
             $block = $this->engine->getBlock($this->blockName);
 
             if (array_key_exists('save', $block['result'])) {

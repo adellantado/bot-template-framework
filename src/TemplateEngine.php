@@ -4,6 +4,7 @@ namespace BotTemplateFramework;
 
 use BotMan\BotMan\Messages\Attachments\Location;
 use BotMan\BotMan\Middleware\ApiAi;
+use BotTemplateFramework\Builder\Template;
 use BotTemplateFramework\Strategies\StrategyTrait;
 use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Http\Curl;
