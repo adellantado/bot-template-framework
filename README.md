@@ -391,9 +391,76 @@ Save variables with 'result.save' field with request, ask, intent blocks
 
 <h2>Results</h2>
 
+   There are 4 blocks which returns result: `location`, `request`, `ask`, `intent`
+    
+   For each you can apply 
+   
+        "result": {
+			"save": "{{my_variable}}"
+	    },
+	    
+   Three of them could have `next` field impacted depends on result value:
+   
+   E.g. In this example triggers block `Type Phone Block` then result is `yes` string value,
+   triggers `Ask Email Block` - when result is `no` and when neither `yes` nor `no`:
+   
+        "next": {
+		    "yes": "Type Phone Block",
+			"no": "Ask Email Block",
+			"fallback": "Ask Email Block"
+	    }
+    
+   note: for the `intent` block result is an entity value (dialogflow) or a slot value (alexa)
+   
+<h3>Ask Result</h3>
+
+   Use `prompt` field to add quick buttons and simplify reply for user, like in the example below:
+    
+        {
+			"name": "Ask Phone",
+			"type": "ask",
+			"content": "Can you left us your phone to contant you only in case of urgency?",
+			"result": {
+				"prompt": "yes;no"
+			},
+			"next": {
+				"yes": "Type Phone Block",
+				"no": "Ask Email Block",
+				"fallback": "Ask Email Block"
+			}
+		}
+   
+<h3>Request Result</h3>
+
+   Use `field` field to quickly pull data from json response, like here:
+
+        {
+			"name": "Tell a joke",
+			"type": "request",
+			"method": "GET",
+			"url": "http://api.icndb.com/jokes/random",
+			"result": {
+				"field": "value.joke",
+				"save": "{{joke}}"
+			},
+			"template": "Tell a joke;Joke;Do you know some jokes?"
+		}
+    
+
+   Response looks like this:
+    
+         { 
+            "type": "success", 
+            "value": {
+                "id": 495, 
+                "joke": "Chuck Norris doesn't needs try-catch, exceptions are too afraid to raise.", 
+                "categories": ["nerdy"] 
+            } 
+        }
+
 <h2>Builder</h2>
 
-   Using builder is straight-forward, below is an example of simple chatbot:
+   Using builder is a straight-forward, below is an example of simple chatbot:
 
         $template = (new Template('Beedevs Chatbot'))
             ->addDrivers([
@@ -481,5 +548,5 @@ Save variables with 'result.save' field with request, ask, intent blocks
         // Start listening
         $botman->listen();
         
-  Inside, engine, just converts it to array similar to json you already use to, but with builder your 
+  Inside, engine, just converts it to an array similar to json you already used to, but with builder your 
   abilities leveling up with convenience and speed of development.
