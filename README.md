@@ -332,9 +332,10 @@ Every block extends abstract block, which has next properties:
 
 <h2>Drivers</h2>
 
+   Before using driver in here, first you need to install proper driver for Botman.
    Available drivers are next:
    
-        facebook, telegram, skype, dialogflow, alexa, web
+        Facebook, Telegram, Skype, Dialogflow, Alexa, Web
    
    Example:
     
@@ -382,12 +383,103 @@ Use variables with figure brackets
 Save variables with 'result.save' field with request, ask, intent blocks
 
 <h3>Predefined variables</h3>
- - {{user.id}}
- - {{user.firstName}}
- - {{user.lastName}}
- - {{bot.name}}
+ - {{user.id}}<br>
+ - {{user.firstName}}<br>
+ - {{user.lastName}}<br>
+ - {{bot.name}}<br>
  - {{bot.driver}}
 
 <h2>Results</h2>
 
 <h2>Builder</h2>
+
+   Using builder is straight-forward, below is an example of simple chatbot:
+
+        $template = (new Template('Beedevs Chatbot'))
+            ->addDrivers([
+                new TelegramDriver('123123wefwef:wefonwewerwerwerw')
+            ])
+            ->addFallbackMessage('This is default message')
+            ->addBlocks([
+
+                (new TextBlock())
+                    ->text('Hi! Welcome to beedevs chatbot')
+                    ->template([
+                        'Hello',
+                        'Hi',
+                        'What\'s up',
+                        'Good day'
+                    ])->typing(1)
+                    ->next(
+                        $about = (new ImageBlock())
+                            ->url('https://pbs.twimg.com/profile_images/799239637684355072/SGIDpffc_400x400.jpg')
+                            ->buttons([
+                                (new Button('Visit'))->url("https://beedevs.com")
+                            ])
+                            ->text('Beedevs is a chatbot development studio. Want to know more? Visit our website!')
+                            ->template([
+                                'About'
+                            ])
+                    ),
+
+                $about,
+
+                (new RequestBlock())
+                    ->url('http://api.icndb.com/jokes/random')
+                    ->method('GET')
+                    ->result((new RequestResult())
+                        ->field(['value', 'joke'])
+                        ->save('{{joke}}')
+                    )->template([
+                        'Tell a joke',
+                        'Joke',
+                        'Do you know some jokes?'
+                    ])
+                    ->next(
+                        $joke = (new TextBlock())
+                            ->text('{{joke}}')
+                            ->typing(1)
+                    ),
+
+                $joke,
+
+                (new MenuBlock())
+                    ->text('Menu')
+                    ->buttons([
+                        (new Button('Website'))->url("https://beedevs.com"),
+                        (new Button('About'))->callback('About')
+                    ])
+                    ->template([
+                        'Show menu',
+                        'Menu',
+                        'Main menu'
+                    ]),
+
+                (new ListBlock())->items([
+                    (new ListItem('ListItem1', 'https://static.addtoany.com/images/dracaena-cinnabari.jpg'))
+                        ->buttons([
+                            (new Button('About'))->callback('About')
+                        ])
+                        ->description('National Park'),
+                    (new ListItem('ListItem2', 'https://cloud.google.com/blog/big-data/2016/12/images/148114735559140/image-classification-1.png'))
+                        ->buttons([
+                            (new Button('About'))->callback('About')
+                        ])
+                        ->description('Sunflower fields at summer time')
+                ])->template([
+                    'List',
+                    'Show list'
+                ])
+
+            ]);
+            
+   And then just insert your `$template` into engine, like that:
+   
+        $templateEngine = new TemplateEngine($template, $botman);
+        $templateEngine->listen();
+                
+        // Start listening
+        $botman->listen();
+        
+  Inside, engine, just converts it to array similar to json you already use to, but with builder your 
+  abilities leveling up with convenience and speed of development.
