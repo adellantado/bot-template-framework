@@ -83,15 +83,15 @@ Every block extends abstract block, which has next properties:
 		},
 
 
-   `name` - (required) name of the block, uses to identify blocks;
-   `type` - (required) type of the block (e.g. image, text ..);
-   `content` - (required) data to sent into chat;
-   `template` - (optional) identify key phrases which chatbot react to (see $botman->hear());
-   `typing` - (optional) shows typing effect in chat before running the block;
+   `name` - (required) name of the block, uses to identify blocks;<br>
+   `type` - (required) type of the block (e.g. image, text ..);<br>
+   `content` - (required) data to sent into chat;<br>
+   `template` - (optional) identify key phrases which chatbot react to (see $botman->hear());<br>
+   `typing` - (optional) shows typing effect in chat before running the block;<br>
    `drivers` - (optional) exclude/include block from execution for some drivers (e.g. 'any' or '*' - runs for all drivers,
-        'facebook;telegram' - runs for telegram and facebook, 'any;!telegram' - runs for any driver, except telegram);
+        'facebook;telegram' - runs for telegram and facebook, 'any;!telegram' - runs for any driver, except telegram);<br>
    `locale` - (optional) assigns block to particular locale, works like namespaces. e.g. you describe blocks with 
-        locale 'en' and then copy them translated with locale 'ge';
+        locale 'en' and then copy them translated with locale 'ge';<br>
    `next` - (optional) name of the next block to execute in chain
 
 
@@ -127,8 +127,8 @@ Every block extends abstract block, which has next properties:
     		"template": "Show me the logo"
         }
        
-   `url` - (required) image url;
-   `text` - (optional) image description;
+   `url` - (required) image url;<br>
+   `text` - (optional) image description;<br>
    `buttons` - (optional) adds buttons under image;
    
    note: learn about menu block
@@ -169,8 +169,8 @@ Every block extends abstract block, which has next properties:
             {                                                     This is a simple menu
                 "https://website.com/": "Visit Website"   ==>     ---------------------
             },{                                                   |   Visit Website   |
-                                                                  ---------------------
-            }   "Ask Support": "Ask Support"                      |    Ask Support    |
+                "Ask Support": "Ask Support"                      ---------------------
+            }                                                     |    Ask Support    |
          ]                                                        ---------------------
                                                                 
    E.g. Facebook - has 3 only buttons in one menu.
@@ -189,7 +189,7 @@ Every block extends abstract block, which has next properties:
     		} 
     	}
 
-   `url` - (required) file, video or audio link;
+   `url` - (required) file, video or audio link;<br>
    `text` - (optional) description;
 
 <h3>Location Block</h3>
@@ -206,7 +206,7 @@ Every block extends abstract block, which has next properties:
 			}
 		}
 		
-   `content` - (required) description;
+   `content` - (required) description;<br>
    `result.save` - (required) save data in json {latitude:.., longitude: ..} to variable;
    
    note: learn about variables
@@ -258,7 +258,7 @@ Every block extends abstract block, which has next properties:
 			"template": "Tell a joke;Joke;Do you know some jokes?"
 		}
 		
-   `result.field` - (optional) read the data from the result;
+   `result.field` - (optional) read the data from the result;<br>
    `result.save` - (optional) save result to variable;
    
    note: learn about variables
@@ -281,7 +281,7 @@ Every block extends abstract block, which has next properties:
 			}
 		}
 		
-   `result.prompt` - (optional) shows quick buttons;
+   `result.prompt` - (optional) shows quick buttons;<br>
    `next.<user answer>` - (optional) depends on user answer, run next block 
         ('fallback' - reserved for any answer which are not in the list).
         
@@ -298,8 +298,8 @@ Every block extends abstract block, which has next properties:
 			"content": "well done"
 		}
 		
-   `provider` - (required) could be 'alexa' or 'dialogflow';
-   `template` - (required) intent name for alexa, action name for dialogflow;
+   `provider` - (required) could be 'alexa' or 'dialogflow';<br>
+   `template` - (required) intent name for alexa, action name for dialogflow;<br>
    `content` - (required (alexa) | option (dialogflow)) answer into the chat;
    
    note: you should use amazon alexa console or dialogflow console to have 
@@ -356,11 +356,11 @@ Every block extends abstract block, which has next properties:
             }
         ]
 
-   `name` - (required) Name of the driver
+   `name` - (required) Name of the driver<br>
    `token` - (require|optional) token for telegram, viber, dialogflow.
            Fields: verification, token, appSecret - for facebook; 
-           appId, appKey - for skype.
-   `config` - (optional) shows that fields should be read from env()
+           appId, appKey - for skype.<br>
+   `config` - (optional) shows that fields should be read from env()<br>
    `events` - (optional) blocks triggers by event. 
            E.g. on "delivery" event in facebook, trigger block with
            name "BlockExecOnDeliveryEvent". See events in Botman.
