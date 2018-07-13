@@ -152,10 +152,10 @@ class TemplateEngine {
             $block = $this->getBlock($blockName);
             /** @var Location $location */
             $location = $arguments[1];
-            $this->saveVariable($block['result']['save'], json_encode([
+            $this->saveVariable($block['result']['save'], [
                 'latitude'=> $location->getLatitude(),
                 'longitude'=> $location->getLongitude()
-            ]));
+            ]);
         }
     }
 
@@ -237,6 +237,9 @@ class TemplateEngine {
     }
 
     public function saveVariable($name, $value) {
+        if (is_array($value)) {
+            $value = json_encode($value);
+        }
         $matches = [];
         if (preg_match_all('/{{(.+?)}}/', $name, $matches)) {
             $name = $matches[1][0];
@@ -260,7 +263,33 @@ class TemplateEngine {
                 return self::driverName($this->bot);
         }
 
-        return $this->bot->userStorage()->get($name);
+        if ($value = $this->bot->userStorage()->get($name)) {
+            return $value;
+        }
+
+
+        $keys = explode('.', $name);
+        if ($keys) {
+            $value = $this->bot->userStorage()->get($keys[0]);
+            if (count($keys) > 1) {
+                if ($res = json_decode($value, true)) {
+                    $value = $res;
+                    try {
+                        for($i = 1; $i < count($keys); $i++) {
+                            $value = $value[$keys[$i]];
+                        }
+                    } catch(\Exception $e) {
+                        $value = '';
+                    }
+                } else {
+                    $value = '';
+                }
+            }
+        } else {
+            $value = '';
+        }
+
+        return $value;
     }
 
     public function parseText($text) {
@@ -284,6 +313,19 @@ class TemplateEngine {
         return $array;
     }
 
+    protected function getSubVariable(string $name, array $data) {
+        $value = '';
+        $keys = explode('.', $name);
+        try {
+            foreach($keys as $name) {
+                $data = $data[$name];
+            }
+            $value = is_string($data) ? $data : '';
+        } catch(\Exception $e) {
+        }
+        return $value;
+    }
+
     protected function executeRequest($block) {
         $response = null;
         try {
@@ -302,21 +344,16 @@ class TemplateEngine {
         }
 
         if ($response && $response->getStatusCode() == 200) {
-            $body = json_decode($response->getContent(), true);
+            $result = json_decode($response->getContent(), true);
             if (array_key_exists('field', $block['result'])) {
-                $fields = explode('.', $block['result']['field']);
-                foreach ($fields as $field) {
-                    if ($body) {
-                        $body = $body[$field];
-                    }
-                }
+                $result = $this->getSubVariable($block['result']['field'], $result);
             }
 
             if (array_key_exists('save', $block['result'])) {
-                $this->saveVariable($block['result']['save'], $body);
+                $this->saveVariable($block['result']['save'], $result);
             }
 
-            return $body;
+            return $result;
         }
 
         return null;
@@ -331,17 +368,37 @@ class TemplateEngine {
     protected function executeIntent($block) {
         $result = null;
         if ($block['provider'] == 'alexa') {
-            if (array_key_exists('result', $block) && array_key_exists('save', $block['result'])) {
-                $result = $this->bot->getMessage()->getExtras('slots');
-                $this->saveVariable($block['result']['save'], $result);
+            if (array_key_exists('result', $block)) {
+                $slots = $this->bot->getMessage()->getExtras('slots');
+                $result = [];
+                foreach($slots as $slot) {
+                    $result[$slot['name']] = $slot['value'];
+                }
+
+                if (array_key_exists('field', $block['result'])) {
+                    $result = $this->getSubVariable($block['result']['field'], $result);
+                }
+
+                if (array_key_exists('save', $block['result'])) {
+                    $this->saveVariable($block['result']['save'], $result);
+                }
+
             }
             if (array_key_exists('content', $block)) {
                 $this->bot->reply($this->parseText($block['content']));
             }
         } elseif ($block['provider'] == 'dialogflow') {
-            if (array_key_exists('result', $block) && array_key_exists('save', $block['result'])) {
+            if (array_key_exists('result', $block)) {
                 $result = $this->bot->getMessage()->getExtras()['apiParameters'];
-                $this->saveVariable($block['result']['save'], $result);
+
+                if (array_key_exists('field', $block['result'])) {
+                    $result = $this->getSubVariable($block['result']['field'], $result);
+                }
+
+                if (array_key_exists('save', $block['result'])) {
+                    $this->saveVariable($block['result']['save'], $result);
+                }
+
             }
             if (array_key_exists('content', $block)) {
                 $this->bot->reply($this->parseText($block['content']));

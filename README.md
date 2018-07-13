@@ -318,13 +318,25 @@ Every block extends abstract block, which has next properties:
 			"name": "AlexaTest",
 			"provider": "alexa",
 			"type": "intent",
-			"template": "MyIntent",
-			"content": "well done"
+			"template": "BeverageIntent",
+			"content": "well done",
+			"result": {
+			    "field": "beverage",
+			    "save": "{{user_beverage}}"
+			},
+			"next": {
+			    "coffee": "Coffee Card Block",
+			    "tea": "Tea Card Block",
+			    "default": "Repeat Question Block"
+			}
 		}
 		
    `provider` - (required) could be 'alexa' or 'dialogflow';<br>
    `template` - (required) intent name for alexa, action name for dialogflow;<br>
-   `content` - (required (alexa) | option (dialogflow)) answer into the chat;
+   `content` - (required (alexa) | option (dialogflow)) answer into the chat;<br>
+   `result.field` - (optional) entity or slot name;<br>
+   `result.save` - (optional) saves entity or slot value;<br>
+   `next.<entity_value>` - (optional) triggers next block by entity or slot value;
    
    note: you should use amazon alexa console or dialogflow console to have 
         this block running
@@ -434,7 +446,7 @@ Save variables with 'result.save' field with request, ask, intent blocks
 			"fallback": "Ask Email Block"
 	    }
     
-   note: for the `intent` block result is an entity value (dialogflow) or a slot value (alexa)
+   note: for the `intent` block result is an entity value (dialogflow) or a slot value (alexa), which name set with `field` field
    
 <h3>Ask Result</h3>
 
