@@ -1,4 +1,4 @@
-<h1>Bot Template Platform</h1>
+<h1>Bot Template Framework</h1>
 
 Allows to simplify chatbot development using Botman. 
 With one scenario file you can make your bot working.
