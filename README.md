@@ -3,6 +3,30 @@
 Allows to simplify chatbot development using Botman. 
 With one scenario file you can make your bot working.
 
+E.g. Simple Telegram Hello World chatbot:
+
+        {
+            "name": "Hello World Chatbot",
+             "fallback": {
+                "name": "Hello Block",
+                "type": "block"
+             },
+             "blocks": [
+                {
+                    "name": "Hello Block",
+                    "type": "text",
+                    "content": "Hello World!"
+                    "template": "Hi;Hello;What's up;Good day;/start"
+                }
+             ], 
+             "drivers": [
+                {
+                    "name": "Telegram",
+                    "token": "590000000:AAHp5XAGrpIyZynnIjcLKJSwUpPu0b1FXEY"
+                }
+             ]
+        }
+
 <h2>Usage</h2>
 
 1. Install package with composer:
@@ -352,7 +376,7 @@ Every block extends abstract block, which has next properties:
                 "config": "true",
                 "events": {
                     "delivery": "BlockExecOnDeliveryEvent",
-                    "read": "BlockExecOnDeliveryEvent"
+                    "read": "BlockExecOnReadEvent"
                 }
             }
         ]
