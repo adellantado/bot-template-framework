@@ -6,6 +6,7 @@ namespace BotTemplateFramework\Strategies;
 use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Messages\Attachments\Audio;
 use BotMan\BotMan\Messages\Attachments\File;
+use BotMan\BotMan\Messages\Attachments\Image;
 use BotMan\BotMan\Messages\Attachments\Video;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
 
@@ -25,25 +26,29 @@ class BotFrameworkComponentsStrategy implements IComponentsStrategy, IStrategy {
     }
 
     public function sendImage($imageUrl, $text = null) {
-        // TODO what if text == null
-        $menu = [
-            "title" => $text,
-            "images" => [
-                [
-                    "url" => $imageUrl
-                ]
-            ],
-            "buttons" => []
-        ];
+        if ($text) {
+            $menu = [
+                "title" => $text,
+                "images" => [
+                    [
+                        "url" => $imageUrl
+                    ]
+                ],
+                "buttons" => []
+            ];
 
-        $this->bot->reply('', [
-            "attachments" => [
-                [
-                    "contentType" => "application/vnd.microsoft.card.hero",
-                    "content" => $menu
+            $this->bot->reply('', [
+                "attachments" => [
+                    [
+                        "contentType" => "application/vnd.microsoft.card.hero",
+                        "content" => $menu
+                    ]
                 ]
-            ]
-        ]);
+            ]);
+        } else {
+            $message = OutgoingMessage::create()->withAttachment(new Image($imageUrl));
+            $this->reply($message);
+        }
     }
 
     public function sendMenu($text, array $markup) {
