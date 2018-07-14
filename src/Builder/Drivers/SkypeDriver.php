@@ -15,8 +15,8 @@ class SkypeDriver extends Driver {
 
     public function toArray() {
         return array_merge(parent::toArray(), [
-            'appId' => $this->appId,
-            'appKey' => $this->appKey
+            'app_id' => $this->appId,
+            'app_key' => $this->appKey
         ]);
     }
 

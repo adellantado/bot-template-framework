@@ -382,7 +382,7 @@ Every block extends abstract block, which has next properties:
             },
             {
                 "name": "Facebook",
-                "appSecret": "FACEBOOK_APP_SECRET",
+                "app_secret": "FACEBOOK_APP_SECRET",
                 "token": "FACEBOOK_TOKEN",
                 "verification": "FACEBOOK_VERIFICATION",
                 "config": "true",
@@ -395,8 +395,8 @@ Every block extends abstract block, which has next properties:
 
    `name` - (required) Name of the driver<br>
    `token` - (require|optional) token for telegram, viber, dialogflow.
-           Fields: verification, token, appSecret - for facebook; 
-           appId, appKey - for skype.<br>
+           Fields: verification, token, app_secret - for facebook; 
+           app_id, app_key - for skype.<br>
    `config` - (optional) shows that fields should be read from env()<br>
    `events` - (optional) blocks triggers by event. 
            E.g. on "delivery" event in facebook, trigger block with

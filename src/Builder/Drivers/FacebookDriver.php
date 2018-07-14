@@ -19,7 +19,7 @@ class FacebookDriver extends Driver {
     public function toArray() {
         return array_merge(parent::toArray(), [
             'token' => $this->token,
-            'appSecret' => $this->appSecret,
+            'app_secret' => $this->appSecret,
             'verification' => $this->verification
         ]);
     }
