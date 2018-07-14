@@ -34,10 +34,11 @@ class TemplateEngine {
         }
 
         foreach ($template['drivers'] as $driver) {
-            $config[strtolower($driver['name'])] = [];
+            $driverName = (strtolower($driver['name']) == 'botframework' ? 'skype' : strtolower($driver['name']));
+            $config[$driverName] = [];
             foreach ($driver as $key => $value) {
-                if ($key != 'name') {
-                    $config[strtolower($driver['name'])][$key] = (array_key_exists('config',
+                if (!in_array($key, ['name', 'events'])) {
+                    $config[$driverName][$key] = (array_key_exists('config',
                             $driver) && $driver['config'] == 'true') ? env($value) : $value;
                 }
             }
@@ -447,11 +448,11 @@ class TemplateEngine {
         if (array_key_exists('drivers', $block)) {
             $drivers = explode(';', $block['drivers']);
             foreach ($drivers as $driver) {
-                if ($driver == '!' . $this->getDriverName()) {
+                if (strtolower($driver) == '!' . $this->getDriverName()) {
                     return false;
                 }
 
-                if ($driver == '*' || $driver == 'any' || $driver == $this->getDriverName()) {
+                if ($driver == '*' || strtolower($driver) == 'any' || strtolower($driver) == $this->getDriverName()) {
                     $valid = true;
                 }
             }

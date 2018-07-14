@@ -43,7 +43,7 @@ trait StrategyTrait {
         $driver = $bot->getDriver();
         $driveName = null;
         if ($driver instanceof \BotMan\Drivers\BotFramework\BotFrameworkDriver) {
-            $driveName = 'BotFramework';
+            $driveName = 'Skype';
         } elseif ($driver instanceof \BotMan\Drivers\Facebook\FacebookDriver) {
             $driveName = 'Facebook';
         } elseif ($driver instanceof \BotMan\Drivers\Telegram\TelegramDriver) {
