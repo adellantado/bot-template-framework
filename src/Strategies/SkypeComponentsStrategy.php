@@ -106,7 +106,6 @@ class SkypeComponentsStrategy implements IComponentsStrategy, IStrategy {
                 "contentType" => "application/vnd.microsoft.card.hero",
                 "content" => [
                     "title" => $element['title'],
-                    "text" => $element['description'],
                     "images" => [
                         [
                             "url" => $element['url']
@@ -115,9 +114,15 @@ class SkypeComponentsStrategy implements IComponentsStrategy, IStrategy {
                     "buttons" => []
                 ]
             ];
-            foreach ($element['buttons'] as $submenu) {
-                $attachment["content"]["buttons"] = array_merge($this->buildButtons($submenu),
-                    $attachment["content"]["buttons"]);
+            if (array_key_exists('description', $element)) {
+                $attachment['content']['text'] = $element['description'];
+            }
+
+            if (array_key_exists('buttons', $element)) {
+                foreach ($element['buttons'] as $submenu) {
+                    $attachment["content"]["buttons"] = array_merge($this->buildButtons($submenu),
+                        $attachment["content"]["buttons"]);
+                }
             }
             $attachments[] = $attachment;
         }
@@ -135,7 +140,6 @@ class SkypeComponentsStrategy implements IComponentsStrategy, IStrategy {
                 "contentType" => "application/vnd.microsoft.card.hero",
                 "content" => [
                     "title" => $element['title'],
-                    "text" => $element['description'],
                     "images" => [
                         [
                             "url" => $element['url']
@@ -144,9 +148,15 @@ class SkypeComponentsStrategy implements IComponentsStrategy, IStrategy {
                     "buttons" => []
                 ]
             ];
-            foreach ($element['buttons'] as $submenu) {
-                $attachment["content"]["buttons"] = array_merge($this->buildButtons($submenu),
-                    $attachment["content"]["buttons"]);
+            if (array_key_exists('description', $element)) {
+                $attachment['content']['text'] = $element['description'];
+            }
+
+            if (array_key_exists('buttons', $element)) {
+                foreach ($element['buttons'] as $submenu) {
+                    $attachment["content"]["buttons"] = array_merge($this->buildButtons($submenu),
+                        $attachment["content"]["buttons"]);
+                }
             }
             $attachments[] = $attachment;
         }
