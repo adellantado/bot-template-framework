@@ -10,7 +10,7 @@ use BotMan\BotMan\Messages\Attachments\Image;
 use BotMan\BotMan\Messages\Attachments\Video;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
 
-class BotFrameworkComponentsStrategy implements IComponentsStrategy, IStrategy {
+class SkypeComponentsStrategy implements IComponentsStrategy, IStrategy {
     protected $bot;
 
     public function __construct(BotMan $bot) {
