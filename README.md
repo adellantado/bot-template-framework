@@ -15,7 +15,7 @@ E.g. Simple Telegram Hello World chatbot:
                 {
                     "name": "Hello Block",
                     "type": "text",
-                    "content": "Hello World!"
+                    "content": "Hello World!",
                     "template": "Hi;Hello;What's up;Good day;/start"
                 }
              ], 

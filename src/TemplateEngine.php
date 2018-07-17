@@ -52,6 +52,11 @@ class TemplateEngine {
         $this->setTemplate($template);
     }
 
+    public function setBot(BotMan $bot) {
+        $this->bot = $bot;
+        return $this;
+    }
+
     public function getTemplate() {
         return $this->template;
     }
@@ -363,6 +368,7 @@ class TemplateEngine {
     protected function executeAsk($block) {
         $conversation = new TemplateConversation($this);
         $conversation->blockName = $block['name'];
+        $conversation->engine = $this;
         $this->bot->startConversation($conversation);
     }
 
@@ -462,17 +468,12 @@ class TemplateEngine {
         return $valid;
     }
 
-    public function __wakeup() {
-
-    }
-
     /**
      * @return array
      */
     public function __sleep() {
         return [
             'template',
-            'bot'
         ];
     }
 }
