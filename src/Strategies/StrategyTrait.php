@@ -48,10 +48,6 @@ trait StrategyTrait {
             $driveName = 'Facebook';
         } elseif ($driver instanceof \BotMan\Drivers\Telegram\TelegramDriver) {
             $driveName = 'Telegram';
-        } elseif ($driver instanceof \TheArdent\Drivers\Viber\ViberDriver) {
-            $driveName = 'Viber';
-        } elseif ($driver instanceof \BotMan\Drivers\Web\WebDriver) {
-            $driveName = 'Web';
         } elseif ($driver instanceof \BotMan\Drivers\AmazonAlexa\AmazonAlexaDriver) {
             $driveName = 'Alexa';
         }
