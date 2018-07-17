@@ -371,7 +371,7 @@ Every block extends abstract block, which has next properties:
    Before using driver in here, first you need to install proper driver for Botman.
    Available drivers are next:
    
-        Facebook, Telegram, Skype, Dialogflow, Alexa
+        Facebook, Telegram, Skype, Dialogflow, Alexa, Web
    
    Example:
     
@@ -394,7 +394,7 @@ Every block extends abstract block, which has next properties:
         ]
 
    `name` - (required) Name of the driver<br>
-   `token` - (require|optional) token for telegram, dialogflow.
+   `token` - (require|optional) token for telegram, viber, dialogflow.
            Fields: verification, token, app_secret - for facebook; 
            app_id, app_key - for skype.<br>
    `config` - (optional) shows that fields should be read from env()<br>
