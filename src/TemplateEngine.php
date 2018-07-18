@@ -430,7 +430,7 @@ class TemplateEngine {
     protected function executeExtend($block) {
         $baseBlock = $this->getBlock($block['base']);
         foreach ($block as $field=>$value) {
-            if (!in_array('name', 'base')) {
+            if (!in_array($field, ['name', 'base'])) {
                 $baseBlock[$field] = $value;
             }
         }
