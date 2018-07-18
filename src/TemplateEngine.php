@@ -218,7 +218,7 @@ class TemplateEngine {
         } elseif ($type == 'intent') {
             $result = $this->executeIntent($block);
         } elseif ($type == 'extend') {
-            $result = $this->executeExtend($block);
+            $this->executeExtend($block);
         } else {
             throw new \Exception('Can\'t find any suitable block type');
         }
