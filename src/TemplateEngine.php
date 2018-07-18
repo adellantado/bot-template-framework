@@ -103,7 +103,7 @@ class TemplateEngine {
                 continue;
             }
 
-            if (array_key_exists('template', $block)) {
+            if (array_key_exists('template', $block) && $block['type'] != 'intent') {
                 $templates = explode(';', $block['template']);
                 foreach ($templates as $template) {
                     if ($template) {
@@ -217,11 +217,13 @@ class TemplateEngine {
             $this->executeAsk($block);
         } elseif ($type == 'intent') {
             $result = $this->executeIntent($block);
+        } elseif ($type == 'extend') {
+            $result = $this->executeExtend($block);
         } else {
             throw new \Exception('Can\'t find any suitable block type');
         }
 
-        if (array_key_exists('next', $block) && $block['type'] != 'ask') {
+        if (array_key_exists('next', $block) && $block['type'] != 'ask' && $block['type'] != 'extend') {
             $this->executeNextBlock($block, $result);
         }
         return $this;
@@ -415,6 +417,24 @@ class TemplateEngine {
         }
 
         return $result;
+    }
+
+    /**
+     * Note:
+     * - do not extend 'intent';
+     * - extend only fields of 1st level;
+     *
+     * @param $block
+     * @throws \Exception
+     */
+    protected function executeExtend($block) {
+        $baseBlock = $this->getBlock($block['base']);
+        foreach ($block as $field=>$value) {
+            if (!in_array('name', 'base')) {
+                $baseBlock[$field] = $value;
+            }
+        }
+        $this->executeBlock($baseBlock);
     }
 
     protected function getCallback($blockName, $prefix, $callback = null) {
