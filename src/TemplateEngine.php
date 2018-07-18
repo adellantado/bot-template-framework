@@ -219,11 +219,13 @@ class TemplateEngine {
             $result = $this->executeIntent($block);
         } elseif ($type == 'extend') {
             $this->executeExtend($block);
+        } elseif ($type == 'if') {
+            $this->executeIf($block);
         } else {
             throw new \Exception('Can\'t find any suitable block type');
         }
 
-        if (array_key_exists('next', $block) && $block['type'] != 'ask' && $block['type'] != 'extend') {
+        if (array_key_exists('next', $block) && !in_array($block['type'], ['ask', 'extend', 'if'])) {
             $this->executeNextBlock($block, $result);
         }
         return $this;
@@ -421,7 +423,7 @@ class TemplateEngine {
 
     /**
      * Note:
-     * - do not extend 'intent';
+     * - do not extend blocks - 'intent' and 'ask';
      * - extend only fields of 1st level;
      *
      * @param $block
@@ -435,6 +437,26 @@ class TemplateEngine {
             }
         }
         $this->executeBlock($baseBlock);
+    }
+
+    protected function executeIf($block) {
+        $eqs = $block['next'];
+        foreach($eqs as $eq) {
+            $a = $this->parseText($eq[0]);
+            $b = $this->parseText($eq[2]);
+            $op = $eq[1];
+            if (
+                ($op == '==' && $a == $b) ||
+                ($op == '!=' && $a != $b) ||
+                ($op == '>'  && $a >  $b) ||
+                ($op == '<'  && $a <  $b) ||
+                ($op == '>=' && $a >= $b) ||
+                ($op == '<=' && $a <= $b)
+            ) {
+                $this->executeBlock($this->getBlock($eq[3]));
+                return;
+            }
+        }
     }
 
     protected function getCallback($blockName, $prefix, $callback = null) {
