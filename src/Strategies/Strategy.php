@@ -77,4 +77,18 @@ abstract class Strategy implements IStrategy, IComponentsStrategy {
         $this->componentsStrategy->requireLocation($text);
     }
 
+    /**
+     * This method needed for Telegram Carousel component. When override Telegram Strategy with custom one,
+     * this method should be present in there.
+     *
+     * @param BotMan $bot
+     * @param $messageId
+     * @param $element
+     */
+    public function carouselSwitch(BotMan $bot, $messageId, $element) {
+        if ($this->bot->getDriver() instanceof \BotMan\Drivers\Telegram\TelegramDriver) {
+            $this->componentsStrategy->carouselSwitch($bot, $messageId, $element);
+        }
+    }
+
 }
