@@ -3,6 +3,8 @@
 Allows to simplify chatbot development using Botman. 
 With one scenario file you can make your bot working.
 
+You can find downloadable simple chatbot [here](https://github.com/adellantado/bot-template-framework-sample).
+
 E.g. Simple Telegram Hello World chatbot:
 
         {
