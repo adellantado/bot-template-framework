@@ -44,18 +44,22 @@ class TemplateConversation extends Conversation {
 
             if (array_key_exists('validate', $block)) {
                 $validator = new Validator();
-                if ($block['validate'] == 'number$' && !$validator->number($answer->getText())) {
-                    $this->say($validator->errorNumberMsg())->repeat();
+                if ($block['validate'] == 'number' && !$validator->number($answer->getText())) {
+                    $this->say($validator->errorNumberMsg());
+                    $this->askAgain($block);
                     return;
                 } elseif ($block['validate'] == 'url' && !$validator->url($answer->getText())) {
                     $this->say($validator->errorUrlMsg())->repeat();
+                    $this->askAgain($block);
                     return;
                 } elseif ($block['validate'] == 'email' && !$validator->email($answer->getText())) {
                     $this->say($validator->errorEmailMsg())->repeat();
+                    $this->askAgain($block);
                     return;
                 } else {
                     if (!$validator->regexp($block['validate'], $answer->getText())) {
                         $this->say('Can\'t validate input')->repeat();
+                        $this->askAgain($block);
                         return;
                     }
                 }
@@ -70,6 +74,13 @@ class TemplateConversation extends Conversation {
         };
 
         $this->ask($question, $callback);
+    }
+
+    public function askAgain($block) {
+        $conversation = new TemplateConversation($this);
+        $conversation->blockName = $block['name'];
+        $conversation->engine = $this->engine;
+        $this->bot->startConversation($conversation);
     }
 
 }

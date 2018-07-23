@@ -370,7 +370,7 @@ class TemplateEngine {
     }
 
     protected function executeAsk($block) {
-        $conversation = new TemplateConversation($this);
+        $conversation = new TemplateConversation();
         $conversation->blockName = $block['name'];
         $conversation->engine = $this;
         $this->bot->startConversation($conversation);
