@@ -37,10 +37,10 @@ class TemplateConversation extends Conversation {
                 }
             }
         }
-        $this->ask($question, [$this, 'callback']);
+        $this->ask($question, [$this, 'askCallback']);
     }
 
-    public function callback(Answer $answer) {
+    public function askCallback(Answer $answer) {
         $block = $this->engine->setBot($this->bot)
             ->getBlock($this->blockName);
 
