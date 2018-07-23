@@ -44,21 +44,27 @@ class TemplateConversation extends Conversation {
 
             if (array_key_exists('validate', $block)) {
                 $validator = new Validator();
-                if ($block['validate'] == 'number' && !$validator->number($answer->getText())) {
-                    $this->say($validator->errorNumberMsg());
-                    $this->askAgain($block);
-                    return;
-                } elseif ($block['validate'] == 'url' && !$validator->url($answer->getText())) {
-                    $this->say($validator->errorUrlMsg())->repeat();
-                    $this->askAgain($block);
-                    return;
-                } elseif ($block['validate'] == 'email' && !$validator->email($answer->getText())) {
-                    $this->say($validator->errorEmailMsg())->repeat();
-                    $this->askAgain($block);
-                    return;
+                if ($block['validate'] == 'number') {
+                    if (!$validator->number($answer->getText())) {
+                        $this->say($validator->errorNumberMsg());
+                        $this->askAgain($block);
+                        return;
+                    }
+                } elseif ($block['validate'] == 'url') {
+                    if (!$validator->url($answer->getText())) {
+                        $this->say($validator->errorUrlMsg());
+                        $this->askAgain($block);
+                        return;
+                    }
+                } elseif ($block['validate'] == 'email') {
+                    if (!$validator->email($answer->getText())) {
+                        $this->say($validator->errorEmailMsg());
+                        $this->askAgain($block);
+                        return;
+                    }
                 } else {
                     if (!$validator->regexp($block['validate'], $answer->getText())) {
-                        $this->say('Can\'t validate input')->repeat();
+                        $this->say('Can\'t validate input');
                         $this->askAgain($block);
                         return;
                     }
