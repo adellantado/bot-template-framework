@@ -91,7 +91,7 @@ E.g. Simple Telegram Hello World chatbot:
 
 There are 13 types of block
 
-        text, image, menu, audio, video, file, location, carousel, list, request, ask, intent and method
+        text, image, menu, audio, video, file, location, carousel, list, request, ask, intent, if, method and extend 
 
 Every block extends abstract block, which has next properties:
 
@@ -297,6 +297,7 @@ Every block extends abstract block, which has next properties:
             "name": "Ask Phone",
             "type": "ask",
             "content": "Can you left us your phone to contant you only in case of urgency?",
+            "validate": "number",
             "result": {
                 "prompt": "yes;no"
             },
@@ -306,13 +307,16 @@ Every block extends abstract block, which has next properties:
                 "fallback": "Ask Email Block"
             }
         }
-		
+	
+   `validate` - (optional) validate user input, doesn't save variable and repeats question when validation isn't passed.
+        Possible values: `number` - validate integer, `email`, `url` and any regexp like `/^[0-9]*$/`
    `result.prompt` - (optional) shows quick buttons;<br>
    `next.<user answer>` - (optional) depends on user answer, run next block 
         ('fallback' - reserved for any answer which are not in the list).
         
    note: Learn more about results
    note: You need to set up persistent cache (like Redis), learn more on Botman website
+   
    
 <h3>Intent Block</h3>
 
@@ -343,15 +347,31 @@ Every block extends abstract block, which has next properties:
    note: you should use amazon alexa console or dialogflow console to have 
         this block running
     
+<h3>If Block</h3>
+    
+        {
+            "name": "Comparison Test",
+            "type": "if",
+            "next": [
+                ["{{var}}", "==", "1", "Block 1"],
+                ["{{var}}", "<", "1", "Block 2"],
+                ["{{var}}", ">", "1", "Block 3"],
+            ]
+        }
+        
+   E.g. Simply calls "Block 1" when {{var}}==1, calls "Block 2" when {{var}} < 1 and "Block 3" when {{var}} > 1.
+   
+   Supported operators: ==, !=, >, >=, <, <=
+    
 <h3>Method Block</h3>
 
    Simply call method from your own strategy
 
-    {
-        "name": "Test method",
-        "type": "method",
-        "method": "myMethod"
-    }
+        {
+            "name": "Test method",
+            "type": "method",
+            "method": "myMethod"
+        }
     
    `method` - (required) method name
     
@@ -367,6 +387,34 @@ Every block extends abstract block, which has next properties:
                 $this->bot->reply('This is my method replies');
             }
          }
+
+<h3>Extend Block</h3>
+
+   Simply overrides properties of the parent block. Could be very helpful when you need to make very similar block with small changes.
+
+        {
+            "name": "Oysters Extended",
+            "type": "extend",
+            "base": "Oysters Block",
+            "content": {
+                "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Oysters_p1040741.jpg/330px-Oysters_p1040741.jpg"
+            }
+        },
+        {
+            "name": "Oysters Block",
+            "type": "image",
+            "template": "Oysters",
+            "content": {
+                "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Crassostrea_gigas_p1040848.jpg/450px-Crassostrea_gigas_p1040848.jpg"
+            }
+        }
+
+   `base` - (required) Name of the parent block<br>
+
+   E.g. Extends "Oysters Block" overriding `content` field
+   
+   note: do not extend blocks - `intent` and `ask`
+   note: extend only fields of 1st level of nesting (like `type`, `content`, `next`, but impossible to extend only `url` (2nd level of nesting) field from image content)
 
 <h2>Drivers</h2>
 

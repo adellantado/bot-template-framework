@@ -73,6 +73,16 @@ class TemplateEngine {
         return strtolower(self::driverName($this->bot));
     }
 
+    /**
+     * Adds blocks dynamically to template
+     * Note: Call before listen()
+     *
+     * @param array $blocks
+     */
+    public function addBlocks(array $blocks) {
+        $this->template['blocks'] = array_merge($this->template['blocks'], $blocks);
+    }
+
     public function getDrivers() {
         return array_map(function ($driver) {
             return $driver['name'];
