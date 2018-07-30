@@ -309,12 +309,12 @@ Every block extends abstract block, which has next properties:
         }
 	
    `validate` - (optional) validate user input, doesn't save variable and repeats question when validation isn't passed.
-        Possible values: `number` - validate integer, `email`, `url` and any regexp like `/^[0-9]*$/`
+        Possible values: `number` - validate integer, `email`, `url` and any regexp like `/^[0-9]*$/`;<br>
    `result.prompt` - (optional) shows quick buttons;<br>
    `next.<user answer>` - (optional) depends on user answer, run next block 
         ('fallback' - reserved for any answer which are not in the list).
         
-   note: Learn more about results
+   note: Learn more about results<br>
    note: You need to set up persistent cache (like Redis), learn more on Botman website
    
    
@@ -359,9 +359,9 @@ Every block extends abstract block, which has next properties:
             ]
         }
         
-   E.g. Simply calls "Block 1" when {{var}}==1, calls "Block 2" when {{var}} < 1 and "Block 3" when {{var}} > 1.
+   E.g. Simply calls "Block 1" when `{{var}} == 1`, calls "Block 2" when `{{var}} < 1` and "Block 3" when `{{var}} > 1`.
    
-   Supported operators: ==, !=, >, >=, <, <=
+   Supported operators: `==`, `!=`, `>`, `>=`, `<`, `<=`
     
 <h3>Method Block</h3>
 
@@ -413,8 +413,8 @@ Every block extends abstract block, which has next properties:
 
    E.g. Extends "Oysters Block" overriding `content` field
    
-   note: do not extend blocks - `intent` and `ask`
-   note: extend only fields of 1st level of nesting (like `type`, `content`, `next`, but impossible to extend only `url` (2nd level of nesting) field from image content)
+   note: do not extend blocks - `intent` and `ask`;<br>
+   note: extend only fields of 1st level of nesting (like `type`, `content`, `next`, but impossible to extend only `url` (2nd level of nesting) field from image content);
 
 <h2>Drivers</h2>
 
