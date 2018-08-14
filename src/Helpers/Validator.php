@@ -33,6 +33,10 @@ class Validator {
         return false;
     }
 
+    public function confirm($oldValue, $newValue) {
+        return $newValue === $oldValue;
+    }
+
     public function errorNumberMsg() {
         return 'Please, type valid number (no whitespaces)';
     }
@@ -43,6 +47,10 @@ class Validator {
 
     public function errorUrlMsg() {
         return 'Please, type valid url (start with http:// or https://)';
+    }
+
+    public function errorConfirmMsg() {
+        return 'Please, type your confirmation input with exact value (case sensitive)';
     }
 
 }
