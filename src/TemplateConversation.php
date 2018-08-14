@@ -39,9 +39,9 @@ class TemplateConversation extends Conversation {
         }
 
         if (array_key_exists('validate', $block) && $block['validate'] == 'confirm') {
-            $this->ask($question, [$this, 'confirmationCallback']);
+            $this->ask($question, \Closure::fromCallable([$this, 'confirmationCallback']));
         } else {
-            $this->ask($question, [$this, 'normalCallback']);
+            $this->ask($question, \Closure::fromCallable([$this, 'normalCallback']));
         }
     }
 
@@ -70,7 +70,8 @@ class TemplateConversation extends Conversation {
                     return;
                 }
             } elseif ($block['validate'] == 'confirm') {
-                if (!$validator->confirm($this->engine->getVariable('temp.confirmation'), $answer->getText())) {
+                $oldValue = $this->engine->removeVariable('temp.confirmation');
+                if (!$validator->confirm($oldValue, $answer->getText())) {
                     $this->say($validator->errorConfirmMsg());
                     $this->askAgain($block);
                     return;
@@ -93,9 +94,9 @@ class TemplateConversation extends Conversation {
     }
 
     public function confirmationCallback(Answer $answer) {
-        $this->engine->saveVariable('temp.confirmation', $answer->getText());
+        $this->engine->saveVariable('{{temp.confirmation}}', $answer->getText());
         $question = new Question('Confirm, please, by typing one more time');
-        $this->ask($question, [$this, 'normalCallback']);
+        $this->ask($question, \Closure::fromCallable([$this, 'normalCallback']));
     }
 
     public function askAgain($block) {

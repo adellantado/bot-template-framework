@@ -312,6 +312,14 @@ class TemplateEngine {
         return $value;
     }
 
+    public function removeVariable($name) {
+        $data = $this->bot->userStorage()->find()->toArray();
+        $value = $data[$name];
+        unset($data[$name]);
+        $this->bot->userStorage()->save($data);
+        return $value;
+    }
+
     public function parseText($text) {
         $matches = [];
         if (preg_match_all('/{{(.+?)}}/', $text, $matches)) {
