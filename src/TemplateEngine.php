@@ -583,7 +583,6 @@ class TemplateEngine {
     public function __sleep() {
         return [
             'template',
-            'listeners'
         ];
     }
 }
