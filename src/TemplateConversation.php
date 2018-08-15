@@ -39,9 +39,9 @@ class TemplateConversation extends Conversation {
         }
 
         if (array_key_exists('validate', $block) && $block['validate'] == 'confirm') {
-            $this->ask($question, \Closure::fromCallable([TemplateConversation::class, 'confirmationCallback']));
+            $this->ask($question, \Closure::fromCallable([$this, 'confirmationCallback']));
         } else {
-            $this->ask($question, \Closure::fromCallable([TemplateConversation::class, 'normalCallback']));
+            $this->ask($question, \Closure::fromCallable([$this, 'normalCallback']));
         }
     }
 
@@ -96,7 +96,7 @@ class TemplateConversation extends Conversation {
     public function confirmationCallback(Answer $answer) {
         $this->engine->saveVariable('{{temp.confirmation}}', $answer->getText());
         $question = new Question('Confirm, please, by typing one more time');
-        $this->ask($question, \Closure::fromCallable([TemplateConversation::class, 'normalCallback']));
+        $this->ask($question, \Closure::fromCallable([$this, 'normalCallback']));
     }
 
     public function askAgain($block) {
