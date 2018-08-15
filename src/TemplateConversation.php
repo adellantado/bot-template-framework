@@ -81,6 +81,9 @@ class TemplateConversation extends Conversation {
             if (array_key_exists('result', $block) && array_key_exists('save', $block['result'])) {
                 $this->engine->saveVariable($block['result']['save'], $answer->getText());
             }
+
+            $this->engine->callListener($block);
+
             if (array_key_exists('next', $block)) {
                 $this->engine->executeNextBlock($block, $answer->getText());
             }

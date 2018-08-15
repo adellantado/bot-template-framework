@@ -201,11 +201,14 @@ class TemplateEngine {
                 'latitude'=> $location->getLatitude(),
                 'longitude'=> $location->getLongitude()
             ]);
+            $this->callListener($block);
         } elseif (preg_match('/attachment_(image|file|video|audio)_(.*)/', $name, $matches)) {
             $blockName = preg_replace('/_+/', ' ', $matches[2]);
             $block = $this->getBlock($blockName);
             $url = $arguments[1][0]->getUrl();
             $this->saveVariable($block['result']['save'], $url);
+            $this->callListener($block);
+
         }
     }
 
@@ -271,8 +274,8 @@ class TemplateEngine {
             throw new \Exception('Can\'t find any suitable block type');
         }
 
-        if (array_key_exists($block['name'], $this->listeners)) {
-            $this->listeners[$block['name']]($this, $block);
+        if (!in_array($block['type'], ['ask', 'attachment', 'location'])) {
+            $this->callListener($block);
         }
 
         if (array_key_exists('next', $block) && !in_array($block['type'], ['ask', 'extend', 'if'])) {
@@ -358,6 +361,12 @@ class TemplateEngine {
         unset($data[$name]);
         $this->bot->userStorage()->save($data);
         return $value;
+    }
+
+    public function callListener($block) {
+        if (array_key_exists($block['name'], $this->listeners)) {
+            $this->listeners[$block['name']]($this, $block);
+        }
     }
 
     public function parseText($text) {
