@@ -38,65 +38,65 @@ class TemplateConversation extends Conversation {
             }
         }
 
-        if (array_key_exists('validate', $block) && $block['validate'] == 'confirm') {
-            $this->ask($question, \Closure::fromCallable([$this, 'confirmationCallback']));
-        } else {
-            $this->ask($question, \Closure::fromCallable([$this, 'normalCallback']));
-        }
-    }
+        $normalCallback = function(Answer $answer) {
+            $block = $this->engine->setBot($this->bot)
+                ->getBlock($this->blockName);
 
-    public function normalCallback(Answer $answer) {
-        $block = $this->engine->setBot($this->bot)
-            ->getBlock($this->blockName);
-
-        if (array_key_exists('validate', $block)) {
-            $validator = new Validator();
-            if ($block['validate'] == 'number') {
-                if (!$validator->number($answer->getText())) {
-                    $this->say($validator->errorNumberMsg());
-                    $this->askAgain($block);
-                    return;
-                }
-            } elseif ($block['validate'] == 'url') {
-                if (!$validator->url($answer->getText())) {
-                    $this->say($validator->errorUrlMsg());
-                    $this->askAgain($block);
-                    return;
-                }
-            } elseif ($block['validate'] == 'email') {
-                if (!$validator->email($answer->getText())) {
-                    $this->say($validator->errorEmailMsg());
-                    $this->askAgain($block);
-                    return;
-                }
-            } elseif ($block['validate'] == 'confirm') {
-                $oldValue = $this->engine->removeVariable('temp.confirmation');
-                if (!$validator->confirm($oldValue, $answer->getText())) {
-                    $this->say($validator->errorConfirmMsg());
-                    $this->askAgain($block);
-                    return;
-                }
-            } else {
-                if (!$validator->regexp($block['validate'], $answer->getText())) {
-                    $this->say('Can\'t validate input');
-                    $this->askAgain($block);
-                    return;
+            if (array_key_exists('validate', $block)) {
+                $validator = new Validator();
+                if ($block['validate'] == 'number') {
+                    if (!$validator->number($answer->getText())) {
+                        $this->say($validator->errorNumberMsg());
+                        $this->askAgain($block);
+                        return;
+                    }
+                } elseif ($block['validate'] == 'url') {
+                    if (!$validator->url($answer->getText())) {
+                        $this->say($validator->errorUrlMsg());
+                        $this->askAgain($block);
+                        return;
+                    }
+                } elseif ($block['validate'] == 'email') {
+                    if (!$validator->email($answer->getText())) {
+                        $this->say($validator->errorEmailMsg());
+                        $this->askAgain($block);
+                        return;
+                    }
+                } elseif ($block['validate'] == 'confirm') {
+                    $oldValue = $this->engine->removeVariable('temp.confirmation');
+                    if (!$validator->confirm($oldValue, $answer->getText())) {
+                        $this->say($validator->errorConfirmMsg());
+                        $this->askAgain($block);
+                        return;
+                    }
+                } else {
+                    if (!$validator->regexp($block['validate'], $answer->getText())) {
+                        $this->say('Can\'t validate input');
+                        $this->askAgain($block);
+                        return;
+                    }
                 }
             }
-        }
 
-        if (array_key_exists('result', $block) && array_key_exists('save', $block['result'])) {
-            $this->engine->saveVariable($block['result']['save'], $answer->getText());
-        }
-        if (array_key_exists('next', $block)) {
-            $this->engine->executeNextBlock($block, $answer->getText());
-        }
-    }
+            if (array_key_exists('result', $block) && array_key_exists('save', $block['result'])) {
+                $this->engine->saveVariable($block['result']['save'], $answer->getText());
+            }
+            if (array_key_exists('next', $block)) {
+                $this->engine->executeNextBlock($block, $answer->getText());
+            }
+        };
 
-    public function confirmationCallback(Answer $answer) {
-        $this->engine->saveVariable('{{temp.confirmation}}', $answer->getText());
-        $question = new Question('Confirm, please, by typing one more time');
-        $this->ask($question, \Closure::fromCallable([$this, 'normalCallback']));
+        $confirmationCallback = function(Answer $answer) use ($normalCallback) {
+            $this->engine->saveVariable('{{temp.confirmation}}', $answer->getText());
+            $question = new Question('Confirm, please, by typing one more time');
+            $this->ask($question, $normalCallback);
+        };
+
+        if (array_key_exists('validate', $block) && $block['validate'] == 'confirm') {
+            $this->ask($question, $confirmationCallback);
+        } else {
+            $this->ask($question, $normalCallback);
+        }
     }
 
     public function askAgain($block) {
