@@ -59,6 +59,13 @@ class TemplateEngine {
         return $this;
     }
 
+    /**
+     * @return BotMan
+     */
+    public function getBot() {
+        return $this->bot;
+    }
+
     public function getTemplate() {
         return $this->template;
     }
@@ -265,7 +272,7 @@ class TemplateEngine {
         }
 
         if (array_key_exists($block['name'], $this->listeners)) {
-            $this->listeners[$block['name']]($block);
+            $this->listeners[$block['name']]($this, $block);
         }
 
         if (array_key_exists('next', $block) && !in_array($block['type'], ['ask', 'extend', 'if'])) {
