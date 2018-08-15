@@ -597,10 +597,4 @@ class TemplateEngine {
             'listeners'
         ];
     }
-
-    public function __wakeup() {
-        foreach($this->listeners as $blockName=>&$callback) {
-            $callback = unserialize($callback);
-        }
-    }
 }
