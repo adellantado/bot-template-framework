@@ -136,6 +136,18 @@ class TemplateEngine {
                 $this->bot->receivesLocation($this->getCallback($block['name'], 'location_', $callback));
             }
 
+            if ($block['type'] == 'attachment') {
+                if ($block['mode'] == 'image') {
+                    $this->bot->receivesImages($this->getCallback($block['name'], 'attachment_image_', $callback));
+                } elseif ($block['mode'] == 'video') {
+                        $this->bot->receivesVideos($this->getCallback($block['name'], 'attachment_video_', $callback));
+                } elseif ($block['mode'] == 'audio') {
+                    $this->bot->receivesAudio($this->getCallback($block['name'], 'attachment_audio_', $callback));
+                } else {
+                    $this->bot->receivesFiles($this->getCallback($block['name'], 'attachment_file_', $callback));
+                }
+            }
+
             if ($block['type'] == 'carousel' && $this->getDriverName() == 'telegram') {
                 $this->bot->hears('carousel_{messageId}_{index}', $this->getCallback($block['name'], 'carousel_', $callback));
             }
@@ -182,6 +194,11 @@ class TemplateEngine {
                 'latitude'=> $location->getLatitude(),
                 'longitude'=> $location->getLongitude()
             ]);
+        } elseif (preg_match('/attachment_(image|file|video|audio)_(.*)/', $name, $matches)) {
+            $blockName = preg_replace('/_+/', ' ', $matches[2]);
+            $block = $this->getBlock($blockName);
+            $url = $arguments[1][0]->getUrl();
+            $this->saveVariable($block['result']['save'], $url);
         }
     }
 
@@ -229,6 +246,8 @@ class TemplateEngine {
             $this->strategy($this->bot)->sendCarousel($this->parseArray($content));
         } elseif ($type == 'location') {
             $this->strategy($this->bot)->requireLocation($this->parseText($content));
+        } elseif ($type == 'attachment') {
+            $this->strategy($this->bot)->sendText($this->parseText($content));
         } elseif ($type == 'request') {
             $result = $this->executeRequest($block);
         } elseif ($type == 'method') {
