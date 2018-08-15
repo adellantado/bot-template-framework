@@ -90,6 +90,7 @@ class TemplateConversation extends Conversation {
         };
 
         $confirmationCallback = function(Answer $answer) use ($normalCallback) {
+            $this->engine->setBot($this->bot);
             $this->engine->saveVariable('{{temp.confirmation}}', $answer->getText());
             $question = new Question('Confirm, please, by typing one more time');
             $this->ask($question, $normalCallback);
