@@ -22,6 +22,8 @@ class TemplateEngine {
      */
     protected $bot;
 
+    protected $listeners = [];
+
     public static function getConfig($template, $config = []) {
         if (is_string($template)) {
             $template = json_decode($template, true);
@@ -81,6 +83,14 @@ class TemplateEngine {
      */
     public function addBlocks(array $blocks) {
         $this->template['blocks'] = array_merge($this->template['blocks'], $blocks);
+    }
+
+    public function addBlockListener($blockName, \Closure $callback) {
+        $this->listeners[$blockName] = $callback;
+    }
+
+    public function removeBlockListener($blockName) {
+        unset($this->listeners[$blockName]);
     }
 
     public function getDrivers() {
@@ -233,6 +243,10 @@ class TemplateEngine {
             $this->executeIf($block);
         } else {
             throw new \Exception('Can\'t find any suitable block type');
+        }
+
+        if (array_key_exists($block['name'], $this->listeners)) {
+            $this->listeners[$block['name']]($block);
         }
 
         if (array_key_exists('next', $block) && !in_array($block['type'], ['ask', 'extend', 'if'])) {
@@ -534,6 +548,7 @@ class TemplateEngine {
     public function __sleep() {
         return [
             'template',
+            'listeners'
         ];
     }
 }
