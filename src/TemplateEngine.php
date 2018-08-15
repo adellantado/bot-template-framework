@@ -8,6 +8,7 @@ use BotTemplateFramework\Builder\Template;
 use BotTemplateFramework\Strategies\StrategyTrait;
 use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Http\Curl;
+use Opis\Closure\SerializableClosure;
 
 class TemplateEngine {
     use StrategyTrait;
@@ -365,7 +366,12 @@ class TemplateEngine {
 
     public function callListener($block) {
         if (array_key_exists($block['name'], $this->listeners)) {
-            $this->listeners[$block['name']]($this, $block);
+            $callback = $this->listeners[$block['name']];
+            if ($callback instanceof \Closure) {
+                $callback($this, $block);
+            } elseif(is_callable($callback)) {
+                call_user_func_array($callback, [$this, $block]);
+            }
         }
     }
 
@@ -581,8 +587,20 @@ class TemplateEngine {
      * @return array
      */
     public function __sleep() {
+        foreach($this->listeners as $blockName=>&$callback) {
+            if ($callback instanceof \Closure) {
+                $callback = serialize(new SerializableClosure($callback, true));
+            }
+        }
         return [
             'template',
+            'listeners'
         ];
+    }
+
+    public function __wakeup() {
+        foreach($this->listeners as $blockName=>&$callback) {
+            $callback = unserialize($callback);
+        }
     }
 }
