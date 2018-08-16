@@ -91,7 +91,7 @@ E.g. Simple Telegram Hello World chatbot:
 
 There are 13 types of block
 
-        text, image, menu, audio, video, file, location, carousel, list, request, ask, intent, if, method and extend 
+        text, image, menu, audio, video, file, location, attachment, carousel, list, request, ask, intent, if, method and extend 
 
 Every block extends abstract block, which has next properties:
 
@@ -236,6 +236,22 @@ Every block extends abstract block, which has next properties:
    `result.save` - (required) save data in json {latitude:.., longitude: ..} to variable;
    
    note: learn about variables
+
+<h3>Attachment Block</h3>
+
+   Request image, video, audio or file from the user
+   
+        {
+            "name": "Attachment Test",
+            "type": "attachment",
+            "mode": "image",
+            "content": "Please, make a photo to verify your identity",
+            "result": {
+                "save": "{{photo}}"
+            }
+        }
+		
+   `mode` - (optional) could be image, video, file, audio, if mode not provided - file by default;
    
 <h3>Carousel and List Blocks</h3>
 
@@ -309,7 +325,7 @@ Every block extends abstract block, which has next properties:
         }
 	
    `validate` - (optional) validate user input, doesn't save variable and repeats question when validation isn't passed.
-        Possible values: `number` - validate integer, `email`, `url` and any regexp like `/^[0-9]*$/`;<br>
+        Possible values: `number` - validate integer, `email`, `url`, `confirm` - requires two times input and any regexp like `/^[0-9]*$/`;<br>
    `result.prompt` - (optional) shows quick buttons;<br>
    `next.<user answer>` - (optional) depends on user answer, run next block 
         ('fallback' - reserved for any answer which are not in the list).
@@ -477,7 +493,7 @@ Save variables with 'result.save' field with request, ask, intent blocks
 
 <h2>Results</h2>
 
-   There are 4 blocks which returns result: `location`, `request`, `ask`, `intent`
+   There are 4 blocks which returns result: `location`, `attachment`, `request`, `ask`, `intent`
     
    For each you can apply 
    
@@ -485,7 +501,7 @@ Save variables with 'result.save' field with request, ask, intent blocks
             "save": "{{my_variable}}"
         },
 	    
-   Three of them could have `next` field impacted depends on result value:
+   Three of them (`request`, `ask`, `intent`) could have `next` field impacted depends on result value:
    
    E.g. In this example triggers block `Type Phone Block` then result is `yes` string value,
    triggers `Ask Email Block` - when result is `no` and when neither `yes` nor `no`:
