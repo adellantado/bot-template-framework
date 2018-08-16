@@ -89,7 +89,7 @@ E.g. Simple Telegram Hello World chatbot:
 
 <h2>Blocks</h2>
 
-There are 13 types of block
+There are 16 types of block
 
         text, image, menu, audio, video, file, location, attachment, carousel, list, request, ask, intent, if, method and extend 
 
@@ -493,7 +493,7 @@ Save variables with 'result.save' field with request, ask, intent blocks
 
 <h2>Results</h2>
 
-   There are 4 blocks which returns result: `location`, `attachment`, `request`, `ask`, `intent`
+   There are 5 blocks which returns result: `location`, `attachment`, `request`, `ask`, `intent`
     
    For each you can apply 
    
