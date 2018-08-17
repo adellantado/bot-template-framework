@@ -58,6 +58,7 @@ class TemplateEngine {
         $this->bot = $bot;
         $this->setTemplate($template);
         $this->cache = $cache;
+        TemplateConversation::$engine = $this;
     }
 
     public function setBot(BotMan $bot) {
@@ -475,7 +476,6 @@ class TemplateEngine {
     protected function executeAsk($block) {
         $conversation = new TemplateConversation();
         $conversation->blockName = $block['name'];
-        $conversation->engine = $this;
         $this->bot->startConversation($conversation);
     }
 

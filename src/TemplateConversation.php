@@ -17,7 +17,7 @@ class TemplateConversation extends Conversation {
     /**
      * @var TemplateEngine
      */
-    public $engine;
+    static $engine;
 
     /**
      * @return BotMan
@@ -27,8 +27,9 @@ class TemplateConversation extends Conversation {
     }
 
     public function run() {
-        $block = $this->engine->getBlock($this->blockName);
-        $question = new Question($this->engine->parseText($block['content']));
+        $engine = TemplateConversation::$engine;
+        $block = $engine->getBlock($this->blockName);
+        $question = new Question($engine->parseText($block['content']));
         if (array_key_exists('result', $block) && array_key_exists('prompt', $block['result'])) {
             $buttons = explode(';', $block['result']['prompt']);
             foreach ($buttons as $button) {
@@ -39,7 +40,8 @@ class TemplateConversation extends Conversation {
         }
 
         $normalCallback = function(Answer $answer) {
-            $block = $this->engine->setBot($this->bot)
+            $engine = TemplateConversation::$engine;
+            $block = $engine->setBot($this->bot)
                 ->getBlock($this->blockName);
 
             if (array_key_exists('validate', $block)) {
@@ -63,7 +65,7 @@ class TemplateConversation extends Conversation {
                         return;
                     }
                 } elseif ($block['validate'] == 'confirm') {
-                    $oldValue = $this->engine->removeVariable('temp.confirmation');
+                    $oldValue = $engine->removeVariable('temp.confirmation');
                     if (!$validator->confirm($oldValue, $answer->getText())) {
                         $this->say($validator->errorConfirmMsg());
                         $this->askAgain($block);
@@ -79,19 +81,20 @@ class TemplateConversation extends Conversation {
             }
 
             if (array_key_exists('result', $block) && array_key_exists('save', $block['result'])) {
-                $this->engine->saveVariable($block['result']['save'], $answer->getText());
+                $engine->saveVariable($block['result']['save'], $answer->getText());
             }
 
-            $this->engine->callListener($block);
+            $engine->callListener($block);
 
             if (array_key_exists('next', $block)) {
-                $this->engine->executeNextBlock($block, $answer->getText());
+                $engine->executeNextBlock($block, $answer->getText());
             }
         };
 
         $confirmationCallback = function(Answer $answer) use ($normalCallback) {
-            $this->engine->setBot($this->bot);
-            $this->engine->saveVariable('{{temp.confirmation}}', $answer->getText());
+            $engine = TemplateConversation::$engine;
+            $engine->setBot($this->bot);
+            $engine->saveVariable('{{temp.confirmation}}', $answer->getText());
             $question = new Question('Confirm, please, by typing one more time');
             $this->ask($question, $normalCallback);
         };
@@ -104,9 +107,9 @@ class TemplateConversation extends Conversation {
     }
 
     public function askAgain($block) {
+        $engine = TemplateConversation::$engine;
         $conversation = new TemplateConversation($this);
         $conversation->blockName = $block['name'];
-        $conversation->engine = $this->engine;
         $this->bot->startConversation($conversation);
     }
 
