@@ -613,6 +613,12 @@ class TemplateEngine {
         return $valid;
     }
 
+    public function __wakeup() {
+        foreach($this->listeners as $blockName=>&$callback) {
+            $callback = unserialize($callback);
+        }
+    }
+
     /**
      * @return array
      */
