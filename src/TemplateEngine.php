@@ -2,6 +2,7 @@
 
 namespace BotTemplateFramework;
 
+use BotMan\BotMan\Interfaces\CacheInterface;
 use BotMan\BotMan\Messages\Attachments\Location;
 use BotMan\BotMan\Middleware\ApiAi;
 use BotTemplateFramework\Builder\Template;
@@ -24,6 +25,9 @@ class TemplateEngine {
     protected $bot;
 
     protected $listeners = [];
+
+    /** @var CacheInterface */
+    protected $cache;
 
     public static function getConfig($template, $config = []) {
         if (is_string($template)) {
@@ -50,9 +54,10 @@ class TemplateEngine {
         return $config;
     }
 
-    public function __construct($template, BotMan $bot) {
+    public function __construct($template, BotMan $bot, CacheInterface $cache = null) {
         $this->bot = $bot;
         $this->setTemplate($template);
+        $this->cache = $cache;
     }
 
     public function setBot(BotMan $bot) {
@@ -140,11 +145,11 @@ class TemplateEngine {
                 }
             }
 
-            if ($block['type'] == 'location') {
+            if ($block['type'] == 'location' && $this->getCacheVariable('lastBlock') == $block['name']) {
                 $this->bot->receivesLocation($this->getCallback($block['name'], 'location_', $callback));
             }
 
-            if ($block['type'] == 'attachment') {
+            if ($block['type'] == 'attachment' && $this->getCacheVariable('lastBlock') == $block['name']) {
                 if ($block['mode'] == 'image') {
                     $this->bot->receivesImages($this->getCallback($block['name'], 'attachment_image_', $callback));
                 } elseif ($block['mode'] == 'video') {
@@ -202,6 +207,7 @@ class TemplateEngine {
                 'latitude'=> $location->getLatitude(),
                 'longitude'=> $location->getLongitude()
             ]);
+            $this->cache->pull('lastBlock');
             $this->callListener($block);
             if ($this->checkNextBlock($block)) {
                 $this->executeNextBlock($block);
@@ -211,6 +217,7 @@ class TemplateEngine {
             $block = $this->getBlock($blockName);
             $url = $arguments[1][0]->getUrl();
             $this->saveVariable($block['result']['save'], $url);
+            $this->cache->pull('lastBlock');
             $this->callListener($block);
             if ($this->checkNextBlock($block)) {
                 $this->executeNextBlock($block);
@@ -282,6 +289,11 @@ class TemplateEngine {
 
         if (!in_array($block['type'], ['ask', 'attachment', 'location'])) {
             $this->callListener($block);
+        }
+
+        // store location or attachment block name to call receive attachment method on a next session
+        if (in_array($block['type'], ['location', 'attachment'])) {
+            $this->putCacheVariable('lastBlock', $block['name']);
         }
 
         if ($this->checkNextBlock($block) && !in_array($block['type'], ['ask', 'extend', 'if', 'location', 'attachment'])) {
@@ -416,6 +428,15 @@ class TemplateEngine {
         } catch(\Exception $e) {
         }
         return $value;
+    }
+
+    protected function putCacheVariable($name, $value) {
+        $this->cache->put($name, $value, 30);
+        return $this;
+    }
+
+    protected function getCacheVariable($name) {
+        return $this->cache->get($name, '');
     }
 
     protected function executeRequest($block) {
