@@ -203,13 +203,18 @@ class TemplateEngine {
                 'longitude'=> $location->getLongitude()
             ]);
             $this->callListener($block);
+            if ($this->checkNextBlock($block)) {
+                $this->executeNextBlock($block);
+            }
         } elseif (preg_match('/attachment_(image|file|video|audio)_(.*)/', $name, $matches)) {
             $blockName = preg_replace('/_+/', ' ', $matches[2]);
             $block = $this->getBlock($blockName);
             $url = $arguments[1][0]->getUrl();
             $this->saveVariable($block['result']['save'], $url);
             $this->callListener($block);
-
+            if ($this->checkNextBlock($block)) {
+                $this->executeNextBlock($block);
+            }
         }
     }
 
@@ -279,10 +284,14 @@ class TemplateEngine {
             $this->callListener($block);
         }
 
-        if (array_key_exists('next', $block) && !in_array($block['type'], ['ask', 'extend', 'if'])) {
+        if ($this->checkNextBlock($block) && !in_array($block['type'], ['ask', 'extend', 'if', 'location', 'attachment'])) {
             $this->executeNextBlock($block, $result);
         }
         return $this;
+    }
+
+    public function checkNextBlock($block) {
+        return array_key_exists('next', $block);
     }
 
     public function executeNextBlock($currentBlock, $key = null) {
