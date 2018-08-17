@@ -613,24 +613,12 @@ class TemplateEngine {
         return $valid;
     }
 
-    public function __wakeup() {
-        foreach($this->listeners as $blockName=>&$callback) {
-            $callback = unserialize($callback);
-        }
-    }
-
     /**
      * @return array
      */
     public function __sleep() {
-        foreach($this->listeners as $blockName=>&$callback) {
-            if ($callback instanceof \Closure) {
-                $callback = serialize(new SerializableClosure($callback, true));
-            }
-        }
         return [
             'template',
-            'listeners'
         ];
     }
 }
