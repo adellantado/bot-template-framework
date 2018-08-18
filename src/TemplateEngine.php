@@ -583,7 +583,7 @@ class TemplateEngine {
                     ApiAi::create($this->getDriver('dialogflow')['token'])->received($bot->getMessage(),
                         function(IncomingMessage $message){
                             $text = $message->getExtras()['apiReply'];
-                            $this->strategy->sendText($text);
+                            $this->strategy($this->bot)->sendText($text);
                         }, $bot);
                 }
             }
