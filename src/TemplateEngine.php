@@ -4,6 +4,7 @@ namespace BotTemplateFramework;
 
 use BotMan\BotMan\Interfaces\CacheInterface;
 use BotMan\BotMan\Messages\Attachments\Location;
+use BotMan\BotMan\Messages\Incoming\IncomingMessage;
 use BotMan\BotMan\Middleware\ApiAi;
 use BotTemplateFramework\Builder\Template;
 use BotTemplateFramework\Strategies\StrategyTrait;
@@ -571,12 +572,20 @@ class TemplateEngine {
     }
 
     protected function hearFallback() {
-        $this->bot->fallback(function ($bot) {
+        $this->bot->fallback(function (BotMan $bot) {
             $fallback = $this->template['fallback'];
             if (is_string($fallback)) {
                 $this->strategy($this->bot)->sendText($this->parseText($fallback));
-            } elseif (is_array($fallback) && $fallback['type'] == 'block') {
-                $this->executeBlock($this->getBlock($fallback['name']));
+            } elseif (is_array($fallback)) {
+                if ($fallback['type'] == 'block') {
+                    $this->executeBlock($this->getBlock($fallback['name']));
+                } elseif ($fallback['type'] == 'dialogflow') {
+                    ApiAi::create($this->getDriver('dialogflow')['token'])->received($bot->getMessage(),
+                        function(IncomingMessage $message){
+                            $text = $message->getExtras()['apiReply'];
+                            $this->strategy->sendText($text);
+                        }, $bot);
+                }
             }
         });
     }
