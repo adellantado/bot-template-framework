@@ -9,9 +9,9 @@ use BotMan\BotMan\Messages\Attachments\File;
 use BotMan\BotMan\Messages\Attachments\Image;
 use BotMan\BotMan\Messages\Attachments\Video;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
-use BotTemplateFramework\Distinct\Viber\ViberCarouselTemplate;
-use BotTemplateFramework\Distinct\Viber\ViberMenuTemplate;
+use TheArdent\Drivers\Viber\Extensions\CarouselTemplate;
 use TheArdent\Drivers\Viber\Extensions\KeyboardTemplate;
+use TheArdent\Drivers\Viber\Extensions\MenuTemplate;
 use TheArdent\Drivers\Viber\Extensions\PictureTemplate;
 
 class ViberComponentsStrategy implements IComponentsStrategy, IStrategy {
@@ -45,7 +45,7 @@ class ViberComponentsStrategy implements IComponentsStrategy, IStrategy {
     }
 
     public function sendMenuAndImage($imageUrl, $text, array $markup) {
-        $menu = new ViberMenuTemplate($text, $imageUrl);
+        $menu = new MenuTemplate($text, $imageUrl);
         $this->buildMenu($markup, $menu);
 
         $this->reply($menu);
@@ -66,7 +66,7 @@ class ViberComponentsStrategy implements IComponentsStrategy, IStrategy {
     }
 
     public function sendCarousel(array $elements) {
-        $this->reply(new ViberCarouselTemplate($elements));
+        $this->reply(new CarouselTemplate($elements));
     }
 
     public function sendAudio($url, $text = null) {
