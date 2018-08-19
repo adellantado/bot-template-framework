@@ -42,7 +42,7 @@ class Template implements \JsonSerializable {
     }
 
     /**
-     * @param string|Block $message
+     * @param string|Block|array $message
      * @return $this
      */
     public function fallback($message) {

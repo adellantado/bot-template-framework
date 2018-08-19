@@ -3,6 +3,8 @@
 Allows to simplify chatbot development using Botman. 
 With one scenario file you can make your bot working.
 
+You can find downloadable chatbot example [here](https://github.com/adellantado/bot-template-framework-sample).
+
 E.g. Simple Telegram Hello World chatbot:
 
         {
@@ -87,24 +89,24 @@ E.g. Simple Telegram Hello World chatbot:
 
 <h2>Blocks</h2>
 
-There are 13 types of block
+There are 16 types of block
 
-        text, image, menu, audio, video, file, location, carousel, list, request, ask, intent and method
+        text, image, menu, audio, video, file, location, attachment, carousel, list, request, ask, intent, if, method and extend 
 
 Every block extends abstract block, which has next properties:
 
         {
-			"name": "Block Name",
-			"type": "image",
-			"content": {
-				"url": "https://test.com/image.jpg"
-			},
-			"template": "Image;Show image;Want to see an image",
-			"typing": "1s",
-			"drivers": "any;!telegram",
-			"locale": "en",
-			"next": "Next Block Name"
-		},
+            "name": "Block Name",
+            "type": "image",
+            "content": {
+                "url": "https://test.com/image.jpg"
+            },
+            "template": "Image;Show image;Want to see an image",
+            "typing": "1s",
+            "drivers": "any;!telegram",
+            "locale": "en",
+            "next": "Next Block Name"
+        },
 
 
    `name` - (required) name of the block, uses to identify blocks;<br>
@@ -125,11 +127,11 @@ Every block extends abstract block, which has next properties:
    Send simple text response
 
        {
-    		"name": "Greetings",
-    		"type": "text",
-    		"content": "Hi! Nice to meet you {{user.firstName}}",
-    		"template": "Hello;Hi;Good day",
-    		"typing": "1s"
+            "name": "Greetings",
+            "type": "text",
+            "content": "Hi! Nice to meet you {{user.firstName}}",
+            "template": "Hello;Hi;Good day",
+            "typing": "1s"
        }
 
    note: learn about variables
@@ -139,16 +141,16 @@ Every block extends abstract block, which has next properties:
    Draw image with description and buttons or without them
 
         {
-    		"name": "Logo",
-    		"type": "image",
-    		"content": {
-    		    "text": "This is the logo:",
-    		    "url": "https://logo.com/logo.jpg",
-    		    "buttons": [
-    		        {"Callback": "Learn More"}
-    		    ]
-    		},
-    		"template": "Show me the logo"
+            "name": "Logo",
+            "type": "image",
+            "content": {
+                "text": "This is the logo:",
+                "url": "https://logo.com/logo.jpg",
+                "buttons": [
+                    {"Callback": "Learn More"}
+                ]
+            },
+            "template": "Show me the logo"
         }
        
    `url` - (required) image url;<br>
@@ -162,19 +164,19 @@ Every block extends abstract block, which has next properties:
    Show buttons
 
         {
-    		"name": "Menu Block",
-    		"type": "menu",
-    		"content": {
-    		    "text": "This is a simple menu",
-    		    "buttons": [
-    		        {"Callback": "Learn More"},
-    		        {
-    		            "https://website.com/": "Visit Website", 
-    		            "Ask Support": "Ask Support"
-    		        }
-    		    ]
-    		} 
-    	}
+            "name": "Menu Block",
+            "type": "menu",
+            "content": {
+                "text": "This is a simple menu",
+                "buttons": [
+                    {"Callback": "Learn More"},
+                    {
+                        "https://website.com/": "Visit Website", 
+                        "Ask Support": "Ask Support"
+                    }
+                ]
+            } 
+        }
     	
    note: buttons may vary dramatically from driver to driver (learn more about in official docs of the platform)
         
@@ -205,13 +207,13 @@ Every block extends abstract block, which has next properties:
    Drop video, audio and file directly to the chat
 
         {
-    		"name": "File Block",
-    		"type": "file",
-    		"content": {
-    		    "text": "Download the file",
-    		    "url": "https://sample.com/doc.pdf"
-    		} 
-    	}
+            "name": "File Block",
+            "type": "file",
+            "content": {
+                "text": "Download the file",
+                "url": "https://sample.com/doc.pdf"
+            } 
+        }
 
    `url` - (required) file, video or audio link;<br>
    `text` - (optional) description;
@@ -221,48 +223,64 @@ Every block extends abstract block, which has next properties:
    Request location from the user
    
         {
-			"name": "Location Test",
-			"type": "location",
-			"content": "Please, share your location by clicking button below",
-			"template": "share location",
-			"result": {
-				"save": "{{location}}"
-			}
-		}
+            "name": "Location Test",
+            "type": "location",
+            "content": "Please, share your location by clicking button below",
+            "template": "share location",
+            "result": {
+                "save": "{{location}}"
+            }
+        }
 		
    `content` - (required) description;<br>
    `result.save` - (required) save data in json {latitude:.., longitude: ..} to variable;
    
    note: learn about variables
+
+<h3>Attachment Block</h3>
+
+   Request image, video, audio or file from the user
+   
+        {
+            "name": "Attachment Test",
+            "type": "attachment",
+            "mode": "image",
+            "content": "Please, make a photo to verify your identity",
+            "result": {
+                "save": "{{photo}}"
+            }
+        }
+		
+   `mode` - (optional) could be image, video, file, audio, if mode not provided - file by default;
    
 <h3>Carousel and List Blocks</h3>
 
    Draw carousel or list of components
    
         {
-			"name": "List Test",
-			"type": "list",
+            "name": "List Test",
+            "type": "list",
             "content": [
-				{
-					"url": "https://image.com/img1.jpg",
-					"title": "Component #1",
-					"description": "This is component #3"
-				},
-				{
-					"url": "https://image.com/img2.jpg",
-					"title": "Component #2",
-					"description": "This is component #3"
-				},
-				{
-					"url": "https://image.com/img3.jpg",
-					"title": "Component #3",
-					"description": "This is component #3",
-					"buttons": [
-					    {"example btn": "Example Button"}
-					]
-				}
-			],
-		}
+                {
+                    "url": "https://image.com/img1.jpg",
+                    "title": "Component #1",
+                    "description": "This is component #3"
+                },
+                {
+                    "url": "https://image.com/img2.jpg",
+                    "title": "Component #2",
+                    "description": "This is component #3"
+                },
+                {
+                    "url": "https://image.com/img3.jpg",
+                    "title": "Component #3",
+                    "description": "This is component #3",
+                    "buttons": [
+                        {"example btn": "Example Button"}
+                    ]
+                }
+            ],
+        }
 		
    note: some platforms doesn't support list or carousel components natively
    
@@ -271,16 +289,16 @@ Every block extends abstract block, which has next properties:
    Make a custom GET/POST request 
 
         {
-			"name": "Tell a joke",
-			"type": "request",
-			"method": "GET",
-			"url": "http://api.icndb.com/jokes/random",
-			"result": {
-				"field": "value.joke",
-				"save": "{{joke}}"
-			},
-			"template": "Tell a joke;Joke;Do you know some jokes?"
-		}
+            "name": "Tell a joke",
+            "type": "request",
+            "method": "GET",
+            "url": "http://api.icndb.com/jokes/random",
+            "result": {
+                "field": "value.joke",
+                "save": "{{joke}}"
+            },
+            "template": "Tell a joke;Joke;Do you know some jokes?"
+        }
 		
    `result.field` - (optional) read the data from the result;<br>
    `result.save` - (optional) save result to variable;
@@ -292,44 +310,48 @@ Every block extends abstract block, which has next properties:
    Ask a question and wait for user answer
 
         {
-			"name": "Ask Phone",
-			"type": "ask",
-			"content": "Can you left us your phone to contant you only in case of urgency?",
-			"result": {
-				"prompt": "yes;no"
-			},
-			"next": {
-				"yes": "Type Phone Block",
-				"no": "Ask Email Block",
-				"fallback": "Ask Email Block"
-			}
-		}
-		
+            "name": "Ask Phone",
+            "type": "ask",
+            "content": "Can you left us your phone to contant you only in case of urgency?",
+            "validate": "number",
+            "result": {
+                "prompt": "yes;no"
+            },
+            "next": {
+                "yes": "Type Phone Block",
+                "no": "Ask Email Block",
+                "fallback": "Ask Email Block"
+            }
+        }
+	
+   `validate` - (optional) validate user input, doesn't save variable and repeats question when validation isn't passed.
+        Possible values: `number` - validate integer, `email`, `url`, `confirm` - requires two times input and any regexp like `/^[0-9]*$/`;<br>
    `result.prompt` - (optional) shows quick buttons;<br>
    `next.<user answer>` - (optional) depends on user answer, run next block 
         ('fallback' - reserved for any answer which are not in the list).
         
-   note: Learn more about results
+   note: Learn more about results<br>
    note: You need to set up persistent cache (like Redis), learn more on Botman website
+   
    
 <h3>Intent Block</h3>
 
         {
-			"name": "AlexaTest",
-			"provider": "alexa",
-			"type": "intent",
-			"template": "BeverageIntent",
-			"content": "well done",
-			"result": {
-			    "field": "beverage",
-			    "save": "{{user_beverage}}"
-			},
-			"next": {
-			    "coffee": "Coffee Card Block",
-			    "tea": "Tea Card Block",
-			    "default": "Repeat Question Block"
-			}
-		}
+            "name": "AlexaTest",
+            "provider": "alexa",
+            "type": "intent",
+            "template": "BeverageIntent",
+            "content": "well done",
+            "result": {
+                "field": "beverage",
+                "save": "{{user_beverage}}"
+            },
+            "next": {
+                "coffee": "Coffee Card Block",
+                "tea": "Tea Card Block",
+                "default": "Repeat Question Block"
+            }
+        }
 		
    `provider` - (required) could be 'alexa' or 'dialogflow';<br>
    `template` - (required) intent name for alexa, action name for dialogflow;<br>
@@ -341,15 +363,31 @@ Every block extends abstract block, which has next properties:
    note: you should use amazon alexa console or dialogflow console to have 
         this block running
     
+<h3>If Block</h3>
+    
+        {
+            "name": "Comparison Test",
+            "type": "if",
+            "next": [
+                ["{{var}}", "==", "1", "Block 1"],
+                ["{{var}}", "<", "1", "Block 2"],
+                ["{{var}}", ">", "1", "Block 3"],
+            ]
+        }
+        
+   E.g. Simply calls "Block 1" when `{{var}} == 1`, calls "Block 2" when `{{var}} < 1` and "Block 3" when `{{var}} > 1`.
+   
+   Supported operators: `==`, `!=`, `>`, `>=`, `<`, `<=`
+    
 <h3>Method Block</h3>
 
    Simply call method from your own strategy
 
-    {
-    	"name": "Test method",
-    	"type": "method",
-    	"method": "myMethod"
-    }
+        {
+            "name": "Test method",
+            "type": "method",
+            "method": "myMethod"
+        }
     
    `method` - (required) method name
     
@@ -365,6 +403,34 @@ Every block extends abstract block, which has next properties:
                 $this->bot->reply('This is my method replies');
             }
          }
+
+<h3>Extend Block</h3>
+
+   Simply overrides properties of the parent block. Could be very helpful when you need to make very similar block with small changes.
+
+        {
+            "name": "Oysters Extended",
+            "type": "extend",
+            "base": "Oysters Block",
+            "content": {
+                "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Oysters_p1040741.jpg/330px-Oysters_p1040741.jpg"
+            }
+        },
+        {
+            "name": "Oysters Block",
+            "type": "image",
+            "template": "Oysters",
+            "content": {
+                "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Crassostrea_gigas_p1040848.jpg/450px-Crassostrea_gigas_p1040848.jpg"
+            }
+        }
+
+   `base` - (required) Name of the parent block<br>
+
+   E.g. Extends "Oysters Block" overriding `content` field
+   
+   note: do not extend blocks - `intent` and `ask`;<br>
+   note: extend only fields of 1st level of nesting (like `type`, `content`, `next`, but impossible to extend only `url` (2nd level of nesting) field from image content);
 
 <h2>Drivers</h2>
 
@@ -427,24 +493,24 @@ Save variables with 'result.save' field with request, ask, intent blocks
 
 <h2>Results</h2>
 
-   There are 4 blocks which returns result: `location`, `request`, `ask`, `intent`
+   There are 5 blocks which returns result: `location`, `attachment`, `request`, `ask`, `intent`
     
    For each you can apply 
    
         "result": {
-			"save": "{{my_variable}}"
-	    },
+            "save": "{{my_variable}}"
+        },
 	    
-   Three of them could have `next` field impacted depends on result value:
+   Three of them (`request`, `ask`, `intent`) could have `next` field impacted depends on result value:
    
    E.g. In this example triggers block `Type Phone Block` then result is `yes` string value,
    triggers `Ask Email Block` - when result is `no` and when neither `yes` nor `no`:
    
         "next": {
-		    "yes": "Type Phone Block",
-			"no": "Ask Email Block",
-			"fallback": "Ask Email Block"
-	    }
+            "yes": "Type Phone Block",
+            "no": "Ask Email Block",
+            "fallback": "Ask Email Block"
+        }
     
    note: for the `intent` block result is an entity value (dialogflow) or a slot value (alexa), which name set with `field` field
    
@@ -453,34 +519,34 @@ Save variables with 'result.save' field with request, ask, intent blocks
    Use `prompt` field to add quick buttons and simplify reply for user, like in the example below:
     
         {
-			"name": "Ask Phone",
-			"type": "ask",
-			"content": "Can you left us your phone to contant you only in case of urgency?",
-			"result": {
-				"prompt": "yes;no"
-			},
-			"next": {
-				"yes": "Type Phone Block",
-				"no": "Ask Email Block",
-				"fallback": "Ask Email Block"
-			}
-		}
+            "name": "Ask Phone",
+            "type": "ask",
+            "content": "Can you left us your phone to contant you only in case of urgency?",
+            "result": {
+                "prompt": "yes;no"
+            },
+            "next": {
+                "yes": "Type Phone Block",
+                "no": "Ask Email Block",
+                "fallback": "Ask Email Block"
+            }
+        }
    
 <h3>Request Result</h3>
 
    Use `field` field to quickly pull data from json response, like here:
 
         {
-			"name": "Tell a joke",
-			"type": "request",
-			"method": "GET",
-			"url": "http://api.icndb.com/jokes/random",
-			"result": {
-				"field": "value.joke",
-				"save": "{{joke}}"
-			},
-			"template": "Tell a joke;Joke;Do you know some jokes?"
-		}
+            "name": "Tell a joke",
+            "type": "request",
+            "method": "GET",
+            "url": "http://api.icndb.com/jokes/random",
+            "result": {
+                "field": "value.joke",
+                "save": "{{joke}}"
+            },
+            "template": "Tell a joke;Joke;Do you know some jokes?"
+        }
     
 
    Response looks like this:
@@ -492,6 +558,27 @@ Save variables with 'result.save' field with request, ask, intent blocks
                 "joke": "Chuck Norris doesn't needs try-catch, exceptions are too afraid to raise.", 
                 "categories": ["nerdy"] 
             } 
+        }
+
+<h2>Fallback</h2>
+
+   Fallback might be set in 3 different formats:
+   
+   1.text
+           
+        "fallback": "This is default reply messsage"
+
+   2.dialogflow
+       
+        "fallback": {
+            "type": "dialogflow"
+        }
+            
+   3.block
+   
+        "fallback": {
+            "name": "Hello Block",
+            "type": "block"
         }
 
 <h2>Builder</h2>
