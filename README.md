@@ -437,7 +437,11 @@ Every block extends abstract block, which has next properties:
    Before using driver in here, first you need to install proper driver for Botman.
    Available drivers are next:
    
-        Facebook, Telegram, Skype, Dialogflow, Alexa, Web
+        Facebook, Telegram, Skype, Dialogflow, Alexa, Viber
+   
+   note: Because  BotMan doesn't ship with Viber driver, you need to run
+   
+        composer require adellantado/botman-viber-driver
    
    Example:
     
