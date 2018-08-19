@@ -564,18 +564,18 @@ Save variables with 'result.save' field with request, ask, intent blocks
 
    Fallback might be set in 3 different formats:
    
-   - text
-       
+   1.text
+           
         "fallback": "This is default reply messsage"
 
-   - dialogflow
+   2.dialogflow
        
         "fallback": {
             "type": "dialogflow"
         }
             
-   - block
-       
+   3.block
+   
         "fallback": {
             "name": "Hello Block",
             "type": "block"
