@@ -560,6 +560,27 @@ Save variables with 'result.save' field with request, ask, intent blocks
             } 
         }
 
+<h2>Fallback</h2>
+
+   Fallback might be set in 3 different formats:
+   
+   - text
+       
+        "fallback": "This is default reply messsage"
+
+   - dialogflow
+       
+        "fallback": {
+            "type": "dialogflow"
+        }
+            
+   - block
+       
+        "fallback": {
+            "name": "Hello Block",
+            "type": "block"
+        }
+
 <h2>Builder</h2>
 
    Using builder is a straight-forward, below is an example of simple chatbot:
