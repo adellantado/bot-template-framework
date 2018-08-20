@@ -584,7 +584,7 @@ class TemplateEngine {
                 if ($fallback['type'] == 'block') {
                     $this->executeBlock($this->getBlock($fallback['name']));
                 } elseif ($fallback['type'] == 'dialogflow') {
-                    ApiAi::create($this->getDriver('dialogflow')['token'], $this->getDefaultLocale())->received($bot->getMessage(),
+                    ApiAi::create($this->getDriver('dialogflow')['token'], $this->getDefaultLocale())->received($bot->getMessages()[0],
                         function(IncomingMessage $message) use ($fallback){
                             if ($message->getExtras() && $message->getExtras()['apiReply']) {
                                 $this->strategy($this->bot)->sendText(
