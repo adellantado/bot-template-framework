@@ -119,10 +119,27 @@ class TemplateEngine {
     }
 
 
-    public function getDriver($name) {
-        return array_values(array_filter($this->template['drivers'], function ($driver) use ($name) {
+    public function getDriver($name, $loadVariables = true) {
+        $filtered = array_filter($this->template['drivers'], function ($driver) use ($name) {
             return strtolower($driver['name']) == strtolower($name);
-        }))[0];
+        });
+
+        if ($filtered) {
+            $result = array_values($filtered)[0];
+            if ($loadVariables && array_key_exists('config', $result) && $result['config'] == 'true') {
+                $driver = [];
+                foreach($result as $field=>$value) {
+                    if (!in_array($field, ['name', 'events', 'config'])) {
+                        $driver[$field] = env($value);
+                    } else {
+                        $driver[$field] = $value;
+                    }
+                }
+                return $driver;
+            }
+            return $result;
+        }
+        return null;
     }
 
     public function getBlock($name, $locale = null) {
