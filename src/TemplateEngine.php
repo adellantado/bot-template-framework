@@ -86,6 +86,10 @@ class TemplateEngine {
         return $this->template['name'];
     }
 
+    public function getDefaultLocale() {
+        return key_exists('locale', $this->template) ? $this->template['locale'] : 'en';
+    }
+
     public function getDriverName() {
         return strtolower(self::driverName($this->bot));
     }
@@ -580,7 +584,7 @@ class TemplateEngine {
                 if ($fallback['type'] == 'block') {
                     $this->executeBlock($this->getBlock($fallback['name']));
                 } elseif ($fallback['type'] == 'dialogflow') {
-                    ApiAi::create($this->getDriver('dialogflow')['token'])->received($bot->getMessage(),
+                    ApiAi::create($this->getDriver('dialogflow')['token'], $this->getDefaultLocale())->received($bot->getMessage(),
                         function(IncomingMessage $message) use ($fallback){
                             if ($message->getExtras() && $message->getExtras()['apiReply']) {
                                 $this->strategy($this->bot)->sendText(

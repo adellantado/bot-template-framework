@@ -15,6 +15,8 @@ class Template implements \JsonSerializable {
 
     protected $fallback;
 
+    protected  $locale;
+
     public function __construct($name) {
         $this->name = $name;
     }
@@ -50,12 +52,17 @@ class Template implements \JsonSerializable {
         return $this;
     }
 
+    public function locale($locale){
+        $this->locale = $locale;
+        return $this;
+    }
+
     public function jsonSerialize() {
         return $this->toArray();
     }
 
     public function toArray() {
-        return [
+        $array = [
             'name' => $this->name,
             'fallback' => $this->fallback instanceof Block ? [
                 'type' => 'block',
@@ -68,6 +75,12 @@ class Template implements \JsonSerializable {
                 return $driver->jsonSerialize();
             }, $this->drivers)
         ];
+
+        if ($this->locale) {
+            $array['locale'] = $this->locale;
+        }
+
+        return $array;
     }
 
 }
