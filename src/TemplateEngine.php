@@ -199,7 +199,7 @@ class TemplateEngine {
         }
 
         $driver = $this->getDriver($this->getDriverName(), false);
-        if (array_key_exists('events', $driver)) {
+        if ($driver && array_key_exists('events', $driver)) {
             foreach ($driver['events'] as $event=>$blockName) {
                 $this->bot->on($event, $this->getCallback($blockName, 'reply_', $callback));
             }
