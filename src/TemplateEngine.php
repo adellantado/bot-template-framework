@@ -582,7 +582,7 @@ class TemplateEngine {
                 } elseif ($fallback['type'] == 'dialogflow') {
                     ApiAi::create($this->getDriver('dialogflow')['token'])->received($bot->getMessage(),
                         function(IncomingMessage $message) use ($fallback){
-                            if ($message->getExtras()) {
+                            if ($message->getExtras() && $message->getExtras()['apiReply']) {
                                 $this->strategy($this->bot)->sendText(
                                     $message->getExtras()['apiReply']
                                 );
