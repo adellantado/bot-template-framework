@@ -575,7 +575,8 @@ Save variables with 'result.save' field with request, ask, intent blocks
    2.dialogflow
        
         "fallback": {
-            "type": "dialogflow"
+            "type": "dialogflow",
+            "default": "This is default reply message when no answer from Dialogflow"
         }
             
    3.block
