@@ -8,6 +8,7 @@ use BotMan\BotMan\Messages\Attachments\Audio;
 use BotMan\BotMan\Messages\Attachments\File;
 use BotMan\BotMan\Messages\Attachments\Image;
 use BotMan\BotMan\Messages\Attachments\Video;
+use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use BotMan\Drivers\Facebook\Extensions\ButtonTemplate;
@@ -102,6 +103,14 @@ class FacebookComponentsStrategy implements IComponentsStrategy, IStrategy {
             $list->addElement($element);
         }
         $this->reply($list);
+    }
+
+    public function sendQuickButtons($text, array $markup) {
+        $question = new Question($text);
+        foreach($markup as $callback=>$title) {
+            $question->addButton((new Button($title))->value($callback));
+        }
+        $this->reply($question);
     }
 
     public function sendAudio($url, $text = null) {

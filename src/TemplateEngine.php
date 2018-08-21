@@ -284,8 +284,13 @@ class TemplateEngine {
             $this->strategy($this->bot)->sendFile($this->parseText($content['url']),
                 array_key_exists('text', $content) ? $this->parseText($content['text']) : null);
         } elseif ($type == 'menu') {
-            $this->strategy($this->bot)->sendMenu($this->parseText($content['text']),
-                $this->parseArray($content['buttons']));
+            if (array_key_exists('mode', $block) && $block['mode'] == 'quick') {
+                $this->strategy($this->bot)->sendQuickButtons($this->parseText($content['text']),
+                    $this->parseArray($content['buttons']));
+            } else {
+                $this->strategy($this->bot)->sendMenu($this->parseText($content['text']),
+                    $this->parseArray($content['buttons']));
+            }
         } elseif ($type == 'list') {
             $this->strategy($this->bot)->sendList($this->parseArray($content));
         } elseif ($type == 'carousel') {

@@ -161,7 +161,7 @@ Every block extends abstract block, which has next properties:
 
 <h3>Menu Block</h3>
 
-   Show buttons
+   1.Show buttons
 
         {
             "name": "Menu Block",
@@ -201,6 +201,20 @@ Every block extends abstract block, which has next properties:
                                                                 
    E.g. Facebook - has 3 only buttons in one menu.
    
+   2.Show quick buttons
+
+        {
+            "name": "Quick Menu Block",
+            "type": "menu",
+            "mode": "quick",
+            "content": {
+                "text": "This is a quick menu",
+                "buttons": {
+                    "https://website.com/": "Visit Website", 
+                    "Ask Support": "Ask Support"
+                }
+            } 
+        }   
     
 <h3>Audio, Video and File Blocks</h3>
 

@@ -9,7 +9,9 @@ use BotMan\BotMan\Messages\Attachments\Audio;
 use BotMan\BotMan\Messages\Attachments\File;
 use BotMan\BotMan\Messages\Attachments\Image;
 use BotMan\BotMan\Messages\Attachments\Video;
+use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
+use BotMan\BotMan\Messages\Outgoing\Question;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use BotMan\Drivers\Telegram\Extensions\Keyboard;
 use BotMan\Drivers\Telegram\Extensions\KeyboardButton;
@@ -174,6 +176,10 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
             return (new Curl())->post(TelegramDriver::API_URL . $this->bot->getDriver()->getConfig()->get('token') . '/editMessageText',
                 [], $payload);
         });
+    }
+
+    public function sendQuickButtons($text, array $markup) {
+        // TODO: Implement sendQuickButtons() method.
     }
 
     public function sendAudio($url, $text = null) {

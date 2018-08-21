@@ -8,7 +8,9 @@ use BotMan\BotMan\Messages\Attachments\Audio;
 use BotMan\BotMan\Messages\Attachments\File;
 use BotMan\BotMan\Messages\Attachments\Image;
 use BotMan\BotMan\Messages\Attachments\Video;
+use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
+use BotMan\BotMan\Messages\Outgoing\Question;
 use TheArdent\Drivers\Viber\Extensions\CarouselTemplate;
 use TheArdent\Drivers\Viber\Extensions\KeyboardTemplate;
 use TheArdent\Drivers\Viber\Extensions\MenuTemplate;
@@ -67,6 +69,14 @@ class ViberComponentsStrategy implements IComponentsStrategy, IStrategy {
 
     public function sendCarousel(array $elements) {
         $this->reply(new CarouselTemplate($elements));
+    }
+
+    public function sendQuickButtons($text, array $markup) {
+        $question = new Question($text);
+        foreach($markup as $callback=>$title) {
+            $question->addButton((new Button($title))->value($callback));
+        }
+        $this->reply($question);
     }
 
     public function sendAudio($url, $text = null) {

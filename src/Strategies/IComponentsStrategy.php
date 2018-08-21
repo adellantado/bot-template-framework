@@ -17,6 +17,8 @@ interface IComponentsStrategy {
 
     public function sendCarousel(array $elements);
 
+    public function sendQuickButtons($text, array $markup);
+
     public function sendAudio($url, $text = null);
 
     public function sendVideo($url, $text = null);

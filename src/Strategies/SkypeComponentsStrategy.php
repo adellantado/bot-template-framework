@@ -167,6 +167,10 @@ class SkypeComponentsStrategy implements IComponentsStrategy, IStrategy {
         ]);
     }
 
+    public function sendQuickButtons($text, array $markup) {
+        // TODO: Implement sendQuickButtons() method.
+    }
+
     public function sendAudio($url, $text = null) {
         $this->reply(OutgoingMessage::create($text, new Audio($url)));
     }
