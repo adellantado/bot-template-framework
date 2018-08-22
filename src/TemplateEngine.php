@@ -5,8 +5,8 @@ namespace BotTemplateFramework;
 use BotMan\BotMan\Interfaces\CacheInterface;
 use BotMan\BotMan\Messages\Attachments\Location;
 use BotMan\BotMan\Messages\Incoming\IncomingMessage;
-use BotMan\BotMan\Middleware\ApiAi;
 use BotTemplateFramework\Builder\Template;
+use BotTemplateFramework\Distinct\Dialogflow\DialogflowExtended;
 use BotTemplateFramework\Strategies\StrategyTrait;
 use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Http\Curl;
@@ -191,7 +191,7 @@ class TemplateEngine {
             if ($block['type'] == 'intent') {
                 $command = $this->bot->hears($block['template'], $this->getCallback($block['name'], 'reply_', $callback));
                 if ($block['provider'] == 'dialogflow') {
-                    $dialogflow = ApiAi::create($this->getDriver('dialogflow')['token'])->listenForAction();
+                    $dialogflow = DialogflowExtended::create($this->getDriver('dialogflow')['token'])->listenForAction();
                     $this->bot->middleware->received($dialogflow);
                     $command->middleware($dialogflow);
                 }
@@ -544,7 +544,10 @@ class TemplateEngine {
             if (array_key_exists('content', $block)) {
                 $this->bot->reply($this->parseText($block['content']));
             } else {
-                $this->bot->reply($this->bot->getMessage()->getExtras()['apiReply']);
+                $extras = $this->bot->getMessage()->getExtras();
+                foreach($extras['apiReply'] as $speech) {
+                    $this->bot->reply($speech);
+                }
             }
         }
 
@@ -606,12 +609,13 @@ class TemplateEngine {
                 if ($fallback['type'] == 'block') {
                     $this->executeBlock($this->getBlock($fallback['name']));
                 } elseif ($fallback['type'] == 'dialogflow') {
-                    ApiAi::create($this->getDriver('dialogflow')['token'], $this->getDefaultLocale())->received($bot->getMessages()[0],
+                    DialogflowExtended::create($this->getDriver('dialogflow')['token'], $this->getDefaultLocale())->received($bot->getMessages()[0],
                         function(IncomingMessage $message) use ($fallback){
-                            if ($message->getExtras() && $message->getExtras()['apiReply']) {
-                                $this->strategy($this->bot)->sendText(
-                                    $message->getExtras()['apiReply']
-                                );
+                            $extras = $message->getExtras();
+                            if ($extras && $extras['apiReply']) {
+                                foreach($extras['apiReply'] as $speech) {
+                                    $this->strategy($this->bot)->sendText($speech);
+                                }
                             } elseif (key_exists('default', $fallback)) {
                                 $this->strategy($this->bot)->sendText(
                                     $fallback['default']
