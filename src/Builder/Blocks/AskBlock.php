@@ -17,6 +17,8 @@ class AskBlock extends Block {
 
     protected $errorMsg;
 
+    protected $validate;
+
     /**
      * @var string
      */
@@ -37,6 +39,15 @@ class AskBlock extends Block {
      */
     public function text($text) {
         $this->text = $text;
+        return $this;
+    }
+
+    /**
+     * @param $validate
+     * @return $this
+     */
+    public function validate($validate) {
+        $this->validate = $validate;
         return $this;
     }
 
