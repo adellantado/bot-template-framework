@@ -10,6 +10,8 @@ class MenuBlock extends Block {
 
     protected $text;
 
+    protected $quickMode;
+
     public function __construct($name = null) {
         parent::__construct('menu', $name);
     }
@@ -28,12 +30,20 @@ class MenuBlock extends Block {
         return $this;
     }
 
+    public function quickMode() {
+        $this->quickMode = true;
+    }
+
     public function toArray() {
         $array = parent::toArray();
 
         $content = [
             'text' => $this->text
         ];
+
+        if ($this->quickMode) {
+            $content['mode'] = 'quick';
+        }
 
         if ($this->buttons) {
             $content['buttons'] = [];
