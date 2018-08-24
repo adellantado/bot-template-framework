@@ -48,26 +48,26 @@ class TemplateConversation extends Conversation {
                 $validator = new Validator();
                 if ($block['validate'] == 'number') {
                     if (!$validator->number($answer->getText())) {
-                        $this->say($validator->errorNumberMsg());
+                        $this->say($block['errorMsg'] ?? $validator->errorNumberMsg());
                         $this->askAgain($block);
                         return;
                     }
                 } elseif ($block['validate'] == 'url') {
                     if (!$validator->url($answer->getText())) {
-                        $this->say($validator->errorUrlMsg());
+                        $this->say($block['errorMsg'] ?? $validator->errorUrlMsg());
                         $this->askAgain($block);
                         return;
                     }
                 } elseif ($block['validate'] == 'email') {
                     if (!$validator->email($answer->getText())) {
-                        $this->say($validator->errorEmailMsg());
+                        $this->say($block['errorMsg'] ?? $validator->errorEmailMsg());
                         $this->askAgain($block);
                         return;
                     }
                 } elseif ($block['validate'] == 'confirm') {
                     $oldValue = $engine->removeVariable('temp.confirmation');
                     if (!$validator->confirm($oldValue, $answer->getText())) {
-                        $this->say($validator->errorConfirmMsg());
+                        $this->say($block['errorMsg'] ?? $validator->errorConfirmMsg());
                         $this->askAgain($block);
                         return;
                     }

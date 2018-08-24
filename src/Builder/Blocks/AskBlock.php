@@ -15,6 +15,8 @@ class AskBlock extends Block {
 
     protected $prompts;
 
+    protected $errorMsg;
+
     /**
      * @var string
      */
@@ -39,6 +41,15 @@ class AskBlock extends Block {
     }
 
     /**
+     * @param string $text
+     * @return $this
+     */
+    public function errorMsg($text) {
+        $this->errorMsg = $text;
+        return $this;
+    }
+
+    /**
      * @param Block|array $next
      * @return Block
      */
@@ -59,6 +70,10 @@ class AskBlock extends Block {
 
         if ($this->result) {
             $array['result'] = $this->result->toArray();
+        }
+
+        if ($this->errorMsg) {
+            $array['errorMsg'] = $this->errorMsg;
         }
 
         if ($this->prompts) {
