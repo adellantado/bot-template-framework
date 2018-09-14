@@ -311,6 +311,8 @@ class TemplateEngine {
             $this->executeExtend($block);
         } elseif ($type == 'if') {
             $this->executeIf($block);
+        } elseif ($type == 'idle') {
+            // does nothing
         } else {
             throw new \Exception('Can\'t find any suitable block type');
         }

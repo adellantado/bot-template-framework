@@ -89,18 +89,15 @@ E.g. Simple Telegram Hello World chatbot:
 
 <h2>Blocks</h2>
 
-There are 16 types of block
+There are 17 types of block
 
-        text, image, menu, audio, video, file, location, attachment, carousel, list, request, ask, intent, if, method and extend 
+        text, image, menu, audio, video, file, location, attachment, carousel, list, request, ask, intent, if, method, extend, idle
 
 Every block extends abstract block, which has next properties:
 
         {
             "name": "Block Name",
-            "type": "image",
-            "content": {
-                "url": "https://test.com/image.jpg"
-            },
+            "type": "idle",
             "template": "Image;Show image;Want to see an image",
             "typing": "1s",
             "drivers": "any;!telegram",
@@ -111,7 +108,6 @@ Every block extends abstract block, which has next properties:
 
    `name` - (required) name of the block, uses to identify blocks;<br>
    `type` - (required) type of the block (e.g. image, text ..);<br>
-   `content` - (required) data to sent into chat;<br>
    `template` - (optional) identify key phrases which chatbot react to (see $botman->hear());<br>
    `typing` - (optional) shows typing effect in chat before running the block;<br>
    `drivers` - (optional) exclude/include block from execution for some drivers (e.g. 'any' or '*' - runs for all drivers,
@@ -447,6 +443,18 @@ Every block extends abstract block, which has next properties:
    
    note: do not extend blocks - `intent` and `ask`;<br>
    note: extend only fields of 1st level of nesting (like `type`, `content`, `next`, but impossible to extend only `url` (2nd level of nesting) field from image content);
+
+<h3>Idle Block</h3>
+
+   Simply does nothing, but can be used to call next block
+
+       {
+            "name": "Does Nothing",
+            "type": "idle",
+            "template": "call idle",
+            "typing": "1s",
+            "next": "Next Block"
+       }    
 
 <h2>Drivers</h2>
 
