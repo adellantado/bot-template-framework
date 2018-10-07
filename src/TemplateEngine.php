@@ -104,8 +104,11 @@ class TemplateEngine {
         $this->template['blocks'] = array_merge($this->template['blocks'], $blocks);
     }
 
-    public function addBlockListener($blockName, \Closure $callback) {
-        $this->listeners[$blockName] = $callback;
+    public function addBlockListener($blockName, \Closure $callback, $capturingPhase = false) {
+        $this->listeners[$blockName] = [
+            'callback' => $callback,
+            'capturingPhase' => $capturingPhase
+        ];
     }
 
     public function removeBlockListener($blockName) {
@@ -231,7 +234,9 @@ class TemplateEngine {
                 'longitude'=> $location->getLongitude()
             ]);
             $this->cache->pull('lastBlock');
-            $this->callListener($block);
+            if ($this->callListener($block) === false) {
+                return $this;
+            }
             if ($this->checkNextBlock($block)) {
                 $this->executeNextBlock($block);
             }
@@ -241,7 +246,9 @@ class TemplateEngine {
             $url = $arguments[1][0]->getUrl();
             $this->saveVariable($block['result']['save'], $url);
             $this->cache->pull('lastBlock');
-            $this->callListener($block);
+            if ($this->callListener($block) === false) {
+                return $this;
+            }
             if ($this->checkNextBlock($block)) {
                 $this->executeNextBlock($block);
             }
@@ -264,6 +271,11 @@ class TemplateEngine {
         if (array_key_exists('typing', $block)) {
             $this->bot->typesAndWaits((int)$block['typing']);
         }
+
+        if ($this->callListener($block, true) === false) {
+            return $this;
+        }
+
         if ($type == 'text') {
             $this->strategy($this->bot)->sendText($this->parseText($content));
         } elseif ($type == 'image') {
@@ -318,7 +330,9 @@ class TemplateEngine {
         }
 
         if (!in_array($block['type'], ['ask', 'attachment', 'location'])) {
-            $this->callListener($block);
+            if ($this->callListener($block) === false) {
+                return $this;
+            }
         }
 
         // store location or attachment block name to call receive attachment method on a next session
@@ -415,15 +429,20 @@ class TemplateEngine {
         return $value;
     }
 
-    public function callListener($block) {
+    public function callListener($block, $capturingPhase = false) {
         if (array_key_exists($block['name'], $this->listeners)) {
-            $callback = $this->listeners[$block['name']];
-            if ($callback instanceof \Closure) {
-                $callback($this, $block);
-            } elseif(is_callable($callback)) {
-                call_user_func_array($callback, [$this, $block]);
+            $event = $this->listeners[$block['name']];
+            if ($event['capturingPhase'] === $capturingPhase) {
+                $callback = $event['callback'];
+                if ($callback instanceof \Closure) {
+                    return $callback($this, $block);
+                } elseif(is_callable($callback)) {
+                    return call_user_func_array($callback, [$this, $block]);
+                }
             }
         }
+
+        return true;
     }
 
     public function parseText($text) {

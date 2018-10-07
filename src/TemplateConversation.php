@@ -84,7 +84,9 @@ class TemplateConversation extends Conversation {
                 $engine->saveVariable($block['result']['save'], $answer->getText());
             }
 
-            $engine->callListener($block);
+            if ($engine->callListener($block) === false) {
+                return;
+            }
 
             if (array_key_exists('next', $block)) {
                 $engine->executeNextBlock($block, $answer->getText());
