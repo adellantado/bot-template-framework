@@ -30,6 +30,8 @@ class TemplateEngine {
     /** @var CacheInterface */
     protected $cache;
 
+    protected $activeBlock;
+
     public static function getConfig($template, $config = []) {
         if (is_string($template)) {
             $template = json_decode($template, true);
@@ -80,6 +82,10 @@ class TemplateEngine {
 
     public function getStrategy() {
         return $this->strategy;
+    }
+
+    public function getActiveBlock() {
+        return $this->activeBlock;
     }
 
     public function getBotName() {
@@ -264,6 +270,8 @@ class TemplateEngine {
             return $this;
         }
 
+        $this->activeBlock = $block;
+
         $type = $block['type'];
         $content = array_key_exists('content', $block) ? $block['content'] : null;
         $result = null;
@@ -339,6 +347,8 @@ class TemplateEngine {
         if (in_array($block['type'], ['location', 'attachment'])) {
             $this->putCacheVariable('lastBlock', $block['name']);
         }
+
+        $this->activeBlock = null;
 
         if ($this->checkNextBlock($block) && !in_array($block['type'], ['ask', 'extend', 'if', 'location', 'attachment'])) {
             $this->executeNextBlock($block, $result);
