@@ -153,7 +153,7 @@ class TemplateEngine {
 
     public function getBlock($name, $locale = null) {
         $filtered = array_filter($this->template['blocks'], function ($block) use ($name, $locale) {
-            return $this->validBlock($block) && strtolower($block['name']) == strtolower($name) && ($locale ? $block['locale'] == $locale : true);
+            return $this->validBlock($block) && strtolower($block['name']) == strtolower($name) && ($locale ? (array_key_exists('locale', $block) ? $block['locale'] == $locale : $this->getDefaultLocale() == $locale) : true);
         });
 
         if ($filtered) {
@@ -200,7 +200,8 @@ class TemplateEngine {
             if ($block['type'] == 'intent') {
                 $command = $this->bot->hears($block['template'], $this->getCallback($block['name'], 'reply_', $callback));
                 if ($block['provider'] == 'dialogflow') {
-                    $dialogflow = DialogflowExtended::create($this->getDriver('dialogflow')['token'])->listenForAction();
+                    $locale = array_key_exists('locale', $block) ? $block['locale'] : $this->getDefaultLocale();
+                    $dialogflow = DialogflowExtended::create($this->getDriver('dialogflow')['token'], $locale)->listenForAction();
                     $this->bot->middleware->received($dialogflow);
                     $command->middleware($dialogflow);
                 }
