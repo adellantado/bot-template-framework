@@ -110,7 +110,12 @@ class TemplateEngine {
         $this->template['blocks'] = array_merge($this->template['blocks'], $blocks);
     }
 
-    public function addBlockListener($blockName, \Closure $callback, $capturingPhase = false) {
+    /**
+     * @param $blockName
+     * @param $callback \Closure|array
+     * @param bool $capturingPhase
+     */
+    public function addBlockListener($blockName, $callback, $capturingPhase = false) {
         $this->listeners[$blockName] = [
             'callback' => $callback,
             'capturingPhase' => $capturingPhase
