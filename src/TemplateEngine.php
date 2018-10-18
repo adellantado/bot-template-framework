@@ -64,6 +64,18 @@ class TemplateEngine {
         TemplateConversation::$engine = $this;
     }
 
+    public function setTemplate($template) {
+        if (is_string($template)) {
+            $this->template = json_decode($template, true);
+        } elseif (is_array($template)) {
+            $this->template = $template;
+        } elseif ($template instanceof Template) {
+            $this->template = $template->jsonSerialize();
+        } else {
+            throw new \Exception(self::class . " accepts only array, Template or json string");
+        }
+    }
+
     public function setBot(BotMan $bot) {
         $this->bot = $bot;
         return $this;
@@ -662,19 +674,6 @@ class TemplateEngine {
                 }
             }
         });
-    }
-
-
-    protected function setTemplate($template) {
-        if (is_string($template)) {
-            $this->template = json_decode($template, true);
-        } elseif (is_array($template)) {
-            $this->template = $template;
-        } elseif ($template instanceof Template) {
-            $this->template = $template->jsonSerialize();
-        } else {
-            throw new \Exception(self::class . " accepts only array, Template or json string");
-        }
     }
 
     protected function validBlock($block) {
