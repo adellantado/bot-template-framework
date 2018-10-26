@@ -17,6 +17,7 @@ use BotMan\Drivers\Telegram\TelegramDriver;
 use BotMan\Drivers\Telegram\Extensions\Keyboard;
 use BotMan\Drivers\Telegram\Extensions\KeyboardButton;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Collection;
 
 class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
     protected $bot;
