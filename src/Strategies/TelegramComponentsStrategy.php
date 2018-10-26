@@ -9,13 +9,13 @@ use BotMan\BotMan\Messages\Attachments\Audio;
 use BotMan\BotMan\Messages\Attachments\File;
 use BotMan\BotMan\Messages\Attachments\Image;
 use BotMan\BotMan\Messages\Attachments\Video;
+use BotMan\BotMan\Messages\Incoming\IncomingMessage;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use BotMan\Drivers\Telegram\Extensions\Keyboard;
 use BotMan\Drivers\Telegram\Extensions\KeyboardButton;
-use Illuminate\Support\Collection;
 use Symfony\Component\HttpFoundation\Response;
 
 class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
@@ -48,7 +48,9 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
     }
 
     public function sendMenuAndImage($imageUrl, $text, array $markup) {
-        $recipient = $this->bot->getMessage()->getRecipient() === '' ? $this->bot->getMessage()->getSender() : $this->bot->getMessage()->getRecipient();
+        /** @var IncomingMessage $message */
+        $message = $this->bot->getMessages()[0];
+        $recipient = $message->getRecipient() === '' ? $message->getSender() : $message->getRecipient();
         $this->bot->sendRequest('sendPhoto', array_merge([
             'chat_id' => $recipient,
             'photo' => $imageUrl,
@@ -147,8 +149,12 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
         }
         $text .= '[link](' . $element['url'] . ')';
 
+        /** @var IncomingMessage $message */
+        $message = $this->bot->getMessages()[0];
+        $recipient = $message->getRecipient() === '' ? $message->getSender() : $message->getRecipient();
+
         $payload = [
-            'chat_id' => $bot->getUser()->getId(),
+            'chat_id' => $recipient,
             'message_id' => $messageId,
             'text' => $text,
             'parse_mode' => 'Markdown'
