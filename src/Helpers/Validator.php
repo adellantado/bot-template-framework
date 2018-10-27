@@ -67,6 +67,23 @@ class Validator {
     }
 
     public function blockWithDriverLimits(array $block, $driver) {
+        if (array_key_exists('drivers', $block)) {
+            $pieces = explode(';', $block['drivers']);
+            $driverAllowed = false;
+            foreach ($pieces as $piece) {
+                if ($piece == '!'.$driver) {
+                    return null;
+                } elseif ($piece == $driver) {
+                    $driverAllowed = true;
+                } elseif (in_array($piece, ['any', 'all', '*'])) {
+                    $driverAllowed = true;
+                }
+            }
+            if (!$driverAllowed) {
+                return null;
+            }
+        }
+
         $type = $block['type'];
         if ($driver == 'viber' && $type == 'image') {
             if (array_key_exists('text', $block['content']) && mb_strlen($block['content']['text']) > 120) {
