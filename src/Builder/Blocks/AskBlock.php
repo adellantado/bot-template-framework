@@ -87,6 +87,10 @@ class AskBlock extends Block {
             $array['errorMsg'] = $this->errorMsg;
         }
 
+        if ($this->validate) {
+            $array['validate'] = $this->validate;
+        }
+
         if ($this->prompts) {
             $array['next'] = [];
             foreach ($this->prompts as $prompt) {
