@@ -28,7 +28,7 @@ class FacebookDriverExtended extends FacebookDriver {
             'message'
         ]);
 
-        if ($collection->has('referral') || ($collection->has('postback') && array_key_exists('referral', $collection->all()['postback']))) {
+        if ($collection->has('referral') || ($collection->has('postback') && array_key_exists('referral', $collection->pull('postback')))) {
             return new MessagingReferrals($eventData);
         } elseif ($collection->has('optin')) {
             return new MessagingOptins($eventData);
