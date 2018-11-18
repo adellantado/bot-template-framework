@@ -18,21 +18,17 @@ class FacebookDriverExtended extends FacebookDriver {
     public function hasMatchingEvent()
     {
         $event = Collection::make($this->event->get('messaging'))->filter(function ($msg) {
-            $fields = [
+            $collection = Collection::make($msg);
+            if ($collection->has('postback') && array_key_exists('referral', $collection->all()['postback'])) {
+                return true;
+            }
+            return $collection->except([
                 'sender',
                 'recipient',
                 'timestamp',
                 'message',
-            ];
-            foreach($fields as $field) {
-                if (array_key_exists($field, $msg)) {
-                    return false;
-                }
-            }
-            if (array_key_exists('postback', $msg)) {
-                return array_key_exists('referral', $msg['postback']);
-            }
-            return true;
+                'postback',
+            ])->isEmpty() === false;
         })->transform(function ($msg) {
             return Collection::make($msg)->toArray();
         })->first();
