@@ -15,6 +15,37 @@ use BotMan\Drivers\Facebook\FacebookDriver;
 
 class FacebookDriverExtended extends FacebookDriver {
 
+    public function hasMatchingEvent()
+    {
+        $event = Collection::make($this->event->get('messaging'))->filter(function ($msg) {
+            $fields = [
+                'sender',
+                'recipient',
+                'timestamp',
+                'message',
+            ];
+            foreach($fields as $field) {
+                if (array_key_exists($field, $msg)) {
+                    return false;
+                }
+            }
+            if (array_key_exists('postback', $msg)) {
+                return array_key_exists('referral', $msg['postback']);
+            }
+            return true;
+        })->transform(function ($msg) {
+            return Collection::make($msg)->toArray();
+        })->first();
+
+        if (! is_null($event)) {
+            $this->driverEvent = $this->getEventFromEventData($event);
+
+            return $this->driverEvent;
+        }
+
+        return false;
+    }
+
     /**
      * @param array $eventData
      * @return DriverEventInterface
@@ -28,7 +59,7 @@ class FacebookDriverExtended extends FacebookDriver {
             'message'
         ]);
 
-        if ($collection->has('referral') || ($collection->has('postback') && array_key_exists('referral', $collection->pull('postback')))) {
+        if ($collection->has('referral') || ($collection->has('postback') && array_key_exists('referral', $collection->all()['postback']))) {
             return new MessagingReferrals($eventData);
         } elseif ($collection->has('optin')) {
             return new MessagingOptins($eventData);
