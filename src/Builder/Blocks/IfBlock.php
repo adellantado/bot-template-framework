@@ -29,7 +29,7 @@ class IfBlock extends Block {
 
     public function toArray() {
         $array = parent::toArray();
-        $array['next'] = $this->next;
+        $array['next'] = $this->rules;
         return $array;
     }
 
