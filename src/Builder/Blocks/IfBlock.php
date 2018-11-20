@@ -12,7 +12,7 @@ class IfBlock extends Block {
     }
 
     /**
-     * @param Block $arg1
+     * @param $arg1
      * @param $operator
      * @param $arg2
      * @param Block $block
