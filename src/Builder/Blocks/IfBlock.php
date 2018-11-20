@@ -5,7 +5,7 @@ namespace BotTemplateFramework\Builder\Blocks;
 
 class IfBlock extends Block {
 
-    protected $next = [];
+    protected $rules = [];
 
     public function __construct($name = null) {
         parent::__construct('if', $name);
@@ -18,15 +18,19 @@ class IfBlock extends Block {
      * @param Block $block
      * @return $this
      */
-    public function next($arg1, $operator, $arg2, Block $block) {
-        $this->next[] = [$arg1, $operator, $arg2, $block->getName()];
+    public function rule($arg1, $operator, $arg2, Block $block) {
+        $this->rules[] = [$arg1, $operator, $arg2, $block->getName()];
         return $this;
     }
 
+    public function next($next) {
+        throw new \Exception("call 'next' method is not allowable, use 'rule' method instead");
+    }
+
     public function toArray() {
-        return array_merge(parent::toArray(), [
-            'next' => $this->next
-        ]);
+        $array = parent::toArray();
+        $array['next'] = $this->next;
+        return $array;
     }
 
 }
