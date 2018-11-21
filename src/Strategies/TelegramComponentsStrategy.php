@@ -214,8 +214,10 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
         ]);
     }
 
-    public function requirePhone($text) {
-        return $this->reply($text, [
+    public function requirePhonePayload($text) {
+        return [
+            'text' => $text,
+            'parse_mode' => 'Markdown',
             'reply_markup' => json_encode([
                 Keyboard::TYPE_KEYBOARD => [
                     [[
@@ -224,7 +226,12 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
                     ]]
                 ],
             ])
-        ]);
+        ];
+    }
+
+    public function requireEmailPayload($text) {
+        // TODO: Implement requireEmailPayload() method.
+        return null;
     }
 
 

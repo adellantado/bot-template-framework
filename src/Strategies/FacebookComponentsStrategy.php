@@ -129,12 +129,12 @@ class FacebookComponentsStrategy implements IComponentsStrategy, IStrategy {
         $this->reply(Question::create($text)->addAction(QuickReplyButton::create()->type('location')));
     }
 
-    public function requirePhone($text) {
-        $this->reply(Question::create($text)->addAction(QuickReplyButton::create()->type('user_phone_number')));
+    public function requirePhonePayload($text) {
+        return Question::create($text)->addAction(QuickReplyButton::create()->type('user_phone_number'));
     }
 
-    public function requireEmail($text) {
-        $this->reply(Question::create($text)->addAction(QuickReplyButton::create()->type('user_email')));
+    public function requireEmailPayload($text) {
+        return Question::create($text)->addAction(QuickReplyButton::create()->type('user_email'));
     }
 
     /**

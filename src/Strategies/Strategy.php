@@ -81,6 +81,17 @@ abstract class Strategy implements IStrategy, IComponentsStrategy {
         $this->componentsStrategy->requireLocation($text);
     }
 
+    public function requirePhonePayload($text) {
+        // TODO: Implement requirePhonePayload() method.
+        return null;
+    }
+
+    public function requireEmailPayload($text) {
+        // TODO: Implement requireEmailPayload() method.
+        return null;
+    }
+
+
     /**
      * This method needed for Telegram Carousel component. When override Telegram Strategy with custom one,
      * this method should be present in there.

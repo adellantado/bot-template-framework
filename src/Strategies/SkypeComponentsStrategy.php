@@ -211,4 +211,15 @@ class SkypeComponentsStrategy implements IComponentsStrategy, IStrategy {
         return $buttons;
     }
 
+    public function requirePhonePayload($text) {
+        // TODO: Implement requirePhonePayload() method.
+        return null;
+    }
+
+    public function requireEmailPayload($text) {
+        // TODO: Implement requireEmailPayload() method.
+        return null;
+    }
+
+
 }

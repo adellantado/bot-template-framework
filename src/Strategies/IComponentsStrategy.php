@@ -27,4 +27,8 @@ interface IComponentsStrategy {
 
     public function requireLocation($text);
 
+    public function requirePhonePayload($text);
+
+    public function requireEmailPayload($text);
+
 }

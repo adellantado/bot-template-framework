@@ -95,6 +95,16 @@ class ViberComponentsStrategy implements IComponentsStrategy, IStrategy {
         // TODO: Implement sendLocation() method.
     }
 
+    public function requirePhonePayload($text) {
+        // TODO: Implement requirePhonePayload() method.
+        return null;
+    }
+
+    public function requireEmailPayload($text) {
+        // TODO: Implement requireEmailPayload() method.
+        return null;
+    }
+
     protected function buildMenu(array $markup, $keyboard) {
         foreach ($markup as $submenu) {
             foreach ($submenu as $callback => $title) {

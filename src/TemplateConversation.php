@@ -29,15 +29,21 @@ class TemplateConversation extends Conversation {
     public function run() {
         $engine = TemplateConversation::$engine;
         $block = $engine->getBlock($this->blockName);
-        $question = new Question($engine->parseText($block['content']));
-        if (array_key_exists('result', $block) && array_key_exists('prompt', $block['result'])) {
-            $buttons = explode(';', $block['result']['prompt']);
-            foreach ($buttons as $button) {
-                if ($button) {
-                    $question->addButton(Button::create($button)->value($button));
+        $question = null;
+        if (array_key_exists('validate', $block) && $block['validate'] == 'email') {
+            $question = $engine->strategy($this->bot)->requireEmailPayload($engine->parseText($block['content']));
+        } elseif ($question == null) {
+            $question = new Question($engine->parseText($block['content']));
+            if (array_key_exists('result', $block) && array_key_exists('prompt', $block['result'])) {
+                $buttons = explode(';', $block['result']['prompt']);
+                foreach ($buttons as $button) {
+                    if ($button) {
+                        $question->addButton(Button::create($button)->value($button));
+                    }
                 }
             }
         }
+
 
         $normalCallback = function(Answer $answer) {
             $engine = TemplateConversation::$engine;
