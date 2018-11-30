@@ -188,7 +188,7 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
     }
 
     public function sendQuickButtons($text, array $markup) {
-        return $this->reply($text, $this->buildMenu($markup, false));
+        return $this->reply($text, $this->buildMenu($markup, false, true));
     }
 
     public function sendAudio($url, $text = null) {
