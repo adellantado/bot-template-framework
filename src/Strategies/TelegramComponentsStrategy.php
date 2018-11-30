@@ -78,7 +78,7 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
         return $this->reply($text);
     }
 
-    protected function buildMenu(array $markup) {
+    protected function buildMenu(array $markup, $inline = true, $oneTimeKeyboard = false) {
         $menu = [];
         foreach ($markup as $submenu) {
             $rows = [];
@@ -92,10 +92,12 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
             $menu[] = $rows;
         }
 
+        $type = $inline ? Keyboard::TYPE_INLINE : Keyboard::TYPE_KEYBOARD;
+
         return [
             'reply_markup' => json_encode(Collection::make([
-                Keyboard::TYPE_INLINE => $menu,
-                'one_time_keyboard' => false,
+                $type => $menu,
+                'one_time_keyboard' => $oneTimeKeyboard,
                 'resize_keyboard' => false,
             ])->filter()),
         ];
@@ -186,7 +188,7 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
     }
 
     public function sendQuickButtons($text, array $markup) {
-        // TODO: Implement sendQuickButtons() method.
+        return $this->reply($text, $this->buildMenu($markup, false));
     }
 
     public function sendAudio($url, $text = null) {
