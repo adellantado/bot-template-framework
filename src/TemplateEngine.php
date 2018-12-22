@@ -484,14 +484,15 @@ class TemplateEngine {
     }
 
     protected function parseArray($array) {
+        $result = [];
         foreach ($array as $key => $item) {
             if (is_array($item)) {
                 $this->parseArray($item);
             } else {
-                $array[$key] = $this->parseText($item);
+                $result[$key] = $this->parseText($item);
             }
         }
-        return $array;
+        return $result;
     }
 
     protected function getSubVariable(string $name, array $data) {
