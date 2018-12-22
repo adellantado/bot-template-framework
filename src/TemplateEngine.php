@@ -536,12 +536,14 @@ class TemplateEngine {
 
         if ($response && $response->getStatusCode() == 200) {
             $result = json_decode($response->getContent(), true);
-            if (array_key_exists('field', $block['result'])) {
-                $result = $this->getSubVariable($block['result']['field'], $result);
-            }
+            if (array_key_exists('result', $block)) {
+                if (array_key_exists('field', $block['result'])) {
+                    $result = $this->getSubVariable($block['result']['field'], $result);
+                }
 
-            if (array_key_exists('save', $block['result'])) {
-                $this->saveVariable($block['result']['save'], $result);
+                if (array_key_exists('save', $block['result'])) {
+                    $this->saveVariable($block['result']['save'], $result);
+                }
             }
 
             return $result;
