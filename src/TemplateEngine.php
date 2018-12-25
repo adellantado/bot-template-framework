@@ -487,7 +487,7 @@ class TemplateEngine {
         $result = [];
         foreach ($array as $key => $item) {
             if (is_array($item)) {
-                $this->parseArray($item);
+                $result[$key] = $this->parseArray($item);
             } else {
                 $result[$key] = $this->parseText($item);
             }
