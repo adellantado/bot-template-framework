@@ -332,7 +332,7 @@ class TemplateEngine {
         } elseif ($type == 'list') {
             $this->strategy($this->bot)->sendList($this->parseArray($content));
         } elseif ($type == 'carousel') {
-            $this->strategy($this->bot)->sendCarousel($this->parseArray($content));
+            $this->strategy($this->bot)->sendCarousel($this->parseArray($content), $block['options']);
         } elseif ($type == 'location') {
             $this->strategy($this->bot)->requireLocation($this->parseText($content));
         } elseif ($type == 'attachment') {

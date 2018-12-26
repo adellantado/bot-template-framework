@@ -57,7 +57,7 @@ abstract class Strategy implements IStrategy, IComponentsStrategy {
         $this->componentsStrategy->sendList($elements, $globalButton);
     }
 
-    public function sendCarousel(array $elements) {
+    public function sendCarousel(array $elements, $options = null) {
         $this->componentsStrategy->sendCarousel($elements);
     }
 

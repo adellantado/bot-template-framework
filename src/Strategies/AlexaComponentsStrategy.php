@@ -62,7 +62,7 @@ class AlexaComponentsStrategy implements IComponentsStrategy, IStrategy {
         $this->sendCard($elements[0]['title'], $subtitle, $elements[0]['url'], $description);
     }
 
-    public function sendCarousel(array $elements) {
+    public function sendCarousel(array $elements, $options = null) {
         $this->sendList($elements);
     }
 

@@ -64,11 +64,11 @@ class FacebookComponentsStrategy implements IComponentsStrategy, IStrategy {
         $this->reply($text);
     }
 
-    public function sendCarousel(array $elements) {
+    public function sendCarousel(array $elements, $options = null) {
         if (count($elements) > 10) {
             throw new Exception('Facebook Generic Template component must include up to 10 elements');
         }
-        $template = GenericTemplate::create()->addImageAspectRatio(GenericTemplate::RATIO_SQUARE);
+        $template = GenericTemplate::create()->addImageAspectRatio($options['image_aspect_ratio'] ?? GenericTemplate::RATIO_SQUARE);
 
         foreach ($elements as $item) {
             $element = Element::create($item['title'])->image($item['url']);

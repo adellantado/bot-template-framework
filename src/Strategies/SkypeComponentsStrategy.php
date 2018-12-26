@@ -133,7 +133,7 @@ class SkypeComponentsStrategy implements IComponentsStrategy, IStrategy {
         ]);
     }
 
-    public function sendCarousel(array $elements) {
+    public function sendCarousel(array $elements, $options = null) {
         $attachments = [];
         foreach ($elements as $element) {
             $attachment = [

@@ -103,7 +103,7 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
         ];
     }
 
-    public function sendCarousel(array $elements) {
+    public function sendCarousel(array $elements, $options = null) {
         $element = $elements[0];
         $text = $element['title'] . PHP_EOL;
         if (array_key_exists('description', $element)) {

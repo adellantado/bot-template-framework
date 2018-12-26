@@ -98,6 +98,14 @@ class Validator {
                     return 'For menu blocks, Facebook requires max = 3 buttons in a menu';
                 }
             }
+        } elseif ($driver == 'facebook' && $type == 'carousel') {
+            if (!in_array(($block['options']['image_aspect_ratio'] ?? false), ['horizontal', 'square'])) {
+                return 'For Facebook carousel blocks, option \'image_aspect_ratio\' requires to be \'horizontal\' or \'square\'';
+            }
+            if (count($block['content']) > 10) {
+                return 'For carousel blocks, Facebook requires max = 10 elements';
+            }
+
         }
 
         return null;

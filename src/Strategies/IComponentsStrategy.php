@@ -15,7 +15,7 @@ interface IComponentsStrategy {
 
     public function sendList(array $elements, array $globalButton = null);
 
-    public function sendCarousel(array $elements);
+    public function sendCarousel(array $elements, $options = null);
 
     public function sendQuickButtons($text, array $markup);
 

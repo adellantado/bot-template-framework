@@ -67,7 +67,7 @@ class ViberComponentsStrategy implements IComponentsStrategy, IStrategy {
         }
     }
 
-    public function sendCarousel(array $elements) {
+    public function sendCarousel(array $elements, $options = null) {
         $this->reply(new CarouselTemplate($elements));
     }
 
