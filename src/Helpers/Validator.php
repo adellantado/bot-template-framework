@@ -93,9 +93,13 @@ class Validator {
                 return 'For image blocks, Viber requires only JPEG format';
             }
         } elseif ($driver == 'facebook' && $type == 'menu') {
-            foreach ($block['content']['buttons'] as $menu) {
-                if (count($menu) > 3) {
-                    return 'For menu blocks, Facebook requires max = 3 buttons in a menu';
+            if ($block['mode'] == 'quick' && count($block['content']['buttons']) > 10) {
+                return 'For menu blocks with quick buttons, Facebook allows to show max = 10 buttons at once';
+            } else {
+                foreach ($block['content']['buttons'] as $menu) {
+                    if (count($menu) > 3) {
+                        return 'For menu blocks, Facebook requires max = 3 buttons in a menu';
+                    }
                 }
             }
         } elseif ($driver == 'facebook' && $type == 'carousel') {
@@ -106,6 +110,14 @@ class Validator {
                 return 'For carousel blocks, Facebook requires max = 10 elements';
             }
 
+        } elseif ($driver == 'facebook' && $type == 'image') {
+            if (count($block['content']['buttons'] ?? []) > 3) {
+                return 'For image blocks, Facebook requires max = 3 buttons';
+            }
+        } elseif ($driver == 'facebook' && $type == 'list') {
+            if (count($block['content']) < 2 && count($block['content']) > 4) {
+                return 'For list block, Facebook requires min = 2 and max = 4 elements';
+            }
         }
 
         return null;
