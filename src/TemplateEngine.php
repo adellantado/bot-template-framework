@@ -307,7 +307,7 @@ class TemplateEngine {
         } elseif ($type == 'image') {
             if (array_key_exists('buttons', $content)) {
                 $this->strategy($this->bot)->sendMenuAndImage($this->parseText($content['url']),
-                    $this->parseText($content['text']), $this->parseArray($content['buttons']), $block['options']);
+                    $this->parseText($content['text']), $this->parseArray($content['buttons']), $block['options'] ?? null);
             } else {
                 $this->strategy($this->bot)->sendImage($this->parseText($content['url']),
                     array_key_exists('text', $content) ? $this->parseText($content['text']) : null);
@@ -327,12 +327,12 @@ class TemplateEngine {
                     $this->parseArray($content['buttons']));
             } else {
                 $this->strategy($this->bot)->sendMenu($this->parseText($content['text']),
-                    $this->parseArray($content['buttons']), $block['options']);
+                    $this->parseArray($content['buttons']), $block['options'] ?? null);
             }
         } elseif ($type == 'list') {
-            $this->strategy($this->bot)->sendList($this->parseArray($content), $block['options']);
+            $this->strategy($this->bot)->sendList($this->parseArray($content), null, $block['options'] ?? null);
         } elseif ($type == 'carousel') {
-            $this->strategy($this->bot)->sendCarousel($this->parseArray($content), $block['options']);
+            $this->strategy($this->bot)->sendCarousel($this->parseArray($content), $block['options'] ?? null);
         } elseif ($type == 'location') {
             $this->strategy($this->bot)->requireLocation($this->parseText($content));
         } elseif ($type == 'attachment') {
