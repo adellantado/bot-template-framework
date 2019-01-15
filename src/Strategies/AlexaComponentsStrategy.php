@@ -38,11 +38,11 @@ class AlexaComponentsStrategy implements IComponentsStrategy, IStrategy {
         $this->sendCard($text, '', $imageUrl);
     }
 
-    public function sendMenu($text, array $markup) {
+    public function sendMenu($text, array $markup, $options = null) {
         // TODO: Implement sendMenu() method.
     }
 
-    public function sendMenuAndImage($imageUrl, $text, array $markup) {
+    public function sendMenuAndImage($imageUrl, $text, array $markup, $options = null) {
         // TODO: Implement sendMenuAndImage() method.
     }
 
@@ -50,7 +50,7 @@ class AlexaComponentsStrategy implements IComponentsStrategy, IStrategy {
         $this->reply($text);
     }
 
-    public function sendList(array $elements, array $globalButton = null) {
+    public function sendList(array $elements, array $globalButton = null, $options = null) {
         $subtitle = '';
         $description = null;
         if (array_key_exists('subtitle', $elements[0])) {

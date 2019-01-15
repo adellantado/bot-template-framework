@@ -43,7 +43,7 @@ class FacebookComponentsStrategy implements IComponentsStrategy, IStrategy {
         }
     }
 
-    public function sendMenu($text, array $markup) {
+    public function sendMenu($text, array $markup, $options = null) {
         foreach ($markup as $submenu) {
             if (count($submenu) > 3) {
                 throw new Exception('Too many elements');
@@ -53,7 +53,7 @@ class FacebookComponentsStrategy implements IComponentsStrategy, IStrategy {
         }
     }
 
-    public function sendMenuAndImage($imageUrl, $text, array $markup) {
+    public function sendMenuAndImage($imageUrl, $text, array $markup, $options = null) {
         if (count($markup) > 3) {
             throw new Exception('Too many elements');
         }
@@ -83,7 +83,7 @@ class FacebookComponentsStrategy implements IComponentsStrategy, IStrategy {
         $this->reply($template);
     }
 
-    public function sendList(array $elements, array $globalButton = null) {
+    public function sendList(array $elements, array $globalButton = null, $options = null) {
         if (count($elements) < 2 || count($elements) > 4) {
             throw new Exception('Facebook List component must include 2-4 elements');
         }

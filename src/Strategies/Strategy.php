@@ -41,11 +41,11 @@ abstract class Strategy implements IStrategy, IComponentsStrategy {
         $this->componentsStrategy->sendImage($imageUrl, $text);
     }
 
-    public function sendMenu($text, array $markup) {
+    public function sendMenu($text, array $markup, $options = null) {
         $this->componentsStrategy->sendMenu($text, $markup);
     }
 
-    public function sendMenuAndImage($imageUrl, $text, array $markup) {
+    public function sendMenuAndImage($imageUrl, $text, array $markup, $options = null) {
         $this->componentsStrategy->sendMenuAndImage($imageUrl, $text, $markup);
     }
 
@@ -53,7 +53,7 @@ abstract class Strategy implements IStrategy, IComponentsStrategy {
         $this->componentsStrategy->sendText($text);
     }
 
-    public function sendList(array $elements, array $globalButton = null) {
+    public function sendList(array $elements, array $globalButton = null, $options = null) {
         $this->componentsStrategy->sendList($elements, $globalButton);
     }
 

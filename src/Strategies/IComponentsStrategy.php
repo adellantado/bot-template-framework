@@ -7,13 +7,13 @@ interface IComponentsStrategy {
 
     public function sendImage($imageUrl, $text = null);
 
-    public function sendMenu($text, array $markup);
+    public function sendMenu($text, array $markup, $options = null);
 
-    public function sendMenuAndImage($imageUrl, $text, array $markup);
+    public function sendMenuAndImage($imageUrl, $text, array $markup, $options = null);
 
     public function sendText($text);
 
-    public function sendList(array $elements, array $globalButton = null);
+    public function sendList(array $elements, array $globalButton = null, $options = null);
 
     public function sendCarousel(array $elements, $options = null);
 

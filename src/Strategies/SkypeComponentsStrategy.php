@@ -51,7 +51,7 @@ class SkypeComponentsStrategy implements IComponentsStrategy, IStrategy {
         }
     }
 
-    public function sendMenu($text, array $markup) {
+    public function sendMenu($text, array $markup, $options = null) {
         $menu = [
             "title" => $text,
             "images" => [],
@@ -71,7 +71,7 @@ class SkypeComponentsStrategy implements IComponentsStrategy, IStrategy {
         ]);
     }
 
-    public function sendMenuAndImage($imageUrl, $text, array $markup) {
+    public function sendMenuAndImage($imageUrl, $text, array $markup, $options = null) {
         $menu = [
             "title" => $text,
             "images" => [
@@ -99,7 +99,7 @@ class SkypeComponentsStrategy implements IComponentsStrategy, IStrategy {
         $this->reply($text);
     }
 
-    public function sendList(array $elements, array $globalButton = null) {
+    public function sendList(array $elements, array $globalButton = null, $options = null) {
         $attachments = [];
         foreach ($elements as $element) {
             $attachment = [

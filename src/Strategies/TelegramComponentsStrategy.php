@@ -44,11 +44,11 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
         }
     }
 
-    public function sendMenu($text, array $markup) {
+    public function sendMenu($text, array $markup, $options = null) {
         return $this->reply($text, $this->buildMenu($markup));
     }
 
-    public function sendMenuAndImage($imageUrl, $text, array $markup) {
+    public function sendMenuAndImage($imageUrl, $text, array $markup, $options = null) {
         /** @var IncomingMessage $message */
         $message = $this->bot->getMessages()[0];
         $recipient = $message->getRecipient() === '' ? $message->getSender() : $message->getRecipient();
@@ -59,7 +59,7 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
         ], $this->buildMenu([$markup])));
     }
 
-    public function sendList(array $elements, array $globalButton = null) {
+    public function sendList(array $elements, array $globalButton = null, $options = null) {
         foreach ($elements as $item) {
             if (array_key_exists('buttons', $item)) {
                 $this->sendMenuAndImage($item['url'], $item['title'], $item['buttons']);
