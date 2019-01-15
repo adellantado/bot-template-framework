@@ -40,15 +40,15 @@ class ViberComponentsStrategy implements IComponentsStrategy, IStrategy {
         }
     }
 
-    public function sendMenu($text, array $markup) {
-        $menu = new KeyboardTemplate($text);
-        $this->buildMenu($markup, $menu);
+    public function sendMenu($text, array $markup, $options = null) {
+        $menu = new KeyboardTemplate($text, $options['DefaultHeight'] ?? false);
+        $this->buildMenu($markup, $menu, $options);
         $this->reply($menu);
     }
 
-    public function sendMenuAndImage($imageUrl, $text, array $markup) {
-        $menu = new MenuTemplate($text, $imageUrl);
-        $this->buildMenu($markup, $menu);
+    public function sendMenuAndImage($imageUrl, $text, array $markup, $options = null) {
+        $menu = new MenuTemplate($text, $imageUrl, $options['DefaultHeight'] ?? false);
+        $this->buildMenu($markup, $menu, $options);
 
         $this->reply($menu);
     }
@@ -57,13 +57,13 @@ class ViberComponentsStrategy implements IComponentsStrategy, IStrategy {
         $this->reply($text);
     }
 
-    public function sendList(array $elements, array $globalButton = null) {
+    public function sendList(array $elements, array $globalButton = null, $options = null) {
         foreach ($elements as $item) {
-            $this->sendMenuAndImage($item['url'], $item['title'], $item['buttons']);
+            $this->sendMenuAndImage($item['url'], $item['title'], $item['buttons'], $options);
         }
 
         if ($globalButton) {
-            $this->sendMenu('', $globalButton);
+            $this->sendMenu('', $globalButton, $options);
         }
     }
 
@@ -105,14 +105,14 @@ class ViberComponentsStrategy implements IComponentsStrategy, IStrategy {
         return null;
     }
 
-    protected function buildMenu(array $markup, $keyboard) {
+    protected function buildMenu(array $markup, $keyboard, $options = null) {
         foreach ($markup as $submenu) {
             foreach ($submenu as $callback => $title) {
                 if (in_array(parse_url($callback, PHP_URL_SCHEME), ['mailto', 'http', 'https', 'tel'])) {
-                    $keyboard->addButton($title, 'open-url', $callback);
+                    $keyboard->addButton($title, 'open-url', $callback, $options['TextSize'] ?? 'regular', $options['BgColor'] ?? null);
                     continue;
                 }
-                $keyboard->addButton($title, 'reply', $callback);
+                $keyboard->addButton($title, 'reply', $callback, $options['TextSize'] ?? 'regular', $options['BgColor'] ?? null);
             }
         }
 
