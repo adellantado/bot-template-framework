@@ -307,7 +307,7 @@ class TemplateEngine {
         } elseif ($type == 'image') {
             if (array_key_exists('buttons', $content)) {
                 $this->strategy($this->bot)->sendMenuAndImage($this->parseText($content['url']),
-                    $this->parseText($content['text']), $this->parseArray($content['buttons']));
+                    $this->parseText($content['text']), $this->parseArray($content['buttons']), $block['options']);
             } else {
                 $this->strategy($this->bot)->sendImage($this->parseText($content['url']),
                     array_key_exists('text', $content) ? $this->parseText($content['text']) : null);
@@ -327,10 +327,10 @@ class TemplateEngine {
                     $this->parseArray($content['buttons']));
             } else {
                 $this->strategy($this->bot)->sendMenu($this->parseText($content['text']),
-                    $this->parseArray($content['buttons']));
+                    $this->parseArray($content['buttons']), $block['options']);
             }
         } elseif ($type == 'list') {
-            $this->strategy($this->bot)->sendList($this->parseArray($content));
+            $this->strategy($this->bot)->sendList($this->parseArray($content), $block['options']);
         } elseif ($type == 'carousel') {
             $this->strategy($this->bot)->sendCarousel($this->parseArray($content), $block['options']);
         } elseif ($type == 'location') {
