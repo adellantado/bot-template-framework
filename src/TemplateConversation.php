@@ -74,6 +74,12 @@ class TemplateConversation extends Conversation {
                         $this->askAgain($block);
                         return;
                     }
+                } elseif ($block['validate'] == 'phone') {
+                    if (!$validator->phone($answer->getText())) {
+                        $this->say($block['errorMsg'] ?? $validator->errorPhoneMsg());
+                        $this->askAgain($block);
+                        return;
+                    }
                 } elseif ($block['validate'] == 'confirm') {
                     $oldValue = $engine->removeVariable('temp.confirmation');
                     if (!$validator->confirm($oldValue, $answer->getText())) {
