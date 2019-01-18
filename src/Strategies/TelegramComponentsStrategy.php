@@ -217,8 +217,7 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
     }
 
     public function requirePhonePayload($text) {
-        return [
-            'text' => $text,
+        $additionalParameters = [
             'parse_mode' => 'Markdown',
             'reply_markup' => json_encode([
                 Keyboard::TYPE_KEYBOARD => [
@@ -227,7 +226,10 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
                         'text' => 'Share Your Phone'
                     ]]
                 ],
-            ])
+            ])];
+        return [
+            'text' => $text,
+            'additionalParameters' => $additionalParameters
         ];
     }
 

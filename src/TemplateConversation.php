@@ -9,6 +9,7 @@ use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use BotTemplateFramework\Helpers\Validator;
+use BotTemplateFramework\Strategies\StrategyTrait;
 
 class TemplateConversation extends Conversation {
 
@@ -120,7 +121,12 @@ class TemplateConversation extends Conversation {
         if (array_key_exists('validate', $block) && $block['validate'] == 'confirm') {
             $this->ask($question, $confirmationCallback);
         } else {
-            $this->ask($question, $normalCallback);
+
+            if (array_key_exists('validate', $block) && $block['validate'] == 'phone' && StrategyTrait::driverName($this->bot) == 'Telegram') {
+                $this->ask($question['text'], $normalCallback, $question['additionalParameters']);
+            } else {
+                $this->ask($question, $normalCallback);
+            }
         }
     }
 
