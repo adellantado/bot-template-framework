@@ -32,7 +32,11 @@ class TemplateConversation extends Conversation {
         $question = null;
         if (array_key_exists('validate', $block) && $block['validate'] == 'email') {
             $question = $engine->strategy($this->bot)->requireEmailPayload($engine->parseText($block['content']));
-        } elseif ($question == null) {
+        } elseif (array_key_exists('validate', $block) && $block['validate'] == 'phone') {
+            $question = $engine->strategy($this->bot)->requirePhonePayload($engine->parseText($block['content']));
+        }
+
+        if ($question == null) {
             $question = new Question($engine->parseText($block['content']));
             if (array_key_exists('result', $block) && array_key_exists('prompt', $block['result'])) {
                 $buttons = explode(';', $block['result']['prompt']);

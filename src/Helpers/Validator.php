@@ -19,6 +19,10 @@ class Validator {
         return false;
     }
 
+    public function phone($phone) {
+        return true;
+    }
+
     public function url($url) {
         if (filter_var($url, FILTER_VALIDATE_URL)) {
             return true;
@@ -43,6 +47,10 @@ class Validator {
 
     public function errorEmailMsg() {
         return 'Please, type valid email';
+    }
+
+    public function errorPhoneMsg() {
+        return 'Please, type valid phone number';
     }
 
     public function errorUrlMsg() {

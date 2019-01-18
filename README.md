@@ -336,7 +336,7 @@ Every block extends abstract block, which has next properties:
         }
 	
    `validate` - (optional) validate user input, doesn't save variable and repeats question when validation isn't passed.
-        Possible values: `number` - validate integer, `email`, `url`, `confirm` - requires two times input and any regexp like `/^[0-9]*$/`;<br>
+        Possible values: `number` - validate integer, `email`, `url`, `phone`, `confirm` - requires two times input and any regexp like `/^[0-9]*$/`;<br>
    `errorMsg` - (optional) validation error message;<br>
    `result.prompt` - (optional) shows quick buttons;<br>
    `next.<user answer>` - (optional) depends on user answer, run next block 

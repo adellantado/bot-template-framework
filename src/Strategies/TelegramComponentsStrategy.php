@@ -232,7 +232,6 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
     }
 
     public function requireEmailPayload($text) {
-        // TODO: Implement requireEmailPayload() method.
         return null;
     }
 
