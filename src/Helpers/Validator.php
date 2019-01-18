@@ -49,6 +49,10 @@ class Validator {
         return 'Please, type valid url (start with http:// or https://)';
     }
 
+    public function errorRegexpMsg() {
+        return 'Please, type valid value';
+    }
+
     public function errorConfirmMsg() {
         return 'Please, type your confirmation input with exact value (case sensitive)';
     }

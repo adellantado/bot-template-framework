@@ -57,7 +57,7 @@ class FacebookComponentsStrategy implements IComponentsStrategy, IStrategy {
         if (count($markup) > 3) {
             throw new Exception('Too many elements');
         }
-        $this->reply(GenericTemplate::create()->addImageAspectRatio(GenericTemplate::RATIO_SQUARE)->addElement(Element::create($text)->subtitle('')->image($imageUrl)->addButtons($this->buildButtons($markup))));
+        $this->reply(GenericTemplate::create()->addImageAspectRatio($options['image_aspect_ratio'] ?? GenericTemplate::RATIO_SQUARE)->addElement(Element::create($text)->subtitle($options['subtitle'] ?? '')->image($imageUrl)->addButtons($this->buildButtons($markup))));
     }
 
     public function sendText($text) {

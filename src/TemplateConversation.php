@@ -79,7 +79,7 @@ class TemplateConversation extends Conversation {
                     }
                 } else {
                     if (!$validator->regexp($block['validate'], $answer->getText())) {
-                        $this->say('Can\'t validate input');
+                        $this->say($block['errorMsg'] ?? $validator->errorRegexpMsg());
                         $this->askAgain($block);
                         return;
                     }
