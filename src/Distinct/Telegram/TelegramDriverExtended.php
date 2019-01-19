@@ -27,7 +27,7 @@ class TelegramDriverExtended extends TelegramDriver {
                 new IncomingMessage($callback->get('data'), $callback->get('from')['id'],
                     $callback->get('message')['chat']['id'], $callback->get('message')),
             ];
-        } elseif ($this->payload->get('contact') !== null) {
+        } elseif ($this->event->get('contact') !== null) {
             $messages = [
                 new IncomingMessage($this->event->get('contact')['phone_number'], $this->event->get('from')['id'], $this->event->get('chat')['id'],
                     $this->event),
