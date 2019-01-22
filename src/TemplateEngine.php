@@ -158,9 +158,9 @@ class TemplateEngine {
         if (array_key_exists($event->getName(), $this->eventListeners)) {
             $callback = $this->eventListeners[$event->getName()]['callback'];
             if ($callback instanceof \Closure) {
-                return $callback($event);
+                return $callback($event, $this);
             } elseif(is_callable($callback)) {
-                return call_user_func_array($callback, [$event]);
+                return call_user_func_array($callback, [$event, $this]);
             }
         }
 
