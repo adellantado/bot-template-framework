@@ -7,6 +7,10 @@ use BotMan\BotMan\Messages\Attachments\Location;
 use BotMan\BotMan\Messages\Incoming\IncomingMessage;
 use BotTemplateFramework\Builder\Template;
 use BotTemplateFramework\Distinct\Dialogflow\DialogflowExtended;
+use BotTemplateFramework\Events\Event;
+use BotTemplateFramework\Events\ListenStartedEvent;
+use BotTemplateFramework\Events\VariableChangedEvent;
+use BotTemplateFramework\Events\VariableRemovedEvent;
 use BotTemplateFramework\Strategies\StrategyTrait;
 use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Http\Curl;
@@ -25,7 +29,9 @@ class TemplateEngine {
      */
     protected $bot;
 
-    protected $listeners = [];
+    protected $blockListeners = [];
+
+    protected $eventListeners = [];
 
     /** @var CacheInterface */
     protected $cache;
@@ -128,14 +134,37 @@ class TemplateEngine {
      * @param bool $capturingPhase
      */
     public function addBlockListener($blockName, $callback, $capturingPhase = false) {
-        $this->listeners[$blockName] = [
+        $this->blockListeners[$blockName] = [
             'callback' => $callback,
             'capturingPhase' => $capturingPhase
         ];
     }
 
     public function removeBlockListener($blockName) {
-        unset($this->listeners[$blockName]);
+        unset($this->blockListeners[$blockName]);
+    }
+
+    public function addEventListener($eventName, $callback) {
+        $this->eventListeners[$eventName] = [
+            'callback' => $callback
+        ];
+    }
+
+    public function removeEventListener($eventName) {
+        unset($this->eventListeners[$eventName]);
+    }
+
+    public function dispatchEvent(Event $event) {
+        if (array_key_exists($event->getName(), $this->eventListeners)) {
+            $callback = $this->eventListeners[$event->getName()]['callback'];
+            if ($callback instanceof \Closure) {
+                return $callback($event);
+            } elseif(is_callable($callback)) {
+                return call_user_func_array($callback, [$event]);
+            }
+        }
+
+        return true;
     }
 
     public function getDrivers() {
@@ -235,6 +264,8 @@ class TemplateEngine {
         if (array_key_exists('fallback', $this->template)) {
             $this->hearFallback();
         }
+
+        $this->dispatchEvent(new ListenStartedEvent());
 
         return $this;
     }
@@ -404,6 +435,7 @@ class TemplateEngine {
         $data = $this->bot->userStorage()->find()->toArray();
         $data[$name] = $value;
         $this->bot->userStorage()->save($data);
+        $this->dispatchEvent(new VariableChangedEvent($name, $value));
     }
 
     public function getVariable($name) {
@@ -454,12 +486,13 @@ class TemplateEngine {
         $value = $data[$name];
         unset($data[$name]);
         $this->bot->userStorage()->save($data);
+        $this->dispatchEvent(new VariableRemovedEvent($name));
         return $value;
     }
 
     public function callListener($block, $capturingPhase = false) {
-        if (array_key_exists($block['name'], $this->listeners)) {
-            $event = $this->listeners[$block['name']];
+        if (array_key_exists($block['name'], $this->blockListeners)) {
+            $event = $this->blockListeners[$block['name']];
             if ($event['capturingPhase'] === $capturingPhase) {
                 $callback = $event['callback'];
                 if ($callback instanceof \Closure) {
@@ -699,7 +732,7 @@ class TemplateEngine {
     }
 
     public function __wakeup() {
-        foreach($this->listeners as $blockName=>&$callback) {
+        foreach($this->blockListeners as $blockName=>&$callback) {
             $callback = unserialize($callback);
         }
     }
@@ -708,7 +741,7 @@ class TemplateEngine {
      * @return array
      */
     public function __sleep() {
-        foreach($this->listeners as $blockName=>&$callback) {
+        foreach($this->blockListeners as $blockName=>&$callback) {
             if ($callback instanceof \Closure) {
                 $callback = serialize(new SerializableClosure($callback, true));
             }
