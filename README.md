@@ -1,5 +1,8 @@
 <h1>Bot Template Framework</h1>
 
+<a href="https://packagist.org/packages/adellantado/bot-template-framework"><image src="https://img.shields.io/packagist/v/adellantado/bot-template-framework.svg"/></a>
+<a href="https://packagist.org/packages/adellantado/bot-template-framework"><image src="https://img.shields.io/packagist/dt/adellantado/bot-template-framework.svg"/></a>
+	
 Allows to simplify chatbot development using Botman. 
 With one scenario file you can make your bot working.
 
