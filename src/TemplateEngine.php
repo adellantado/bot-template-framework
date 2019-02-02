@@ -49,6 +49,8 @@ class TemplateEngine {
             throw new \Exception(self::class . " accepts only array, Template or json string");
         }
 
+        $config['user_cache_time'] = $template['options']['user_cache_time'] ?? null;
+
         foreach ($template['drivers'] as $driver) {
             $driverName = (strtolower($driver['name']) == 'skype' ? 'botframework' : strtolower($driver['name']));
             $config[$driverName] = [];
@@ -96,6 +98,10 @@ class TemplateEngine {
 
     public function getTemplate() {
         return $this->template;
+    }
+
+    public function getOptions() {
+        return $this->template['options'] ?? [];
     }
 
     public function getStrategy() {
@@ -288,7 +294,7 @@ class TemplateEngine {
                 'latitude'=> $location->getLatitude(),
                 'longitude'=> $location->getLongitude()
             ]);
-            $this->cache->pull('lastBlock');
+            $this->removeCacheVariable('lastBlock');
             if ($this->callListener($block) === false) {
                 return $this;
             }
@@ -300,7 +306,7 @@ class TemplateEngine {
             $block = $this->getBlock($blockName);
             $url = $arguments[1][0]->getUrl();
             $this->saveVariable($block['result']['save'], $url);
-            $this->cache->pull('lastBlock');
+            $this->removeCacheVariable('lastBlock');
             if ($this->callListener($block) === false) {
                 return $this;
             }
@@ -542,12 +548,20 @@ class TemplateEngine {
     }
 
     protected function putCacheVariable($name, $value) {
-        $this->cache->put($name, $value, 30);
+        $this->cache->put($name.'-'.$this->bot->getMessage()->getSender(), $value, $this->getOptions()['user_cache_time'] ?? 30);
         return $this;
     }
 
     protected function getCacheVariable($name) {
-        return $this->cache->get($name, '');
+        return $this->cache->get($name.'-'.$this->bot->getMessage()->getSender(), '');
+    }
+
+    protected function removeCacheVariable($name) {
+        return $this->cache->pull($name.'-'.$this->bot->getMessage()->getSender(), '');
+    }
+
+    protected function hasCacheVariable($name) {
+        return $this->cache->has($name.'-'.$this->bot->getMessage()->getSender());
     }
 
     protected function executeRequest($block) {
