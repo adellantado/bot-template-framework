@@ -522,7 +522,7 @@ class TemplateEngine {
             if (is_array($item)) {
                 $result[$key] = $this->parseArray($item);
             } else {
-                $result[$key] = $this->parseText($item);
+                $result[$this->parseText($key)] = $this->parseText($item);
             }
         }
         return $result;
