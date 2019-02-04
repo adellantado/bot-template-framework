@@ -26,6 +26,8 @@ abstract class Block implements \JsonSerializable {
 
     protected $drivers;
 
+    protected $options;
+
 
     public function __construct($type, $name = null) {
         if (is_null($name)) {
@@ -41,6 +43,15 @@ abstract class Block implements \JsonSerializable {
      */
     public function typing($typing) {
         $this->typing = $typing;
+        return $this;
+    }
+
+    /**
+     * @param array $options
+     * @return Block
+     */
+    public function options(array $options) {
+        $this->options = $options;
         return $this;
     }
 
@@ -106,6 +117,10 @@ abstract class Block implements \JsonSerializable {
 
         if ($this->next) {
             $array['next'] = $this->next->getName();
+        }
+
+        if ($this->options) {
+            $array['options'] = $this->options;
         }
 
         if ($this->drivers) {

@@ -92,9 +92,9 @@ E.g. Simple Telegram Hello World chatbot:
 
 <h2>Blocks</h2>
 
-There are 17 types of block
+There are 18 types of block
 
-        text, image, menu, audio, video, file, location, attachment, carousel, list, request, ask, intent, if, method, extend, idle
+        text, image, menu, audio, video, file, location, attachment, carousel, list, request, ask, intent, if, method, extend, idle, save
 
 Every block extends abstract block, which has next properties:
 
@@ -105,6 +105,7 @@ Every block extends abstract block, which has next properties:
             "typing": "1s",
             "drivers": "any;!telegram",
             "locale": "en",
+            "options": {"someProperty": "someValue"}
             "next": "Next Block Name"
         },
 
@@ -117,6 +118,7 @@ Every block extends abstract block, which has next properties:
         'facebook;telegram' - runs for telegram and facebook, 'any;!telegram' - runs for any driver, except telegram);<br>
    `locale` - (optional) assigns block to particular locale, works like namespaces. e.g. you describe blocks with 
         locale 'en' and then copy them translated with locale 'ge';<br>
+   `options` - (optional) sets some driver specific properties;<br>
    `next` - (optional) name of the next block to execute in chain
 
 
@@ -458,6 +460,18 @@ Every block extends abstract block, which has next properties:
             "typing": "1s",
             "next": "Next Block"
        }    
+       
+       
+<h3>Save Block</h3>
+
+   Simply saves some value (including existing variable value) to some variable
+
+       {
+            "name": "Saves to Variable",
+            "type": "save",
+            "value": "123",
+            "variable": "{{someVar}}"
+       }   
 
 <h2>Drivers</h2>
 
@@ -513,14 +527,16 @@ Use variables with figure brackets
 
         {{my_variable}}
 
-Save variables with 'result.save' field with request, ask, intent blocks
+Save variables with 'result.save' field with request, ask, intent blocks. 
+And by using special save block.
 
 <h3>Predefined variables</h3>
  - {{user.id}}<br>
  - {{user.firstName}}<br>
  - {{user.lastName}}<br>
  - {{bot.name}}<br>
- - {{bot.driver}}
+ - {{bot.driver}}<br>
+ - {{message}} (this is the last sent message)
 
 <h2>Results</h2>
 

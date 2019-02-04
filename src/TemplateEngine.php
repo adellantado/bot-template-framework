@@ -388,6 +388,8 @@ class TemplateEngine {
             $this->executeIf($block);
         } elseif ($type == 'idle') {
             // does nothing
+        } elseif ($type == 'save') {
+            $this->executeSave($block);
         } else {
             throw new \Exception('Can\'t find any suitable block type');
         }
@@ -456,6 +458,8 @@ class TemplateEngine {
                 return $this->getBotName();
             case 'bot.driver':
                 return self::driverName($this->bot);
+            case 'message':
+                return $this->bot->getMessage()->getText();
         }
 
         if ($value = $this->bot->userStorage()->get($name)) {
@@ -689,6 +693,10 @@ class TemplateEngine {
                 return;
             }
         }
+    }
+
+    protected function executeSave($block) {
+        $this->saveVariable($block['variable'], $this->parseText($block['value']));
     }
 
     protected function getCallback($blockName, $prefix, $callback = null) {

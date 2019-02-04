@@ -13,6 +13,8 @@ class Template implements \JsonSerializable {
 
     protected $drivers = [];
 
+    protected $options = [];
+
     protected $fallback;
 
     protected  $locale;
@@ -41,6 +43,10 @@ class Template implements \JsonSerializable {
 
     public function getDrivers() {
         return $this->drivers;
+    }
+
+    public function addOption($key, $value) {
+        $this->options[$key] = $value;
     }
 
     /**
@@ -73,7 +79,8 @@ class Template implements \JsonSerializable {
             }, $this->blocks),
             'drivers' => array_map(function (Driver $driver) {
                 return $driver->jsonSerialize();
-            }, $this->drivers)
+            }, $this->drivers),
+            'options' => $this->options
         ];
 
         if ($this->locale) {
