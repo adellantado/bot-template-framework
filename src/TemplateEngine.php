@@ -552,20 +552,20 @@ class TemplateEngine {
     }
 
     protected function putCacheVariable($name, $value) {
-        $this->cache->put($name.'-'.$this->bot->getMessage()->getSender(), $value, $this->getOptions()['user_cache_time'] ?? 30);
+        $this->cache->put($name.'-'.$this->bot->getMessages()[0]->getSender(), $value, $this->getOptions()['user_cache_time'] ?? 30);
         return $this;
     }
 
     protected function getCacheVariable($name) {
-        return $this->cache->get($name.'-'.$this->bot->getMessage()->getSender(), '');
+        return $this->cache->get($name.'-'.$this->bot->getMessages()[0]->getSender(), '');
     }
 
     protected function removeCacheVariable($name) {
-        return $this->cache->pull($name.'-'.$this->bot->getMessage()->getSender(), '');
+        return $this->cache->pull($name.'-'.$this->bot->getMessages()[0]->getSender(), '');
     }
 
     protected function hasCacheVariable($name) {
-        return $this->cache->has($name.'-'.$this->bot->getMessage()->getSender());
+        return $this->cache->has($name.'-'.$this->bot->getMessages()[0]->getSender());
     }
 
     protected function executeRequest($block) {
