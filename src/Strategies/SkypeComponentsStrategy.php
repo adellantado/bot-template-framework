@@ -183,7 +183,7 @@ class SkypeComponentsStrategy implements IComponentsStrategy, IStrategy {
         $this->reply(OutgoingMessage::create($text, new File($url)));
     }
 
-    public function requireLocation($text) {
+    public function requireLocation($text, $options = null) {
         // TODO: Implement sendLocation() method.
     }
 
@@ -211,12 +211,12 @@ class SkypeComponentsStrategy implements IComponentsStrategy, IStrategy {
         return $buttons;
     }
 
-    public function requirePhonePayload($text) {
+    public function requirePhonePayload($text, $options = null) {
         // TODO: Implement requirePhonePayload() method.
         return null;
     }
 
-    public function requireEmailPayload($text) {
+    public function requireEmailPayload($text, $options = null) {
         // TODO: Implement requireEmailPayload() method.
         return null;
     }

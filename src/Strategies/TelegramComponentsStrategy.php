@@ -203,27 +203,27 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
         $this->reply(OutgoingMessage::create($text, new File($url)));
     }
 
-    public function requireLocation($text) {
+    public function requireLocation($text, $options = null) {
         return $this->reply($text, [
             'reply_markup' => json_encode([
                 Keyboard::TYPE_KEYBOARD => [
                     [[
                         'request_location' => true,
-                        'text' => 'Share Your Location'
+                        'text' =>  $options['title'] ?? 'Share Your Location'
                     ]]
                 ],
             ])
         ]);
     }
 
-    public function requirePhonePayload($text) {
+    public function requirePhonePayload($text, $options = null) {
         $additionalParameters = [
             'parse_mode' => 'Markdown',
             'reply_markup' => json_encode([
                 Keyboard::TYPE_KEYBOARD => [
                     [[
                         'request_contact' => true,
-                        'text' => 'Share Your Phone'
+                        'text' => $options['title'] ?? 'Share Your Phone'
                     ]]
                 ],
             ])];
@@ -233,7 +233,7 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
         ];
     }
 
-    public function requireEmailPayload($text) {
+    public function requireEmailPayload($text, $options = null) {
         return null;
     }
 

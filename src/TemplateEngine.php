@@ -371,7 +371,7 @@ class TemplateEngine {
         } elseif ($type == 'carousel') {
             $this->strategy($this->bot)->sendCarousel($this->parseArray($content), $block['options'] ?? null);
         } elseif ($type == 'location') {
-            $this->strategy($this->bot)->requireLocation($this->parseText($content));
+            $this->strategy($this->bot)->requireLocation($this->parseText($content), $block['options'] ?? null);
         } elseif ($type == 'attachment') {
             $this->strategy($this->bot)->sendText($this->parseText($content));
         } elseif ($type == 'request') {
