@@ -82,13 +82,11 @@ abstract class Strategy implements IStrategy, IComponentsStrategy {
     }
 
     public function requirePhonePayload($text) {
-        // TODO: Implement requirePhonePayload() method.
-        return null;
+        return $this->componentsStrategy->requirePhonePayload($text);
     }
 
     public function requireEmailPayload($text) {
-        // TODO: Implement requireEmailPayload() method.
-        return null;
+        return $this->componentsStrategy->requireEmailPayload($text);
     }
 
 
