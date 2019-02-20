@@ -3,7 +3,11 @@
 namespace BotTemplateFramework\Helpers;
 
 
+use BotMan\BotMan\Messages\Attachments\Audio;
+use BotMan\BotMan\Messages\Attachments\File;
 use BotMan\BotMan\Messages\Attachments\Image;
+use BotMan\BotMan\Messages\Attachments\Location;
+use BotMan\BotMan\Messages\Attachments\Video;
 
 class Validator {
 
@@ -39,6 +43,34 @@ class Validator {
         return false;
     }
 
+    public function file($file) {
+        if ($file == File::PATTERN) {
+            return true;
+        }
+        return false;
+    }
+
+    public function video($video) {
+        if ($video == Video::PATTERN) {
+            return true;
+        }
+        return false;
+    }
+
+    public function audio($audio) {
+        if ($audio == Audio::PATTERN) {
+            return true;
+        }
+        return false;
+    }
+
+    public function location($location) {
+        if ($location == Location::PATTERN) {
+            return true;
+        }
+        return false;
+    }
+
     public function regexp($pattern, $text) {
         if (preg_match($pattern, $text) == 1) {
             return true;
@@ -68,6 +100,22 @@ class Validator {
 
     public function errorImageMsg() {
         return 'Please, send image';
+    }
+
+    public function errorVideoMsg() {
+        return 'Please, send video';
+    }
+
+    public function errorFileMsg() {
+        return 'Please, send file';
+    }
+
+    public function errorAudioMsg() {
+        return 'Please, send audio';
+    }
+
+    public function errorLocationMsg() {
+        return 'Please, send your location';
     }
 
     public function errorRegexpMsg() {

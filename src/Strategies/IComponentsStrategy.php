@@ -27,6 +27,8 @@ interface IComponentsStrategy {
 
     public function requireLocation($text, $options = null);
 
+    public function requireLocationPayload($text, $options = null);
+
     public function requirePhonePayload($text, $options = null);
 
     public function requireEmailPayload($text, $options = null);

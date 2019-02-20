@@ -216,6 +216,23 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
         ]);
     }
 
+    public function requireLocationPayload($text, $options = null) {
+        $additionalParameters = [
+            'parse_mode' => 'Markdown',
+            'reply_markup' => json_encode([
+                Keyboard::TYPE_KEYBOARD => [
+                    [[
+                        'request_location' => true,
+                        'text' => $options['title'] ?? 'Share Your Location'
+                    ]]
+                ],
+            ])];
+        return [
+            'text' => $text,
+            'additionalParameters' => $additionalParameters
+        ];
+    }
+
     public function requirePhonePayload($text, $options = null) {
         $additionalParameters = [
             'parse_mode' => 'Markdown',

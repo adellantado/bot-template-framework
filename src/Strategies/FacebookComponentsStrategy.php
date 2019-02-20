@@ -129,6 +129,10 @@ class FacebookComponentsStrategy implements IComponentsStrategy, IStrategy {
         $this->reply(Question::create($text)->addAction(QuickReplyButton::create()->type('location')));
     }
 
+    public function requireLocationPayload($text, $options = null) {
+        return Question::create($text)->addAction(QuickReplyButton::create()->type('location'));
+    }
+
     public function requirePhonePayload($text, $options = null) {
         return Question::create($text)->addAction(QuickReplyButton::create()->type('user_phone_number'));
     }

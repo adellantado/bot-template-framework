@@ -86,6 +86,11 @@ class AlexaComponentsStrategy implements IComponentsStrategy, IStrategy {
         // TODO: Implement sendQuickButtons() method.
     }
 
+    public function requireLocationPayload($text, $options = null) {
+        // TODO: Implement requireLocationPayload() method.
+        return null;
+    }
+
     public function requirePhonePayload($text, $options = null) {
         // TODO: Implement requirePhonePayload() method.
         return null;

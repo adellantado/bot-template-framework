@@ -35,6 +35,8 @@ class TemplateConversation extends Conversation {
             $question = $engine->strategy($this->bot)->requireEmailPayload($engine->parseText($block['content']), $block['options'] ?? null);
         } elseif (array_key_exists('validate', $block) && $block['validate'] == 'phone') {
             $question = $engine->strategy($this->bot)->requirePhonePayload($engine->parseText($block['content']), $block['options'] ?? null);
+        } elseif (array_key_exists('validate', $block) && $block['validate'] == 'location') {
+            $question = $engine->strategy($this->bot)->requireLocationPayload($engine->parseText($block['content']), $block['options'] ?? null);
         }
 
         if ($question == null) {
@@ -87,6 +89,30 @@ class TemplateConversation extends Conversation {
                         $this->askAgain($block);
                         return;
                     }
+                } elseif ($block['validate'] == 'file') {
+                    if (!$validator->file($answer->getText())) {
+                        $this->say($block['errorMsg'] ?? $validator->errorFileMsg());
+                        $this->askAgain($block);
+                        return;
+                    }
+                } elseif ($block['validate'] == 'video') {
+                    if (!$validator->video($answer->getText())) {
+                        $this->say($block['errorMsg'] ?? $validator->errorVideoMsg());
+                        $this->askAgain($block);
+                        return;
+                    }
+                } elseif ($block['validate'] == 'audio') {
+                    if (!$validator->audio($answer->getText())) {
+                        $this->say($block['errorMsg'] ?? $validator->errorAudioMsg());
+                        $this->askAgain($block);
+                        return;
+                    }
+                } elseif ($block['validate'] == 'location') {
+                    if (!$validator->location($answer->getText())) {
+                        $this->say($block['errorMsg'] ?? $validator->errorLocationMsg());
+                        $this->askAgain($block);
+                        return;
+                    }
                 } elseif ($block['validate'] == 'confirm') {
                     $oldValue = $engine->removeVariable('temp.confirmation');
                     if (!$validator->confirm($oldValue, $answer->getText())) {
@@ -128,7 +154,7 @@ class TemplateConversation extends Conversation {
             $this->ask($question, $confirmationCallback);
         } else {
 
-            if (array_key_exists('validate', $block) && $block['validate'] == 'phone' && StrategyTrait::driverName($this->bot) == 'Telegram') {
+            if (array_key_exists('validate', $block) && in_array($block['validate'], ['phone', 'location']) && StrategyTrait::driverName($this->bot) == 'Telegram') {
                 $this->ask($question['text'], $normalCallback, $question['additionalParameters']);
             } else {
                 $this->ask($question, $normalCallback);

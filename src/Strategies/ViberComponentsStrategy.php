@@ -95,6 +95,10 @@ class ViberComponentsStrategy implements IComponentsStrategy, IStrategy {
         return $this->reply($text);
     }
 
+    public function requireLocationPayload($text, $options = null) {
+        return null;
+    }
+
     public function requirePhonePayload($text, $options = null) {
         return null;
     }

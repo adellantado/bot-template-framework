@@ -341,7 +341,10 @@ Every block extends abstract block, which has next properties:
         }
 	
    `validate` - (optional) validate user input, doesn't save variable and repeats question when validation isn't passed.
-        Possible values: `number` - validate integer, `email`, `url`, `phone`, `confirm` - requires two times input and any regexp like `/^[0-9]*$/`;<br>
+        Possible values: `number` (validates integer), `email` (sends quick button for Facebook and validates email), 
+        `url`, `phone` (sends quick button for Telegram and Facebook), `image`, `file`, `video`, `audio`, 
+        `location` (sends quick button for Telegram and Facebook), `confirm` (requires two times input), 
+        `/^[0-9]*$/` (any regexp, similar to this one);<br>
    `errorMsg` - (optional) validation error message;<br>
    `result.prompt` - (optional) shows quick buttons;<br>
    `next.<user answer>` - (optional) depends on user answer, run next block 
