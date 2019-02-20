@@ -188,7 +188,7 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
     }
 
     public function sendQuickButtons($text, array $markup, $options = null) {
-        return $this->reply($text, $this->buildMenu($markup, false, $options['one_time_keyboard'] ?? true, $options['resize_keyboard'] ?? false));
+        return $this->reply($text, $this->buildMenu($markup, false, $options['one_time_keyboard'] ?? true, $options['resize_keyboard'] ?? true));
     }
 
     public function sendAudio($url, $text = null) {
@@ -213,7 +213,7 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
                     ]]
                 ],
                 'one_time_keyboard' => $options['one_time_keyboard'] ?? true,
-                'resize_keyboard' => $options['resize_keyboard'] ?? false,
+                'resize_keyboard' => $options['resize_keyboard'] ?? true,
             ])
         ]);
     }
@@ -229,7 +229,7 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
                     ]]
                 ],
                 'one_time_keyboard' => $options['one_time_keyboard'] ?? true,
-                'resize_keyboard' => $options['resize_keyboard'] ?? false,
+                'resize_keyboard' => $options['resize_keyboard'] ?? true,
             ])];
         return [
             'text' => $text,
@@ -248,7 +248,7 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
                     ]]
                 ],
                 'one_time_keyboard' => $options['one_time_keyboard'] ?? true,
-                'resize_keyboard' => $options['resize_keyboard'] ?? false,
+                'resize_keyboard' => $options['resize_keyboard'] ?? true,
             ])];
         return [
             'text' => $text,
