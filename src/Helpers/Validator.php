@@ -3,6 +3,8 @@
 namespace BotTemplateFramework\Helpers;
 
 
+use BotMan\BotMan\Messages\Attachments\Image;
+
 class Validator {
 
     public function number($number) {
@@ -25,6 +27,13 @@ class Validator {
 
     public function url($url) {
         if (filter_var($url, FILTER_VALIDATE_URL)) {
+            return true;
+        }
+        return false;
+    }
+
+    public function image($image) {
+        if ($image == Image::PATTERN) {
             return true;
         }
         return false;
@@ -55,6 +64,10 @@ class Validator {
 
     public function errorUrlMsg() {
         return 'Please, type valid url (start with http:// or https://)';
+    }
+
+    public function errorImageMsg() {
+        return 'Please, send image';
     }
 
     public function errorRegexpMsg() {

@@ -81,6 +81,12 @@ class TemplateConversation extends Conversation {
                         $this->askAgain($block);
                         return;
                     }
+                } elseif ($block['validate'] == 'image') {
+                    if (!$validator->image($answer->getText())) {
+                        $this->say($block['errorMsg'] ?? $validator->errorImageMsg());
+                        $this->askAgain($block);
+                        return;
+                    }
                 } elseif ($block['validate'] == 'confirm') {
                     $oldValue = $engine->removeVariable('temp.confirmation');
                     if (!$validator->confirm($oldValue, $answer->getText())) {
