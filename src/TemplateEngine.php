@@ -361,7 +361,7 @@ class TemplateEngine {
         } elseif ($type == 'menu') {
             if (array_key_exists('mode', $block) && $block['mode'] == 'quick') {
                 $this->strategy($this->bot)->sendQuickButtons($this->parseText($content['text']),
-                    $this->parseArray($content['buttons']));
+                    $this->parseArray($content['buttons']), $block['options'] ?? null);
             } else {
                 $this->strategy($this->bot)->sendMenu($this->parseText($content['text']),
                     $this->parseArray($content['buttons']), $block['options'] ?? null);
