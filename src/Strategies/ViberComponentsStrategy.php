@@ -28,7 +28,7 @@ class ViberComponentsStrategy implements IComponentsStrategy, IStrategy {
     }
 
     public function reply($message, $additionalParameters = []) {
-        $this->bot->reply($message, $additionalParameters);
+        return $this->bot->reply($message, $additionalParameters);
     }
 
     public function sendImage($imageUrl, $text = null) {
@@ -92,16 +92,14 @@ class ViberComponentsStrategy implements IComponentsStrategy, IStrategy {
     }
 
     public function requireLocation($text, $options = null) {
-        // TODO: Implement sendLocation() method.
+        return $this->reply($text);
     }
 
     public function requirePhonePayload($text, $options = null) {
-        // TODO: Implement requirePhonePayload() method.
         return null;
     }
 
     public function requireEmailPayload($text, $options = null) {
-        // TODO: Implement requireEmailPayload() method.
         return null;
     }
 
