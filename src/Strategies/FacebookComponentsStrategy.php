@@ -105,7 +105,7 @@ class FacebookComponentsStrategy implements IComponentsStrategy, IStrategy {
         $this->reply($list);
     }
 
-    public function sendQuickButtons($text, array $markup) {
+    public function sendQuickButtons($text, array $markup, $options = null) {
         $question = new Question($text);
         foreach($markup as $callback=>$title) {
             $question->addButton((new Button($title))->value($callback));

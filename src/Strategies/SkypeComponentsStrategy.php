@@ -167,7 +167,7 @@ class SkypeComponentsStrategy implements IComponentsStrategy, IStrategy {
         ]);
     }
 
-    public function sendQuickButtons($text, array $markup) {
+    public function sendQuickButtons($text, array $markup, $options = null) {
         // TODO: Implement sendQuickButtons() method.
     }
 

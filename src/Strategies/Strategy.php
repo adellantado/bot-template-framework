@@ -61,8 +61,8 @@ abstract class Strategy implements IStrategy, IComponentsStrategy {
         $this->componentsStrategy->sendCarousel($elements);
     }
 
-    public function sendQuickButtons($text, array $markup) {
-        $this->componentsStrategy->sendQuickButtons($text, $markup);
+    public function sendQuickButtons($text, array $markup, $options = null) {
+        $this->componentsStrategy->sendQuickButtons($text, $markup, $options);
     }
 
     public function sendAudio($url, $text = null) {

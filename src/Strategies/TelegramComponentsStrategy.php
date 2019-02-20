@@ -78,7 +78,7 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
         return $this->reply($text);
     }
 
-    protected function buildMenu(array $markup, $inline = true, $oneTimeKeyboard = false) {
+    protected function buildMenu(array $markup, $inline = true, $oneTimeKeyboard = false, $resizeKeyboard = false) {
         $menu = [];
         foreach ($markup as $submenu) {
             $rows = [];
@@ -98,7 +98,7 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
             'reply_markup' => json_encode(Collection::make([
                 $type => $menu,
                 'one_time_keyboard' => $oneTimeKeyboard,
-                'resize_keyboard' => false,
+                'resize_keyboard' => $resizeKeyboard,
             ])->filter()),
         ];
     }
@@ -187,8 +187,8 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
         });
     }
 
-    public function sendQuickButtons($text, array $markup) {
-        return $this->reply($text, $this->buildMenu($markup, false, true));
+    public function sendQuickButtons($text, array $markup, $options = null) {
+        return $this->reply($text, $this->buildMenu($markup, false, $options['one_time_keyboard'] ?? true, $options['resize_keyboard'] ?? false));
     }
 
     public function sendAudio($url, $text = null) {
@@ -212,6 +212,8 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
                         'text' =>  $options['title'] ?? 'Share Your Location'
                     ]]
                 ],
+                'one_time_keyboard' => $options['one_time_keyboard'] ?? true,
+                'resize_keyboard' => $options['resize_keyboard'] ?? false,
             ])
         ]);
     }
@@ -226,6 +228,8 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
                         'text' => $options['title'] ?? 'Share Your Location'
                     ]]
                 ],
+                'one_time_keyboard' => $options['one_time_keyboard'] ?? true,
+                'resize_keyboard' => $options['resize_keyboard'] ?? false,
             ])];
         return [
             'text' => $text,
@@ -243,6 +247,8 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
                         'text' => $options['title'] ?? 'Share Your Phone'
                     ]]
                 ],
+                'one_time_keyboard' => $options['one_time_keyboard'] ?? true,
+                'resize_keyboard' => $options['resize_keyboard'] ?? false,
             ])];
         return [
             'text' => $text,

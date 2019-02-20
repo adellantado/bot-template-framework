@@ -71,7 +71,7 @@ class ViberComponentsStrategy implements IComponentsStrategy, IStrategy {
         $this->reply(new CarouselTemplate($elements));
     }
 
-    public function sendQuickButtons($text, array $markup) {
+    public function sendQuickButtons($text, array $markup, $options = null) {
         $question = new Question($text);
         foreach($markup as $callback=>$title) {
             $question->addButton((new Button($title))->value($callback));
