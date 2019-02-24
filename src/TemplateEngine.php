@@ -14,10 +14,11 @@ use BotTemplateFramework\Events\VariableRemovedEvent;
 use BotTemplateFramework\Strategies\StrategyTrait;
 use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Http\Curl;
+use BotTemplateFramework\Traits\CacheTrait;
 use Opis\Closure\SerializableClosure;
 
 class TemplateEngine {
-    use StrategyTrait;
+    use StrategyTrait, CacheTrait;
 
     /**
      * @var array
@@ -32,9 +33,6 @@ class TemplateEngine {
     protected $blockListeners = [];
 
     protected $eventListeners = [];
-
-    /** @var CacheInterface */
-    protected $cache;
 
     protected $activeBlock;
 
@@ -549,38 +547,6 @@ class TemplateEngine {
         } catch(\Exception $e) {
         }
         return $value;
-    }
-
-    protected function putCacheVariable($name, $value) {
-        $m = $this->bot->getMessages();
-        if ($m) {
-            $this->cache->put($name.'-'.$m[0]->getSender(), $value, $this->getOptions()['user_cache_time'] ?? 30);
-        }
-        return $this;
-    }
-
-    protected function getCacheVariable($name) {
-        $m = $this->bot->getMessages();
-        if ($m) {
-            return $this->cache->get($name.'-'.$m[0]->getSender(), '');
-        }
-        return null;
-    }
-
-    protected function removeCacheVariable($name) {
-        $m = $this->bot->getMessages();
-        if ($m) {
-            return $this->cache->pull($name.'-'.$m[0]->getSender(), '');
-        }
-        return null;
-    }
-
-    protected function hasCacheVariable($name) {
-        $m = $this->bot->getMessages();
-        if ($m) {
-            return $this->cache->has($name.'-'.$m[0]->getSender());
-        }
-        return null;
     }
 
     protected function executeRequest($block) {
