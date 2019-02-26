@@ -5,13 +5,13 @@ namespace BotTemplateFramework\Strategies;
 
 interface IComponentsStrategy {
 
-    public function sendImage($imageUrl, $text = null);
+    public function sendImage($imageUrl, $text = null, $options = null);
 
     public function sendMenu($text, array $markup, $options = null);
 
     public function sendMenuAndImage($imageUrl, $text, array $markup, $options = null);
 
-    public function sendText($text);
+    public function sendText($text, $options = null);
 
     public function sendList(array $elements, array $globalButton = null, $options = null);
 
@@ -19,11 +19,11 @@ interface IComponentsStrategy {
 
     public function sendQuickButtons($text, array $markup, $options = null);
 
-    public function sendAudio($url, $text = null);
+    public function sendAudio($url, $text = null, $options = null);
 
-    public function sendVideo($url, $text = null);
+    public function sendVideo($url, $text = null, $options = null);
 
-    public function sendFile($url, $text = null);
+    public function sendFile($url, $text = null, $options = null);
 
     public function requireLocation($text, $options = null);
 

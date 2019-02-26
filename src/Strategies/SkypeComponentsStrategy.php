@@ -25,7 +25,7 @@ class SkypeComponentsStrategy implements IComponentsStrategy, IStrategy {
         $this->bot->reply($message, $additionalParameters);
     }
 
-    public function sendImage($imageUrl, $text = null) {
+    public function sendImage($imageUrl, $text = null, $options = null) {
         if ($text) {
             $menu = [
                 "title" => $text,
@@ -95,7 +95,7 @@ class SkypeComponentsStrategy implements IComponentsStrategy, IStrategy {
         ]);
     }
 
-    public function sendText($text) {
+    public function sendText($text, $options = null) {
         $this->reply($text);
     }
 
@@ -171,15 +171,15 @@ class SkypeComponentsStrategy implements IComponentsStrategy, IStrategy {
         // TODO: Implement sendQuickButtons() method.
     }
 
-    public function sendAudio($url, $text = null) {
+    public function sendAudio($url, $text = null, $options = null) {
         $this->reply(OutgoingMessage::create($text, new Audio($url)));
     }
 
-    public function sendVideo($url, $text = null) {
+    public function sendVideo($url, $text = null, $options = null) {
         $this->reply(OutgoingMessage::create($text, new Video($url)));
     }
 
-    public function sendFile($url, $text = null) {
+    public function sendFile($url, $text = null, $options = null) {
         $this->reply(OutgoingMessage::create($text, new File($url)));
     }
 

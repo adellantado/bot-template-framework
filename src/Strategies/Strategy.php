@@ -37,7 +37,7 @@ abstract class Strategy implements IStrategy, IComponentsStrategy {
 
     //-------------Components
 
-    public function sendImage($imageUrl, $text = null) {
+    public function sendImage($imageUrl, $text = null, $options = null) {
         $this->componentsStrategy->sendImage($imageUrl, $text);
     }
 
@@ -49,7 +49,7 @@ abstract class Strategy implements IStrategy, IComponentsStrategy {
         $this->componentsStrategy->sendMenuAndImage($imageUrl, $text, $markup);
     }
 
-    public function sendText($text) {
+    public function sendText($text, $options = null) {
         $this->componentsStrategy->sendText($text);
     }
 
@@ -65,15 +65,15 @@ abstract class Strategy implements IStrategy, IComponentsStrategy {
         $this->componentsStrategy->sendQuickButtons($text, $markup, $options);
     }
 
-    public function sendAudio($url, $text = null) {
+    public function sendAudio($url, $text = null, $options = null) {
         $this->componentsStrategy->sendAudio($url, $text);
     }
 
-    public function sendVideo($url, $text = null) {
+    public function sendVideo($url, $text = null, $options = null) {
         $this->componentsStrategy->sendVideo($url, $text);
     }
 
-    public function sendFile($url, $text = null) {
+    public function sendFile($url, $text = null, $options = null) {
         $this->componentsStrategy->sendFile($url, $text);
     }
 

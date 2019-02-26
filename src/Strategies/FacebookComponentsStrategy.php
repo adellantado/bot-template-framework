@@ -34,7 +34,7 @@ class FacebookComponentsStrategy implements IComponentsStrategy, IStrategy {
         $this->bot->reply($message, $additionalParameters);
     }
 
-    public function sendImage($imageUrl, $text = null) {
+    public function sendImage($imageUrl, $text = null, $options = null) {
         if ($text) {
             $this->sendMenuAndImage($imageUrl, $text, []);
         } else {
@@ -60,7 +60,7 @@ class FacebookComponentsStrategy implements IComponentsStrategy, IStrategy {
         $this->reply(GenericTemplate::create()->addImageAspectRatio($options['image_aspect_ratio'] ?? GenericTemplate::RATIO_SQUARE)->addElement(Element::create($text)->subtitle($options['subtitle'] ?? '')->image($imageUrl)->addButtons($this->buildButtons($markup))));
     }
 
-    public function sendText($text) {
+    public function sendText($text, $options = null) {
         $this->reply($text);
     }
 
@@ -113,15 +113,15 @@ class FacebookComponentsStrategy implements IComponentsStrategy, IStrategy {
         $this->reply($question);
     }
 
-    public function sendAudio($url, $text = null) {
+    public function sendAudio($url, $text = null, $options = null) {
         $this->reply(OutgoingMessage::create($text, new Audio($url)));
     }
 
-    public function sendVideo($url, $text = null) {
+    public function sendVideo($url, $text = null, $options = null) {
         $this->reply(OutgoingMessage::create($text, new Video($url)));
     }
 
-    public function sendFile($url, $text = null) {
+    public function sendFile($url, $text = null, $options = null) {
         $this->reply(OutgoingMessage::create($text, new File($url)));
     }
 

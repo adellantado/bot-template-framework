@@ -30,22 +30,27 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
         return $this->bot;
     }
 
-    public function reply($message, $additionalParameters = []) {
-        $additionalParameters = array_merge($additionalParameters, ['parse_mode' => 'Markdown']);
+    public function reply($message, $additionalParameters = [], $options = null) {
+        $additionalParameters = array_merge($additionalParameters, [
+            'parse_mode' => $options['parse_mode'] ?? 'Markdown',
+            'disable_web_page_preview' => $options['disable_web_page_preview'] ?? false,
+            'disable_notification' => $options['disable_notification'] ?? false
+
+        ]);
         return $this->bot->reply($message, $additionalParameters);
     }
 
-    public function sendImage($imageUrl, $text = null) {
+    public function sendImage($imageUrl, $text = null, $options = null) {
         if ($text) {
             $this->sendMenuAndImage($imageUrl, $text, []);
         } else {
             $message = OutgoingMessage::create()->withAttachment(new Image($imageUrl));
-            $this->reply($message);
+            $this->reply($message, [], $options);
         }
     }
 
     public function sendMenu($text, array $markup, $options = null) {
-        return $this->reply($text, $this->buildMenu($markup));
+        return $this->reply($text, $this->buildMenu($markup), $options);
     }
 
     public function sendMenuAndImage($imageUrl, $text, array $markup, $options = null) {
@@ -55,7 +60,8 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
         $this->bot->sendRequest('sendPhoto', array_merge([
             'chat_id' => $recipient,
             'photo' => $imageUrl,
-            'caption' => $text
+            'caption' => $text,
+            'disable_notification' => $options['disable_notification'] ?? false
         ], $this->buildMenu([$markup])));
     }
 
@@ -74,8 +80,8 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
     }
 
 
-    public function sendText($text) {
-        return $this->reply($text);
+    public function sendText($text, $options = null) {
+        return $this->reply($text, [], $options);
     }
 
     protected function buildMenu(array $markup, $inline = true, $oneTimeKeyboard = false, $resizeKeyboard = false) {
@@ -188,18 +194,18 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
     }
 
     public function sendQuickButtons($text, array $markup, $options = null) {
-        return $this->reply($text, $this->buildMenu($markup, false, $options['one_time_keyboard'] ?? true, $options['resize_keyboard'] ?? true));
+        return $this->reply($text, $this->buildMenu($markup, false, $options['one_time_keyboard'] ?? true, $options['resize_keyboard'] ?? true), $options);
     }
 
-    public function sendAudio($url, $text = null) {
+    public function sendAudio($url, $text = null, $options = null) {
         $this->reply(OutgoingMessage::create($text, new Audio($url)));
     }
 
-    public function sendVideo($url, $text = null) {
+    public function sendVideo($url, $text = null, $options = null) {
         $this->reply(OutgoingMessage::create($text, new Video($url)));
     }
 
-    public function sendFile($url, $text = null) {
+    public function sendFile($url, $text = null, $options = null) {
         $this->reply(OutgoingMessage::create($text, new File($url)));
     }
 
@@ -215,7 +221,7 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
                 'one_time_keyboard' => $options['one_time_keyboard'] ?? true,
                 'resize_keyboard' => $options['resize_keyboard'] ?? true,
             ])
-        ]);
+        ], $options);
     }
 
     public function requireLocationPayload($text, $options = null) {

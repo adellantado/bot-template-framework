@@ -31,7 +31,7 @@ class ViberComponentsStrategy implements IComponentsStrategy, IStrategy {
         return $this->bot->reply($message, $additionalParameters);
     }
 
-    public function sendImage($imageUrl, $text = null) {
+    public function sendImage($imageUrl, $text = null, $options = null) {
         if ($text) {
             $this->reply(new PictureTemplate($imageUrl, $text));
         } else {
@@ -53,7 +53,7 @@ class ViberComponentsStrategy implements IComponentsStrategy, IStrategy {
         $this->reply($menu);
     }
 
-    public function sendText($text) {
+    public function sendText($text, $options = null) {
         $this->reply($text);
     }
 
@@ -79,15 +79,15 @@ class ViberComponentsStrategy implements IComponentsStrategy, IStrategy {
         $this->reply($question);
     }
 
-    public function sendAudio($url, $text = null) {
+    public function sendAudio($url, $text = null, $options = null) {
         $this->reply(OutgoingMessage::create($text, new Audio($url)));
     }
 
-    public function sendVideo($url, $text = null) {
+    public function sendVideo($url, $text = null, $options = null) {
         $this->reply(OutgoingMessage::create($text, new Video($url)));
     }
 
-    public function sendFile($url, $text = null) {
+    public function sendFile($url, $text = null, $options = null) {
         $this->reply(OutgoingMessage::create($text, new File($url)));
     }
 

@@ -34,7 +34,7 @@ class AlexaComponentsStrategy implements IComponentsStrategy, IStrategy {
         $this->reply($message);
     }
 
-    public function sendImage($imageUrl, $text = null) {
+    public function sendImage($imageUrl, $text = null, $options = null) {
         $this->sendCard($text, '', $imageUrl);
     }
 
@@ -46,7 +46,7 @@ class AlexaComponentsStrategy implements IComponentsStrategy, IStrategy {
         // TODO: Implement sendMenuAndImage() method.
     }
 
-    public function sendText($text) {
+    public function sendText($text, $options = null) {
         $this->reply($text);
     }
 
@@ -66,15 +66,15 @@ class AlexaComponentsStrategy implements IComponentsStrategy, IStrategy {
         $this->sendList($elements);
     }
 
-    public function sendAudio($url, $text = null) {
+    public function sendAudio($url, $text = null, $options = null) {
         // TODO: Implement sendAudio() method.
     }
 
-    public function sendVideo($url, $text = null) {
+    public function sendVideo($url, $text = null, $options = null) {
         // TODO: Implement sendVideo() method.
     }
 
-    public function sendFile($url, $text = null) {
+    public function sendFile($url, $text = null, $options = null) {
         // TODO: Implement sendFile() method.
     }
 
