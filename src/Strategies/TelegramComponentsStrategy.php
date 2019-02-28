@@ -54,15 +54,7 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
     }
 
     public function sendMenuAndImage($imageUrl, $text, array $markup, $options = null) {
-        /** @var IncomingMessage $message */
-        $message = $this->bot->getMessages()[0];
-        $recipient = $message->getRecipient() === '' ? $message->getSender() : $message->getRecipient();
-        $this->bot->sendRequest('sendPhoto', array_merge([
-            'chat_id' => $recipient,
-            'photo' => $imageUrl,
-            'caption' => $text,
-            'disable_notification' => $options['disable_notification'] ?? false
-        ], $this->buildMenu([$markup])));
+        $this->reply(OutgoingMessage::create($text, Image::url($imageUrl)), $this->buildMenu([$markup]), $options);
     }
 
     public function sendList(array $elements, array $globalButton = null, $options = null) {
