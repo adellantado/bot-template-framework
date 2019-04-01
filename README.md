@@ -147,9 +147,9 @@ Every block extends abstract block, which has next properties:
             "content": {
                 "text": "This is the logo:",
                 "url": "https://logo.com/logo.jpg",
-                "buttons": [
-                    {"Callback": "Learn More"}
-                ]
+                "buttons": {
+                    "Callback": "Learn More"
+                }
             },
             "template": "Show me the logo"
         }
@@ -210,10 +210,12 @@ Every block extends abstract block, which has next properties:
             "mode": "quick",
             "content": {
                 "text": "This is a quick menu",
-                "buttons": {
-                    "https://website.com/": "Visit Website", 
-                    "Ask Support": "Ask Support"
-                }
+                "buttons": [
+                    {
+                        "https://website.com/": "Visit Website", 
+                        "Ask Support": "Ask Support"
+                    }
+                ]    
             } 
         }   
     
@@ -290,9 +292,9 @@ Every block extends abstract block, which has next properties:
                     "url": "https://image.com/img3.jpg",
                     "title": "Component #3",
                     "description": "This is component #3",
-                    "buttons": [
-                        {"example btn": "Example Button"}
-                    ]
+                    "buttons": {
+                        "example btn": "Example Button"
+                    }
                 }
             ],
         }
