@@ -52,10 +52,19 @@ class TemplateEngine {
         foreach ($template['drivers'] as $driver) {
             $driverName = (strtolower($driver['name']) == 'skype' ? 'botframework' : strtolower($driver['name']));
             $config[$driverName] = [];
-            foreach ($driver as $key => $value) {
-                if (!in_array($key, ['name', 'events', 'config'])) {
-                    $config[$driverName][$key] = (array_key_exists('config',
-                            $driver) && $driver['config'] == 'true') ? env($value) : $value;
+            if ($driverName == 'web') {
+                $config['web'] = [
+                    'matchingData' => [
+                        'driver' => (array_key_exists('config', $driver) && $driver['config'] == 'true') ?
+                            env($driver['token']) : $driver['token'] ?? 'web'
+                    ],
+                ];
+            } else {
+                foreach ($driver as $key => $value) {
+                    if (!in_array($key, ['name', 'events', 'config'])) {
+                        $config[$driverName][$key] = (array_key_exists('config',
+                                $driver) && $driver['config'] == 'true') ? env($value) : $value;
+                    }
                 }
             }
         }

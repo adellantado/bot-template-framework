@@ -483,9 +483,9 @@ Every block extends abstract block, which has next properties:
    Before using driver in here, first you need to install proper driver for Botman.
    Available drivers are next:
    
-        Facebook, Telegram, Skype, Dialogflow, Alexa, Viber
+        Facebook, Telegram, Skype, Dialogflow, Alexa, Viber, Web
    
-   note: Because  BotMan doesn't ship with Viber driver, you need to run
+   note: Because BotMan doesn't ship with Viber driver, you need to run
    
         composer require adellantado/botman-viber-driver
    
@@ -495,6 +495,10 @@ Every block extends abstract block, which has next properties:
             {
                 "name": "Dialogflow",
                 "token": "b71dd842a2eb43434f4fg543455"
+            },
+            {
+                "name": "Web",
+                "token": "web"
             },
             {
                 "name": "Facebook",
@@ -510,7 +514,7 @@ Every block extends abstract block, which has next properties:
         ]
 
    `name` - (required) Name of the driver<br>
-   `token` - (require|optional) token for telegram, viber, dialogflow.
+   `token` - (require|optional) token for telegram, viber, dialogflow, web(optional, default token is 'web').
            Fields: verification, token, app_secret - for facebook; 
            app_id, app_key - for skype.<br>
    `config` - (optional) shows that fields should be read from env()<br>

@@ -52,6 +52,8 @@ trait StrategyTrait {
             $driveName = 'Viber';
         } elseif ($driver instanceof \BotMan\Drivers\AmazonAlexa\AmazonAlexaDriver) {
             $driveName = 'Alexa';
+        } elseif ($driver instanceof \BotMan\Drivers\Web\WebDriver) {
+            $driveName = 'Web';
         }
         return $driveName;
 
