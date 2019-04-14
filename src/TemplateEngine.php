@@ -36,6 +36,8 @@ class TemplateEngine {
 
     protected $activeBlock;
 
+    protected $botVariables;
+
     public static function getConfig($template, $config = []) {
         if (is_string($template)) {
             $template = json_decode($template, true);
@@ -89,6 +91,40 @@ class TemplateEngine {
         } else {
             throw new \Exception(self::class . " accepts only array, Template or json string");
         }
+
+        if ($this->botVariables) {
+            $this->template = $this->getParsedTemplate($this->template, $this->botVariables);
+        }
+    }
+
+    public function setBotVariables($vars) {
+        $this->botVariables = $vars;
+        if ($this->botVariables && $this->template) {
+            $this->template = $this->getParsedTemplate($this->template, $this->botVariables);
+        }
+    }
+
+    public function getParsedTemplate(array $template, array $variables) {
+        if (!$variables) {
+            return $template;
+        }
+
+        $newTemplate = [];
+        foreach ($template as $key=> $value) {
+            if (is_array($value)) {
+                $newTemplate[$key] = $this->getParsedTemplate($value, $variables);
+            } else {
+                if (preg_match_all('/{{(.+?)}}/', $value, $matches)) {
+                    foreach ($matches[1] as $match) {
+                        if (key_exists($match, $variables)) {
+                            $value = preg_replace('/{{' . $match . '}}/', $variables[$match], $value);
+                        }
+                    }
+                }
+                $newTemplate[$key] = $value;
+            }
+        }
+        return $newTemplate;
     }
 
     public function setBot(BotMan $bot) {
