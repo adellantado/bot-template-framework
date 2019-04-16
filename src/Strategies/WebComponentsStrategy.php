@@ -56,7 +56,7 @@ class WebComponentsStrategy implements IComponentsStrategy, IStrategy {
         $message = OutgoingMessage::create($text)->withAttachment($attachment);
 
         $this->reply($message);
-        $this->sendMenu('', $markup);
+        $this->sendMenu('', [$markup]);
     }
 
     public function sendList(array $elements, array $globalButton = null, $options = null) {
@@ -79,7 +79,7 @@ class WebComponentsStrategy implements IComponentsStrategy, IStrategy {
 //        $this->reply($list);
 
         foreach ($elements as $item) {
-            $this->sendMenuAndImage($item['url'], $item['title'], [$item['buttons']]);
+            $this->sendMenuAndImage($item['url'], $item['title'], $item['buttons']);
         }
 
         if ($globalButton) {
