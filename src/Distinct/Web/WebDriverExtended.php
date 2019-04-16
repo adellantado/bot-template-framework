@@ -16,7 +16,7 @@ class WebDriverExtended extends WebDriver {
      */
     public function hasMatchingEvent()
     {
-        $event = $this->getEventFromEventData($this->event->get('eventData'));
+        $event = $this->getEventFromEventData($this->payload);
         if ($event) {
             $this->driverEvent = $event;
             return $this->driverEvent;
