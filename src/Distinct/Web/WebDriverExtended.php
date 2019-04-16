@@ -8,6 +8,9 @@ use BotTemplateFramework\Distinct\Web\Events\WidgetOpened;
 
 class WebDriverExtended extends WebDriver {
 
+    /** @var DriverEventInterface */
+    protected $driverEvent;
+
     /**
      * @return bool|DriverEventInterface
      */
