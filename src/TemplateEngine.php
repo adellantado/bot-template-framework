@@ -6,6 +6,7 @@ use BotMan\BotMan\Interfaces\CacheInterface;
 use BotMan\BotMan\Messages\Attachments\Location;
 use BotMan\BotMan\Messages\Incoming\IncomingMessage;
 use BotTemplateFramework\Builder\Template;
+use BotTemplateFramework\Distinct\Chatbase\ChatbaseExtended;
 use BotTemplateFramework\Distinct\Dialogflow\DialogflowExtended;
 use BotTemplateFramework\Events\Event;
 use BotTemplateFramework\Events\ListenStartedEvent;
@@ -79,6 +80,9 @@ class TemplateEngine {
         $this->setTemplate($template);
         $this->cache = $cache;
         TemplateConversation::$engine = $this;
+        if ($this->getDriver('chatbase', false)) {
+            ChatbaseExtended::create($this);
+        }
     }
 
     public function setTemplate($template) {

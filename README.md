@@ -77,7 +77,7 @@ E.g. Simple Telegram Hello World chatbot:
             "drivers": [
                 {
                     "name": "Telegram",
-                    "token": "<your-telegram-tocken>"
+                    "token": "<your-telegram-token>"
                 },
                 {
                     ...
@@ -483,22 +483,30 @@ Every block extends abstract block, which has next properties:
    Before using driver in here, first you need to install proper driver for Botman.
    Available drivers are next:
    
-        Facebook, Telegram, Skype, Dialogflow, Alexa, Viber, Web
+        Facebook, Telegram, Skype, Dialogflow, Alexa, Viber, Web, Chatbase
    
    note: Because BotMan doesn't ship with Viber driver, you need to run
    
-        composer require adellantado/botman-viber-driver
+        composer require adellantado/botman-viber-driver,
+        
+   note: Because BotMan doesn't ship with Chatbase, you need to run
+       
+        composer require bhavyanshu/chatbase-php   
    
    Example:
     
         "drivers": [
             {
                 "name": "Dialogflow",
-                "token": "b71dd842a2eb43434f4fg543455"
+                "token": "b71dd842a2eb43434f4fg5eee55"
             },
             {
                 "name": "Web",
                 "token": "web"
+            },
+            {
+                "name": "Chatbase",
+                "token": "b71dd-842a-2eb4-3434-fw32e3233"
             },
             {
                 "name": "Facebook",
@@ -514,7 +522,7 @@ Every block extends abstract block, which has next properties:
         ]
 
    `name` - (required) Name of the driver<br>
-   `token` - (require|optional) token for telegram, viber, dialogflow, web(optional, default token is 'web').
+   `token` - (require|optional) token for telegram, viber, dialogflow, chatbase, web(optional, default token is 'web').
            Fields: verification, token, app_secret - for facebook; 
            app_id, app_key - for skype.<br>
    `config` - (optional) shows that fields should be read from env()<br>
@@ -545,7 +553,7 @@ And by using special save block.
  - {{user.lastName}}<br>
  - {{bot.name}}<br>
  - {{bot.driver}}<br>
- - {{message}} (this is the last sent message)
+ - {{message}} (this is the last user's sent message)
 
 <h2>Results</h2>
 
