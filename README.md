@@ -130,7 +130,7 @@ Every block extends abstract block, which has next properties:
        {
             "name": "Greetings",
             "type": "text",
-            "content": "Hi! Nice to meet you {{user.firstName}}",
+            "content": "Hi! Nice to meet you {{user.firstName}};Hi there, {{user.firstName}}",
             "template": "Hello;Hi;Good day",
             "typing": "1s"
        }
@@ -145,7 +145,7 @@ Every block extends abstract block, which has next properties:
             "name": "Logo",
             "type": "image",
             "content": {
-                "text": "This is the logo:",
+                "text": "This is the logo;Our logo is following",
                 "url": "https://logo.com/logo.jpg",
                 "buttons": {
                     "Callback": "Learn More"
@@ -168,7 +168,7 @@ Every block extends abstract block, which has next properties:
             "name": "Menu Block",
             "type": "menu",
             "content": {
-                "text": "This is a simple menu",
+                "text": "This is a simple menu; This is a menu",
                 "buttons": [
                     {"Callback": "Learn More"},
                     {
@@ -242,7 +242,7 @@ Every block extends abstract block, which has next properties:
         {
             "name": "Location Test",
             "type": "location",
-            "content": "Please, share your location by clicking button below",
+            "content": "Please, share your location by clicking button below;Send your location",
             "template": "share location",
             "result": {
                 "save": "{{location}}"
@@ -363,7 +363,7 @@ Every block extends abstract block, which has next properties:
             "provider": "alexa",
             "type": "intent",
             "template": "BeverageIntent",
-            "content": "well done",
+            "content": "well done; cool",
             "result": {
                 "field": "beverage",
                 "save": "{{user_beverage}}"

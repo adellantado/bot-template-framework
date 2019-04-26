@@ -392,33 +392,33 @@ class TemplateEngine {
         }
 
         if ($type == 'text') {
-            $this->strategy($this->bot)->sendText($this->parseText($content), $block['options'] ?? null);
+            $this->strategy($this->bot)->sendText($this->getText($content), $block['options'] ?? null);
         } elseif ($type == 'image') {
             if (array_key_exists('buttons', $content)) {
                 $this->strategy($this->bot)->sendMenuAndImage($this->parseText($content['url']),
-                    $this->parseText($content['text']), $this->parseArray($content['buttons']), $block['options'] ?? null);
+                    $this->getText($content['text']), $this->parseArray($content['buttons']), $block['options'] ?? null);
             } else {
                 $this->strategy($this->bot)->sendImage($this->parseText($content['url']),
-                    array_key_exists('text', $content) ? $this->parseText($content['text']) : null, $block['options'] ?? null);
+                    array_key_exists('text', $content) ? $this->getText($content['text']) : null, $block['options'] ?? null);
             }
         } elseif ($type == 'video') {
             $this->strategy($this->bot)->sendVideo($this->parseText($content['url']),
-                array_key_exists('text', $content) ? $this->parseText($content['text']) : null,
+                array_key_exists('text', $content) ? $this->getText($content['text']) : null,
                 $block['options'] ?? null);
         } elseif ($type == 'audio') {
             $this->strategy($this->bot)->sendAudio($this->parseText($content['url']),
-                array_key_exists('text', $content) ? $this->parseText($content['text']) : null,
+                array_key_exists('text', $content) ? $this->getText($content['text']) : null,
                 $block['options'] ?? null);
         } elseif ($type == 'file') {
             $this->strategy($this->bot)->sendFile($this->parseText($content['url']),
-                array_key_exists('text', $content) ? $this->parseText($content['text']) : null,
+                array_key_exists('text', $content) ? $this->getText($content['text']) : null,
                 $block['options'] ?? null);
         } elseif ($type == 'menu') {
             if (array_key_exists('mode', $block) && $block['mode'] == 'quick') {
-                $this->strategy($this->bot)->sendQuickButtons($this->parseText($content['text']),
+                $this->strategy($this->bot)->sendQuickButtons($this->getText($content['text']),
                     $this->parseArray($content['buttons']), $block['options'] ?? null);
             } else {
-                $this->strategy($this->bot)->sendMenu($this->parseText($content['text']),
+                $this->strategy($this->bot)->sendMenu($this->getText($content['text']),
                     $this->parseArray($content['buttons']), $block['options'] ?? null);
             }
         } elseif ($type == 'list') {
@@ -426,9 +426,9 @@ class TemplateEngine {
         } elseif ($type == 'carousel') {
             $this->strategy($this->bot)->sendCarousel($this->parseArray($content), $block['options'] ?? null);
         } elseif ($type == 'location') {
-            $this->strategy($this->bot)->requireLocation($this->parseText($content), $block['options'] ?? null);
+            $this->strategy($this->bot)->requireLocation($this->getText($content), $block['options'] ?? null);
         } elseif ($type == 'attachment') {
-            $this->strategy($this->bot)->sendText($this->parseText($content), $block['options'] ?? null);
+            $this->strategy($this->bot)->sendText($this->getText($content), $block['options'] ?? null);
         } elseif ($type == 'request') {
             $result = $this->executeRequest($block);
         } elseif ($type == 'method') {
@@ -581,6 +581,10 @@ class TemplateEngine {
         return $text;
     }
 
+    public function getText($text) {
+        return $this->parseText($this->getRandomResponseText($text));
+    }
+
     protected function parseArray($array) {
         $result = [];
         foreach ($array as $key => $item) {
@@ -667,7 +671,7 @@ class TemplateEngine {
 
             }
             if (array_key_exists('content', $block)) {
-                $this->bot->reply($this->parseText($block['content']));
+                $this->bot->reply($this->getText($block['content']));
             }
         } elseif ($block['provider'] == 'dialogflow') {
             if (array_key_exists('result', $block)) {
@@ -683,7 +687,7 @@ class TemplateEngine {
 
             }
             if (array_key_exists('content', $block)) {
-                $this->bot->reply($this->parseText($block['content']));
+                $this->bot->reply($this->getText($block['content']));
             } else {
                 $extras = $this->bot->getMessage()->getExtras();
                 foreach($extras['apiReply'] as $speech) {
@@ -705,7 +709,7 @@ class TemplateEngine {
 
             }
             if (array_key_exists('content', $block)) {
-                $this->bot->reply($this->parseText($block['content']));
+                $this->bot->reply($this->getText($block['content']));
             }
         }
 
@@ -806,6 +810,11 @@ class TemplateEngine {
             $valid = true;
         }
         return $valid;
+    }
+
+    protected function getRandomResponseText($text) {
+        $texts = explode(';', $text);
+        return $texts[array_rand($texts)];
     }
 
     public function __wakeup() {

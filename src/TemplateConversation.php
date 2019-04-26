@@ -32,15 +32,15 @@ class TemplateConversation extends Conversation {
         $block = $engine->getBlock($this->blockName);
         $question = null;
         if (array_key_exists('validate', $block) && $block['validate'] == 'email') {
-            $question = $engine->strategy($this->bot)->requireEmailPayload($engine->parseText($block['content']), $block['options'] ?? null);
+            $question = $engine->strategy($this->bot)->requireEmailPayload($engine->getText($block['content']), $block['options'] ?? null);
         } elseif (array_key_exists('validate', $block) && $block['validate'] == 'phone') {
-            $question = $engine->strategy($this->bot)->requirePhonePayload($engine->parseText($block['content']), $block['options'] ?? null);
+            $question = $engine->strategy($this->bot)->requirePhonePayload($engine->getText($block['content']), $block['options'] ?? null);
         } elseif (array_key_exists('validate', $block) && $block['validate'] == 'location') {
-            $question = $engine->strategy($this->bot)->requireLocationPayload($engine->parseText($block['content']), $block['options'] ?? null);
+            $question = $engine->strategy($this->bot)->requireLocationPayload($engine->getText($block['content']), $block['options'] ?? null);
         }
 
         if ($question == null) {
-            $question = new Question($engine->parseText($block['content']));
+            $question = new Question($engine->getText($block['content']));
             if (array_key_exists('result', $block) && array_key_exists('prompt', $block['result'])) {
                 $buttons = explode(';', $block['result']['prompt']);
                 foreach ($buttons as $button) {
