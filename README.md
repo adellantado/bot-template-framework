@@ -375,14 +375,14 @@ Every block extends abstract block, which has next properties:
             }
         }
 		
-   `provider` - (required) could be 'alexa' or 'dialogflow';<br>
-   `template` - (required) intent name for alexa, action name for dialogflow;<br>
-   `content` - (required (alexa) | option (dialogflow)) answer into the chat;<br>
+   `provider` - (required) could be 'alexa', 'wit' or 'dialogflow';<br>
+   `template` - (required) intent name for alexa and wit, action name for dialogflow;<br>
+   `content` - (required (alexa) | optional (dialogflow) | optional (wit)) answer into the chat;<br>
    `result.field` - (optional) entity or slot name;<br>
    `result.save` - (optional) saves entity or slot value;<br>
    `next.<entity_value>` - (optional) triggers next block by entity or slot value;
    
-   note: you should use amazon alexa console or dialogflow console to have 
+   note: you should use amazon alexa console, wit or dialogflow console to have 
         this block running
     
 <h3>If Block</h3>
@@ -483,7 +483,7 @@ Every block extends abstract block, which has next properties:
    Before using driver in here, first you need to install proper driver for Botman.
    Available drivers are next:
    
-        Facebook, Telegram, Skype, Dialogflow, Alexa, Viber, Web, Chatbase
+        Facebook, Telegram, Skype, Dialogflow, Alexa, Viber, Web, Chatbase, Wit
    
    note: Because BotMan doesn't ship with Viber driver, you need to run
    

@@ -5,6 +5,7 @@ namespace BotTemplateFramework;
 use BotMan\BotMan\Interfaces\CacheInterface;
 use BotMan\BotMan\Messages\Attachments\Location;
 use BotMan\BotMan\Messages\Incoming\IncomingMessage;
+use BotMan\BotMan\Middleware\Wit;
 use BotTemplateFramework\Builder\Template;
 use BotTemplateFramework\Distinct\Chatbase\ChatbaseExtended;
 use BotTemplateFramework\Distinct\Dialogflow\DialogflowExtended;
@@ -303,6 +304,10 @@ class TemplateEngine {
                     $dialogflow = DialogflowExtended::create($this->getDriver('dialogflow')['token'], $locale)->listenForAction();
                     $this->bot->middleware->received($dialogflow);
                     $command->middleware($dialogflow);
+                } elseif ($block['provider'] == 'wit') {
+                    $wit = Wit::create($this->getDriver('wit')['token']);
+                    $this->bot->middleware->received($wit);
+                    $command->middleware($wit);
                 }
             }
         }
@@ -684,6 +689,23 @@ class TemplateEngine {
                 foreach($extras['apiReply'] as $speech) {
                     $this->bot->reply($speech);
                 }
+            }
+        } elseif ($block['provider'] == 'wit') {
+            if (array_key_exists('result', $block)) {
+                $result = $this->bot->getMessage()->getExtras()['entities'];
+
+                if (array_key_exists('save', $block['result'])) {
+                    foreach ($result as $name=>$item) {
+                        if ($block['result']['field'] == $name) {
+                            $result = $item['value'];
+                            $this->saveVariable($block['result']['save'], $result);
+                        }
+                    }
+                }
+
+            }
+            if (array_key_exists('content', $block)) {
+                $this->bot->reply($this->parseText($block['content']));
             }
         }
 
