@@ -40,6 +40,16 @@ class TemplateEngine {
 
     protected $botVariables;
 
+    /**
+     * @var Wit
+     */
+    protected $wit;
+
+    /**
+     * @var DialogflowExtended
+     */
+    protected $dialogflow;
+
     public static function getConfig($template, $config = []) {
         if (is_string($template)) {
             $template = json_decode($template, true);
@@ -301,13 +311,13 @@ class TemplateEngine {
                 $command = $this->bot->hears($block['template'], $this->getCallback($block['name'], 'reply_', $callback));
                 if ($block['provider'] == 'dialogflow') {
                     $locale = array_key_exists('locale', $block) ? $block['locale'] : $this->getDefaultLocale();
-                    $dialogflow = DialogflowExtended::create($this->getDriver('dialogflow')['token'], $locale)->listenForAction();
-                    $this->bot->middleware->received($dialogflow);
-                    $command->middleware($dialogflow);
+                    $this->dialogflow = $this->dialogflow ?? DialogflowExtended::create($this->getDriver('dialogflow')['token'], $locale)->listenForAction();
+                    $this->bot->middleware->received($this->dialogflow);
+                    $command->middleware($this->dialogflow);
                 } elseif ($block['provider'] == 'wit') {
-                    $wit = Wit::create($this->getDriver('wit')['token']);
-                    $this->bot->middleware->received($wit);
-                    $command->middleware($wit);
+                    $this->wit = $this->wit ?? Wit::create($this->getDriver('wit')['token']);
+                    $this->bot->middleware->received($this->wit);
+                    $command->middleware($this->wit);
                 }
             }
         }
