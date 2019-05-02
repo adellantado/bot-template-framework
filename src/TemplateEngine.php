@@ -310,13 +310,17 @@ class TemplateEngine {
             if ($block['type'] == 'intent') {
                 $command = $this->bot->hears($block['template'], $this->getCallback($block['name'], 'reply_', $callback));
                 if ($block['provider'] == 'dialogflow') {
-                    $locale = array_key_exists('locale', $block) ? $block['locale'] : $this->getDefaultLocale();
-                    $this->dialogflow = $this->dialogflow ?? DialogflowExtended::create($this->getDriver('dialogflow')['token'], $locale)->listenForAction();
-                    $this->bot->middleware->received($this->dialogflow);
+                    if (!$this->dialogflow) {
+                        $locale = array_key_exists('locale', $block) ? $block['locale'] : $this->getDefaultLocale();
+                        $this->dialogflow = DialogflowExtended::create($this->getDriver('dialogflow')['token'], $locale)->listenForAction();
+                        $this->bot->middleware->received($this->dialogflow);
+                    }
                     $command->middleware($this->dialogflow);
                 } elseif ($block['provider'] == 'wit') {
-                    $this->wit = $this->wit ?? Wit::create($this->getDriver('wit')['token']);
-                    $this->bot->middleware->received($this->wit);
+                    if (!$this->wit) {
+                        $this->wit = Wit::create($this->getDriver('wit')['token']);
+                        $this->bot->middleware->received($this->wit);
+                    }
                     $command->middleware($this->wit);
                 }
             }
