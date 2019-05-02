@@ -15,6 +15,7 @@ use TheArdent\Drivers\Viber\Extensions\CarouselTemplate;
 use TheArdent\Drivers\Viber\Extensions\KeyboardTemplate;
 use TheArdent\Drivers\Viber\Extensions\MenuTemplate;
 use TheArdent\Drivers\Viber\Extensions\PictureTemplate;
+use Exception;
 
 class ViberComponentsStrategy implements IComponentsStrategy, IStrategy {
     protected $bot;
@@ -105,12 +106,17 @@ class ViberComponentsStrategy implements IComponentsStrategy, IStrategy {
 
     protected function buildMenu(array $markup, $keyboard, $options = null) {
         foreach ($markup as $submenu) {
+            $count = count($submenu);
+            if ($count > 6 || $count == 5 || $count == 4) {
+                throw new Exception('Viber buttons mustn\'t be more than 6 in a row. Buttons in amount of 4 or 5 broke UI.');
+            }
+            $width = 6 / $count;
             foreach ($submenu as $callback => $title) {
                 if (in_array(parse_url($callback, PHP_URL_SCHEME), ['mailto', 'http', 'https', 'tel'])) {
-                    $keyboard->addButton($title, 'open-url', $callback, $options['TextSize'] ?? 'regular', $options['BgColor'] ?? null);
+                    $keyboard->addButton($title, 'open-url', $callback, $options['TextSize'] ?? 'regular', $options['BgColor'] ?? null, $width);
                     continue;
                 }
-                $keyboard->addButton($title, 'reply', $callback, $options['TextSize'] ?? 'regular', $options['BgColor'] ?? null);
+                $keyboard->addButton($title, 'reply', $callback, $options['TextSize'] ?? 'regular', $options['BgColor'] ?? null, $width);
             }
         }
 

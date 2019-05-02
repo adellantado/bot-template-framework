@@ -165,6 +165,12 @@ class Validator {
             if (!in_array(pathinfo($block['content']['url'], PATHINFO_EXTENSION), ['jpg', 'jpeg'])) {
                 return 'For image blocks, Viber requires only JPEG format';
             }
+        } elseif ($driver == 'viber' && $type == 'menu') {
+            foreach ($block['content']['buttons'] as $menu) {
+                if (count($menu) > 6 || count($menu) == 5 || count($menu) == 4) {
+                    return 'Viber buttons mustn\'t be more than 6 in a row. Buttons in amount of 4 or 5 broke UI.';
+                }
+            }
         } elseif ($driver == 'facebook' && $type == 'menu') {
             if ($block['mode'] == 'quick' && count($block['content']['buttons']) > 10) {
                 return 'For menu blocks with quick buttons, Facebook allows to show max = 10 buttons at once';
