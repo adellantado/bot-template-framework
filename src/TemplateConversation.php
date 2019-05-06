@@ -44,8 +44,9 @@ class TemplateConversation extends Conversation {
             if (array_key_exists('result', $block) && array_key_exists('prompt', $block['result'])) {
                 $buttons = explode(';', $block['result']['prompt']);
                 foreach ($buttons as $button) {
-                    if ($button) {
-                        $question->addButton(Button::create($button)->value($button));
+                    $text = $engine->parseText($button);
+                    if ($text) {
+                        $question->addButton(Button::create($text)->value($text));
                     }
                 }
             }
