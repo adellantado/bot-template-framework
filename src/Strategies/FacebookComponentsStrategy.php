@@ -158,7 +158,7 @@ class FacebookComponentsStrategy implements IComponentsStrategy, IStrategy {
                             ->addElement(Element::create($options['share_text'] ?? parse_url($callback, PHP_URL_HOST))
                                 ->subtitle($options['share_subtitle'] ?? '')
                                 ->image($options['share_url'])
-                                ->addButton(ElementButton::create($title)->type(ElementButton::TYPE_WEB_URL)->url('share_link')))
+                                ->addButton(ElementButton::create($title)->type(ElementButton::TYPE_WEB_URL)->url($options['share_link'])))
                     );
                 } elseif ($schema == 'tel') {
                     $buttons[] = ElementButton::create($title)->type(ElementButton::TYPE_CALL)->payload($callback);
