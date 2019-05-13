@@ -36,7 +36,7 @@ class FacebookComponentsStrategy implements IComponentsStrategy, IStrategy {
 
     public function sendImage($imageUrl, $text = null, $options = null) {
         if ($text) {
-            $this->sendMenuAndImage($imageUrl, $text, []);
+            $this->sendMenuAndImage($imageUrl, $text, [], $options);
         } else {
             $message = OutgoingMessage::create()->withAttachment(new Image($imageUrl));
             $this->reply($message);
@@ -57,7 +57,7 @@ class FacebookComponentsStrategy implements IComponentsStrategy, IStrategy {
         if (count($markup) > 3) {
             throw new Exception('Too many elements');
         }
-        $this->reply(GenericTemplate::create()->addImageAspectRatio($options['image_aspect_ratio'] ?? GenericTemplate::RATIO_SQUARE)->addElement(Element::create($text)->subtitle($options['subtitle'] ?? '')->image($imageUrl)->addButtons($this->buildButtons($markup))));
+        $this->reply(GenericTemplate::create()->addImageAspectRatio($options['image_aspect_ratio'] ?? GenericTemplate::RATIO_SQUARE)->addElement(Element::create($text)->subtitle($options['subtitle'] ?? '')->image($imageUrl)->addButtons($this->buildButtons($markup, $options))));
     }
 
     public function sendText($text, $options = null) {
@@ -147,11 +147,24 @@ class FacebookComponentsStrategy implements IComponentsStrategy, IStrategy {
      * @param array $markup
      * @return array
      */
-    protected function buildButtons(array $markup) {
+    protected function buildButtons(array $markup, $options = null) {
         $buttons = [];
         foreach ($markup as $callback => $title) {
-            if (in_array(parse_url($callback, PHP_URL_SCHEME), ['mailto', 'http', 'https', 'tel'])) {
-                $buttons[] = ElementButton::create($title)->type(ElementButton::TYPE_WEB_URL)->url($callback);
+            $schema = parse_url($callback, PHP_URL_SCHEME);
+            if (in_array($schema, ['http', 'https', 'tel', 'share'])) {
+                if ($schema == 'share') {
+                    $buttons[] = ElementButton::create($title)->type(ElementButton::TYPE_SHARE)->shareContents(
+                        GenericTemplate::create()->addImageAspectRatio($options['share_image_aspect_ratio'] ?? GenericTemplate::RATIO_SQUARE)
+                            ->addElement(Element::create($options['share_text'] ?? parse_url($callback, PHP_URL_HOST))
+                                ->subtitle($options['share_subtitle'] ?? '')
+                                ->image($options['share_url'])
+                                ->addButton(ElementButton::create($title)->type(ElementButton::TYPE_WEB_URL)->url('share_link')))
+                    );
+                } elseif ($schema == 'tel') {
+                    $buttons[] = ElementButton::create($title)->type(ElementButton::TYPE_CALL)->payload($callback);
+                } else {
+                    $buttons[] = ElementButton::create($title)->type(ElementButton::TYPE_WEB_URL)->url($callback);
+                }
                 continue;
             }
             $buttons[] = ElementButton::create($title)->type('postback')->payload($callback);

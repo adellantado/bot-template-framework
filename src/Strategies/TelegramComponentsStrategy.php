@@ -81,8 +81,16 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
         foreach ($markup as $submenu) {
             $rows = [];
             foreach ($submenu as $callback => $title) {
-                if (in_array(parse_url($callback, PHP_URL_SCHEME), ['mailto', 'http', 'https', 'tel'])) {
-                    $rows[] = KeyboardButton::create($title)->url($callback);
+                $schema = parse_url($callback, PHP_URL_SCHEME);
+                if (in_array($schema, ['http', 'https', 'share'])) {
+                    if ($schema == 'share') {
+                        $rows[] = [
+                            'text' => $title,
+                            'switch_inline_query' => parse_url($callback, PHP_URL_HOST)
+                        ];
+                    } else {
+                        $rows[] = KeyboardButton::create($title)->url($callback);
+                    }
                     continue;
                 }
                 $rows[] = KeyboardButton::create($title)->callbackData($callback);
