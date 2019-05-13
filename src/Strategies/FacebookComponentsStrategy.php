@@ -153,13 +153,7 @@ class FacebookComponentsStrategy implements IComponentsStrategy, IStrategy {
             $schema = parse_url($callback, PHP_URL_SCHEME);
             if (in_array($schema, ['http', 'https', 'tel', 'share'])) {
                 if ($schema == 'share') {
-                    $buttons[] = ElementButton::create($title)->type(ElementButton::TYPE_SHARE)->shareContents(
-                        GenericTemplate::create()->addImageAspectRatio($options['share_image_aspect_ratio'] ?? GenericTemplate::RATIO_SQUARE)
-                            ->addElement(Element::create($options['share_text'] ?? parse_url($callback, PHP_URL_HOST))
-                                ->subtitle($options['share_subtitle'] ?? '')
-                                ->image($options['share_url'])
-                                ->addButton(ElementButton::create($title)->type(ElementButton::TYPE_WEB_URL)->url($options['share_link'])))
-                    );
+                    $buttons[] = ElementButton::create($title)->type(ElementButton::TYPE_SHARE);
                 } elseif ($schema == 'tel') {
                     $buttons[] = ElementButton::create($title)->type(ElementButton::TYPE_CALL)->payload($callback);
                 } else {
