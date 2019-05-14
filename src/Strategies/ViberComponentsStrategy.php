@@ -108,9 +108,10 @@ class ViberComponentsStrategy implements IComponentsStrategy, IStrategy {
         foreach ($markup as $submenu) {
             $count = count($submenu);
             if ($count > 6 || $count == 5 || $count == 4) {
-                throw new Exception('Viber buttons mustn\'t be more than 6 in a row. Buttons in amount of 4 or 5 broke UI.');
+                $width =  6;
+            } else {
+                $width = 6 / $count;
             }
-            $width = 6 / $count;
             foreach ($submenu as $callback => $title) {
                 $schema = parse_url($callback, PHP_URL_SCHEME);
                 if (in_array($schema, ['mailto', 'http', 'https', 'tel', 'share'])) {
