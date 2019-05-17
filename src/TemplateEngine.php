@@ -61,7 +61,10 @@ class TemplateEngine {
             throw new \Exception(self::class . " accepts only array, Template or json string");
         }
 
-        $config['user_cache_time'] = $template['options']['user_cache_time'] ?? null;
+        // set cache time
+        $config['user_cache_time'] = $template['options']['user_cache_time'] ?? 30;
+        $config['config'] = [];
+        $config['config']['conversation_cache_time'] = $template['options']['conversation_cache_time'] ?? 30;
 
         foreach ($template['drivers'] as $driver) {
             $driverName = (strtolower($driver['name']) == 'skype' ? 'botframework' : strtolower($driver['name']));
