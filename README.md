@@ -332,6 +332,8 @@ Every block extends abstract block, which has next properties:
             "content": "Can you left us your phone to contant you only in case of urgency?",
             "validate": "number",
             "errorMsg": "This is custom error message occurs if validation hasn't been passed",
+            "skip": "pause;skip",
+            "stop": "stop;off",
             "result": {
                 "prompt": "yes;no"
             },
@@ -348,6 +350,7 @@ Every block extends abstract block, which has next properties:
         `location` (sends quick button for Telegram and Facebook), `confirm` (requires two times input), 
         `/^[0-9]*$/` (any regexp, similar to this one);<br>
    `errorMsg` - (optional) validation error message;<br>
+   `skip`,`stop` - (optional) pause/stop conversation key phrases;<br>
    `result.prompt` - (optional) shows quick buttons;<br>
    `next.<user answer>` - (optional) depends on user answer, run next block 
         ('fallback' - reserved for any answer which are not in the list).

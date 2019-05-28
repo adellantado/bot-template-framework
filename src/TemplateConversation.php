@@ -6,6 +6,7 @@ namespace BotTemplateFramework;
 use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
+use BotMan\BotMan\Messages\Incoming\IncomingMessage;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use BotTemplateFramework\Helpers\Validator;
@@ -168,6 +169,32 @@ class TemplateConversation extends Conversation {
         $conversation = new TemplateConversation($this);
         $conversation->blockName = $block['name'];
         $this->bot->startConversation($conversation);
+    }
+
+    public function skipsConversation(IncomingMessage $message) {
+        $block = self::$engine->getBlock($this->blockName);
+        if ($block['skip'] ?? '') {
+            $skip = explode(';', $block['skip']) ?? [];
+            foreach ($skip as $item) {
+                if ($message->getText() == $item) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public function stopsConversation(IncomingMessage $message) {
+        $block = self::$engine->getBlock($this->blockName);
+        if ($block['stop'] ?? '') {
+            $stop = explode(';', $block['stop']) ?? [];
+            foreach ($stop as $item) {
+                if ($message->getText() == $item) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }
