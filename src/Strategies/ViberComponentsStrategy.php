@@ -116,13 +116,13 @@ class ViberComponentsStrategy implements IComponentsStrategy, IStrategy {
                 $schema = parse_url($callback, PHP_URL_SCHEME);
                 if (in_array($schema, ['mailto', 'http', 'https', 'tel', 'share'])) {
                     if ($schema == 'share') {
-                        $keyboard->addButton($title, 'open-url', 'viber://forward?text='.substr($callback, 8), $options['TextSize'] ?? 'regular', $options['BgColor'] ?? null, $width);
+                        $keyboard->addButton($title, 'open-url', 'viber://forward?text='.substr($callback, 8), $options['TextSize'] ?? 'regular', $options['BgColor'] ?? null, $width, $options['Silent'] ?? false);
                     } else {
-                        $keyboard->addButton($title, 'open-url', $callback, $options['TextSize'] ?? 'regular', $options['BgColor'] ?? null, $width);
+                        $keyboard->addButton($title, 'open-url', $callback, $options['TextSize'] ?? 'regular', $options['BgColor'] ?? null, $width, $options['Silent'] ?? false);
                     }
                     continue;
                 }
-                $keyboard->addButton($title, 'reply', $callback, $options['TextSize'] ?? 'regular', $options['BgColor'] ?? null, $width);
+                $keyboard->addButton($title, 'reply', $callback, $options['TextSize'] ?? 'regular', $options['BgColor'] ?? null, $width, $options['Silent'] ?? false);
             }
         }
 
