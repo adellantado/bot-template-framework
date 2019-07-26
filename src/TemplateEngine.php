@@ -212,9 +212,11 @@ class TemplateEngine {
     }
 
     public function addEventListener($eventName, $callback) {
-        $this->eventListeners[$eventName] = [
-            'callback' => $callback
-        ];
+        $data = [$callback];
+        if (array_key_exists($eventName, $this->eventListeners)) {
+            $data = array_merge($data, $this->eventListeners[$eventName]);
+        }
+        $this->eventListeners[$eventName] = $data;
     }
 
     public function removeEventListener($eventName) {
@@ -223,14 +225,17 @@ class TemplateEngine {
 
     public function dispatchEvent(Event $event) {
         if (array_key_exists($event->getName(), $this->eventListeners)) {
-            $callback = $this->eventListeners[$event->getName()]['callback'];
-            if ($callback instanceof \Closure) {
-                return $callback($event, $this);
-            } elseif(is_callable($callback)) {
-                return call_user_func_array($callback, [$event, $this]);
+            $callbacks = $this->eventListeners[$event->getName()];
+            $result = [];
+            foreach ($callbacks as $callback) {
+                if ($callback instanceof \Closure) {
+                    $result[] = $callback($event, $this);
+                } elseif(is_callable($callback)) {
+                    $result[] = call_user_func_array($callback, [$event, $this]);
+                }
             }
+            return $result;
         }
-
         return true;
     }
 
