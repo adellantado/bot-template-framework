@@ -386,7 +386,11 @@ Every block extends abstract block, which has next properties:
    `next.<entity_value>` - (optional) triggers next block by entity or slot value;
    
    note: you should use amazon alexa console, wit or dialogflow console to have 
-        this block running
+        this block running;<br>
+        
+   note: for dialogflow v2, official php library required - google/cloud-dialogflow;<br>
+   
+   note: to call the block after dialogflow executes, add next payload in dialogflow console - {"next": "MyNextBlock"}
     
 <h3>If Block</h3>
     
@@ -527,7 +531,8 @@ Every block extends abstract block, which has next properties:
    `name` - (required) Name of the driver<br>
    `token` - (require|optional) token for telegram, viber, dialogflow, chatbase, web(optional, default token is 'web').
            Fields: verification, token, app_secret - for facebook; 
-           app_id, app_key - for skype.<br>
+           app_id, app_key - for skype;
+           project_id, key_path, version=2 - for dialogflow v2 api.<br>
    `config` - (optional) shows that fields should be read from env()<br>
    `events` - (optional) blocks triggers by event. 
            E.g. on "delivery" event in facebook, trigger block with

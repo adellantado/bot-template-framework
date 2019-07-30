@@ -5,10 +5,12 @@ namespace BotTemplateFramework;
 use BotMan\BotMan\Interfaces\CacheInterface;
 use BotMan\BotMan\Messages\Attachments\Location;
 use BotMan\BotMan\Messages\Incoming\IncomingMessage;
+use BotMan\BotMan\Middleware\ApiAi;
 use BotMan\BotMan\Middleware\Wit;
 use BotTemplateFramework\Builder\Template;
 use BotTemplateFramework\Distinct\Chatbase\ChatbaseExtended;
 use BotTemplateFramework\Distinct\Dialogflow\DialogflowExtended;
+use BotTemplateFramework\Distinct\Dialogflow\DialogflowExtendedV2;
 use BotTemplateFramework\Events\Event;
 use BotTemplateFramework\Events\ListenStartedEvent;
 use BotTemplateFramework\Events\VariableChangedEvent;
@@ -46,7 +48,7 @@ class TemplateEngine {
     protected $wit;
 
     /**
-     * @var DialogflowExtended
+     * @var ApiAi
      */
     protected $dialogflow;
 
@@ -320,7 +322,7 @@ class TemplateEngine {
                 if ($block['provider'] == 'dialogflow') {
                     if (!$this->dialogflow) {
                         $locale = array_key_exists('locale', $block) ? $block['locale'] : $this->getDefaultLocale();
-                        $this->dialogflow = DialogflowExtended::create($this->getDriver('dialogflow')['token'], $locale)->listenForAction();
+                        $this->initDialogflow(true, $locale);
                         $this->bot->middleware->received($this->dialogflow);
                     }
                     $command->middleware($this->dialogflow);
@@ -797,12 +799,22 @@ class TemplateEngine {
                 if ($fallback['type'] == 'block') {
                     $this->executeBlock($this->getBlock($fallback['name']));
                 } elseif ($fallback['type'] == 'dialogflow') {
-                    DialogflowExtended::create($this->getDriver('dialogflow')['token'], $this->getDefaultLocale())->received($bot->getMessages()[0],
+                    $this->initDialogflow(false);
+                    $this->dialogflow->received($bot->getMessages()[0],
                         function(IncomingMessage $message) use ($fallback){
                             $extras = $message->getExtras();
-                            if ($extras && $extras['apiReply']) {
-                                foreach($extras['apiReply'] as $speech) {
-                                    $this->strategy($this->bot)->sendText($speech);
+                            if ($extras) {
+                                if ($extras['apiReply']) {
+                                    foreach($extras['apiReply'] as $speech) {
+                                        $this->strategy($this->bot)->sendText($speech);
+                                    }
+                                }
+                                if ($extras['apiPayload']) {
+                                    foreach($extras['apiPayload'] as $key=>$value) {
+                                        if ($key == 'next') {
+                                            $this->reply($value);
+                                        }
+                                    }
                                 }
                             } elseif (key_exists('default', $fallback)) {
                                 $this->strategy($this->bot)->sendText(
@@ -837,6 +849,23 @@ class TemplateEngine {
     protected function getRandomResponseText($text) {
         $texts = explode(';', $text);
         return $texts[array_rand($texts)];
+    }
+
+    protected function initDialogflow($listenForAction, $locale = null){
+        if (!$this->dialogflow) {
+            $driver = $this->getDriver('dialogflow');
+            $version = $driver['version'] ?? '1';
+            if ($version == '2') {
+                $this->dialogflow = DialogflowExtendedV2::createV2($driver['project_id'], $driver['key_path'], $locale ?? $this->getDefaultLocale());
+            } else {
+                $this->dialogflow = DialogflowExtended::create($driver['token'], $locale ?? $this->getDefaultLocale());
+            }
+
+        }
+
+        if ($listenForAction) {
+            $this->dialogflow->listenForAction();
+        }
     }
 
     public function __wakeup() {

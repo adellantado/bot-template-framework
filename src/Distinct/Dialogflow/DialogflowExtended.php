@@ -19,10 +19,20 @@ class DialogflowExtended extends ApiAi {
         $intent = $response->result->metadata->intentName ?? '';
         $parameters = isset($response->result->parameters) ? (array) $response->result->parameters : [];
 
-        $messages = array_map(function($value){
-            return $value->speech;
-        }, $reply);
+        $messages = [];
+        $payloads = [];
+        foreach ($reply as $msg) {
+            if (property_exists($msg, 'speech')) {
+                $messages[] = $msg->speech;
+            }
+            if (property_exists($msg, 'payload')) {
+                if (property_exists($msg->payload, 'next')) {
+                    $payloads['next'] = $msg->payload->next;
+                }
+            }
+        }
 
+        $message->addExtras('apiPayload', $payloads);
         $message->addExtras('apiReply', $messages);
         $message->addExtras('apiAction', $action);
         $message->addExtras('apiActionIncomplete', $actionIncomplete);
