@@ -88,6 +88,14 @@ class ViberComponentsStrategy implements IComponentsStrategy, IStrategy {
         $this->reply(OutgoingMessage::create($text, new File($url)));
     }
 
+    public function sendPayload($payload){
+        $parameters = array_merge_recursive([
+            'receiver' => $this->bot->getMessage()->getSender(),
+        ], $payload);
+
+        $this->bot->sendPayload($parameters);
+    }
+
     public function requireLocation($text, $options = null) {
         return $this->reply($text);
     }

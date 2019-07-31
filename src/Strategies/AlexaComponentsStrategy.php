@@ -78,6 +78,10 @@ class AlexaComponentsStrategy implements IComponentsStrategy, IStrategy {
         // TODO: Implement sendFile() method.
     }
 
+    public function sendPayload($payload) {
+        // TODO: Implement sendPayload() method.
+    }
+
     public function requireLocation($text, $options = null) {
         // TODO: Implement requireLocation() method.
     }

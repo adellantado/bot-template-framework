@@ -471,6 +471,8 @@ class TemplateEngine {
             // does nothing
         } elseif ($type == 'save') {
             $this->executeSave($block);
+        } elseif ($type == 'payload') {
+            $this->strategy($this->bot)->sendPayload($block['payload']);
         } else {
             throw new \Exception('Can\'t find any suitable block type');
         }

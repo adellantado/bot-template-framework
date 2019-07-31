@@ -209,6 +209,32 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
         $this->reply(OutgoingMessage::create($text, new File($url)));
     }
 
+    public function sendPayload($payload){
+        $recipient = $this->bot->getMessage()->getRecipient() === '' ? $this->bot->getMessage()->getSender() : $this->bot->getMessage()->getRecipient();
+        $parameters = array_merge_recursive([
+            'chat_id' => $recipient,
+        ], $payload);
+
+        $endpoint = 'sendMessage';
+        if (array_key_exists('document', $payload)) {
+            $endpoint = 'sendDocument';
+        } elseif (array_key_exists('photo', $payload)) {
+            $endpoint = 'sendPhoto';
+        } elseif (array_key_exists('video', $payload)) {
+            $endpoint = 'sendVideo';
+        } elseif (array_key_exists('audio', $payload)) {
+            $endpoint = 'sendAudio';
+        } elseif (array_key_exists('latitude', $payload) && array_key_exists('longitude', $payload)) {
+            if (array_key_exists('title', $payload) && array_key_exists('address', $payload)) {
+                $endpoint = 'sendVenue';
+            } else {
+                $endpoint = 'sendLocation';
+            }
+        }
+
+        (new Curl())->post(TelegramDriver::API_URL.$this->bot->getDriver()->getConfig()->get('token').'/'.$endpoint, [], $parameters);
+    }
+
     public function requireLocation($text, $options = null) {
         return $this->reply($text, [
             'reply_markup' => json_encode([

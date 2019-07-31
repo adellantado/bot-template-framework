@@ -11,8 +11,7 @@ class SaveBlock extends Block {
     protected $variable;
 
     public function __construct($name = null) {
-        parent::__construct($name);
-        $this->type = 'save';
+        parent::__construct('save', $name);
     }
 
     /**

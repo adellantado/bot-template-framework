@@ -25,6 +25,8 @@ interface IComponentsStrategy {
 
     public function sendFile($url, $text = null, $options = null);
 
+    public function sendPayload($payload);
+
     public function requireLocation($text, $options = null);
 
     public function requireLocationPayload($text, $options = null);

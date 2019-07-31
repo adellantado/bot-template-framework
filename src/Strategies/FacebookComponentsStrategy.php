@@ -17,6 +17,7 @@ use BotMan\Drivers\Facebook\Extensions\ElementButton;
 use BotMan\Drivers\Facebook\Extensions\GenericTemplate;
 use BotMan\Drivers\Facebook\Extensions\ListTemplate;
 use BotMan\Drivers\Facebook\Extensions\QuickReplyButton;
+use BotMan\Drivers\Facebook\FacebookDriver;
 use Exception;
 
 class FacebookComponentsStrategy implements IComponentsStrategy, IStrategy {
@@ -125,6 +126,28 @@ class FacebookComponentsStrategy implements IComponentsStrategy, IStrategy {
 
     public function sendFile($url, $text = null, $options = null) {
         $this->reply(OutgoingMessage::create($text, new File($url)));
+    }
+
+    public function sendPayload($payload){
+        $driverEvent = $this->bot->getDriver()->hasMatchingEvent();
+        if ($driverEvent) {
+            $data = $driverEvent->getPayload();
+            if (isset($data['optin']) && isset($data['optin']['user_ref'])) {
+                $recipient = ['user_ref' => $data['optin']['user_ref']];
+            } else {
+                $recipient = ['id' => $data['sender']['id']];
+            }
+        } else {
+            $recipient = ['id' => $this->bot->getMessage()->getSender()];
+        }
+
+        $parameters = array_merge_recursive([
+            'messaging_type' => FacebookDriver::TYPE_RESPONSE,
+            'access_token' => $this->bot->getDriver()->getConfig()->get('token'),
+            'recipient' => $recipient,
+        ], $payload);
+
+        $this->bot->sendPayload($parameters);
     }
 
     public function requireLocation($text, $options = null) {

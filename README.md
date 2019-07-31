@@ -92,9 +92,9 @@ E.g. Simple Telegram Hello World chatbot:
 
 <h2>Blocks</h2>
 
-There are 19 types of block
+There are 20 types of block
 
-        text, image, menu, audio, video, file, location, attachment, carousel, list, request, ask, intent, if, method, extend, idle, save, random
+        text, image, menu, audio, video, file, location, attachment, carousel, list, request, ask, intent, if, method, extend, idle, save, random, payload
 
 Every block extends abstract block, which has next properties:
 
@@ -502,6 +502,35 @@ Every block extends abstract block, which has next properties:
    note: To proper work, all probabilities have to be less or equal to 100%. In the example above p1+p2+p3=20+30+40=90% < 100%, 
     so the percentages are correct, but it also means that with p4=10% it calls nothing.
     
+<h3>Payload Block</h3>
+
+   Send a payload to a messenger
+
+        {
+            "name": "Test payload",
+            "type": "payload",
+            "payload": {
+                "text": "This is an inline keyboard example",
+                "reply_markup": {
+                    "inline_keyboard": [
+                        {
+                            "text": "Button1",
+                            "callback_data": "callback1"
+                        },
+                        {
+                            "text": "Button2",
+                            "callback_data": "callback2"
+                        }                                          
+                    ]
+                }
+            },
+            "drivers": "telegram"
+        }
+    
+   `payload` - (required) payload to send;<br>
+   `drivers` - (required) it's essential to set exact driver, because a payload is unique for each of them
+    
+   note: study appropriate messenger's API documentation
 
 <h2>Drivers</h2>
 
