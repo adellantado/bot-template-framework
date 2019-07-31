@@ -465,6 +465,8 @@ class TemplateEngine {
             $this->executeExtend($block);
         } elseif ($type == 'if') {
             $this->executeIf($block);
+        } elseif ($type == 'random') {
+            $this->executeRandom($block);
         } elseif ($type == 'idle') {
             // does nothing
         } elseif ($type == 'save') {
@@ -486,7 +488,7 @@ class TemplateEngine {
 
         $this->activeBlock = null;
 
-        if ($this->checkNextBlock($block) && !in_array($block['type'], ['ask', 'extend', 'if', 'location', 'attachment'])) {
+        if ($this->checkNextBlock($block) && !in_array($block['type'], ['ask', 'extend', 'if', 'random', 'location', 'attachment'])) {
             $this->executeNextBlock($block, $result);
         }
         return $this;
@@ -773,6 +775,19 @@ class TemplateEngine {
                 ($op == '<=' && $a <= $b)
             ) {
                 $this->executeBlock($this->getBlock($eq[3]));
+                return;
+            }
+        }
+    }
+
+    protected function executeRandom($block) {
+        $eqs = $block['next'];
+        $rand = rand(0, 100);
+        $value = 0;
+        foreach($eqs as $eq) {
+            $value += (int)$this->parseText($eq[0]);
+            if ($value >= $rand) {
+                $this->executeBlock($this->getBlock($eq[1]));
                 return;
             }
         }

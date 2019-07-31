@@ -92,9 +92,9 @@ E.g. Simple Telegram Hello World chatbot:
 
 <h2>Blocks</h2>
 
-There are 18 types of block
+There are 19 types of block
 
-        text, image, menu, audio, video, file, location, attachment, carousel, list, request, ask, intent, if, method, extend, idle, save
+        text, image, menu, audio, video, file, location, attachment, carousel, list, request, ask, intent, if, method, extend, idle, save, random
 
 Every block extends abstract block, which has next properties:
 
@@ -484,6 +484,24 @@ Every block extends abstract block, which has next properties:
             "value": "123",
             "variable": "{{someVar}}"
        }   
+
+<h3>Random Block</h3>
+    
+        {
+            "name": "Random Block",
+            "type": "random",
+            "next": [
+                ["20%", "Block 1"],
+                ["30%", "Block 2"],
+                ["40%", "Block 3"]
+            ]
+        }
+        
+   E.g. Simply calls "Block 1" with probability p1=20% , calls "Block 2" with p2=30% and "Block 3" with p3=40%.
+   
+   note: To proper work, all probabilities have to be less or equal to 100%. In the example above p1+p2+p3=20+30+40=90% < 100%, 
+    so the percentages are correct, but it also means that with p4=10% it calls nothing.
+    
 
 <h2>Drivers</h2>
 

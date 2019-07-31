@@ -197,6 +197,15 @@ class Validator {
             if (count($block['content']) < 2 && count($block['content']) > 4) {
                 return 'For list block, Facebook requires min = 2 and max = 4 elements';
             }
+        } elseif ($type == 'random') {
+            $next = $block['next'];
+            $val = 0;
+            foreach ($next as $item) {
+                $val += (int)$item[0];
+                if ($val > 100) {
+                    return 'For random block, probability couldn\'t be bigger than 100';
+                }
+            }
         }
 
         return null;
