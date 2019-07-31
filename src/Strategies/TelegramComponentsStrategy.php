@@ -210,6 +210,12 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
     }
 
     public function sendPayload($payload){
+        $payload = array_map(function($val){
+            if (is_array($val)) {
+                return json_encode($val);
+            }
+            return $val;
+        }, $payload);
         $recipient = $this->bot->getMessage()->getRecipient() === '' ? $this->bot->getMessage()->getSender() : $this->bot->getMessage()->getRecipient();
         $parameters = array_merge_recursive([
             'chat_id' => $recipient,

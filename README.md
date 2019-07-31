@@ -513,14 +513,16 @@ Every block extends abstract block, which has next properties:
                 "text": "This is an inline keyboard example",
                 "reply_markup": {
                     "inline_keyboard": [
-                        {
-                            "text": "Button1",
-                            "callback_data": "callback1"
-                        },
-                        {
-                            "text": "Button2",
-                            "callback_data": "callback2"
-                        }                                          
+                        [
+                            {
+                                "text": "Button1",
+                                "callback_data": "callback1"
+                            },
+                            {
+                                "text": "Button2",
+                                "callback_data": "callback2"
+                            }                                          
+                        ]
                     ]
                 }
             },
