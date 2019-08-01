@@ -15,6 +15,7 @@ use BotTemplateFramework\Events\Event;
 use BotTemplateFramework\Events\ListenStartedEvent;
 use BotTemplateFramework\Events\VariableChangedEvent;
 use BotTemplateFramework\Events\VariableRemovedEvent;
+use BotTemplateFramework\Helpers\Validator;
 use BotTemplateFramework\Strategies\StrategyTrait;
 use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Http\Curl;
@@ -473,6 +474,8 @@ class TemplateEngine {
             $this->executeSave($block);
         } elseif ($type == 'payload') {
             $this->strategy($this->bot)->sendPayload($block['payload']);
+        } elseif ($type == 'validate') {
+            $this->executeValidate($block);
         } else {
             throw new \Exception('Can\'t find any suitable block type');
         }
@@ -490,7 +493,7 @@ class TemplateEngine {
 
         $this->activeBlock = null;
 
-        if ($this->checkNextBlock($block) && !in_array($block['type'], ['ask', 'extend', 'if', 'random', 'location', 'attachment'])) {
+        if ($this->checkNextBlock($block) && !in_array($block['type'], ['ask', 'extend', 'if', 'random', 'location', 'attachment', 'validate'])) {
             $this->executeNextBlock($block, $result);
         }
         return $this;
@@ -786,10 +789,10 @@ class TemplateEngine {
         $eqs = $block['next'];
         $rand = rand(0, 100);
         $value = 0;
-        foreach($eqs as $eq) {
-            $value += (int)$this->parseText($eq[0]);
+        foreach($eqs as $key=>$eq) {
+            $value += (int)$this->parseText($key);
             if ($value >= $rand) {
-                $this->executeBlock($this->getBlock($eq[1]));
+                $this->executeBlock($this->getBlock($eq));
                 return;
             }
         }
@@ -797,6 +800,63 @@ class TemplateEngine {
 
     protected function executeSave($block) {
         $this->saveVariable($block['variable'], $this->parseText($block['value']));
+    }
+
+    protected function executeValidate($block){
+        $validator = new Validator();
+        $var = $this->parseText($block['variable']);
+        if ($block['validate'] == 'number') {
+            if (!$validator->number($var)) {
+                $this->executeBlock($this->getBlock($block['next']['false']));
+                return;
+            }
+        } elseif ($block['validate'] == 'url') {
+            if (!$validator->url($var)) {
+                $this->executeBlock($this->getBlock($block['next']['false']));
+                return;
+            }
+        } elseif ($block['validate'] == 'email') {
+            if (!$validator->email($var)) {
+                $this->executeBlock($this->getBlock($block['next']['false']));
+                return;
+            }
+        } elseif ($block['validate'] == 'phone') {
+            if (!$validator->phone($var)) {
+                $this->executeBlock($this->getBlock($block['next']['false']));
+                return;
+            }
+        } elseif ($block['validate'] == 'image') {
+            if (!$validator->image($var)) {
+                $this->executeBlock($this->getBlock($block['next']['false']));
+                return;
+            }
+        } elseif ($block['validate'] == 'file') {
+            if (!$validator->file($var)) {
+                $this->executeBlock($this->getBlock($block['next']['false']));
+                return;
+            }
+        } elseif ($block['validate'] == 'video') {
+            if (!$validator->video($var)) {
+                $this->executeBlock($this->getBlock($block['next']['false']));
+                return;
+            }
+        } elseif ($block['validate'] == 'audio') {
+            if (!$validator->audio($var)) {
+                $this->executeBlock($this->getBlock($block['next']['false']));
+                return;
+            }
+        } elseif ($block['validate'] == 'location') {
+            if (!$validator->location($var)) {
+                $this->executeBlock($this->getBlock($block['next']['false']));
+                return;
+            }
+        } else {
+            if (!$validator->regexp($block['validate'], $var)) {
+                $this->executeBlock($this->getBlock($block['next']['false']));
+                return;
+            }
+        }
+        $this->executeBlock($this->getBlock($block['next']['true']));
     }
 
     protected function getCallback($blockName, $prefix, $callback = null) {

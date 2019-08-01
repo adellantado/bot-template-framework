@@ -3,31 +3,37 @@
 namespace BotTemplateFramework\Builder\Blocks;
 
 
+use BotTemplateFramework\Builder\Prompt;
+
 class RandomBlock extends Block {
 
-    protected $rules = [];
+    protected $prompts = [];
 
     public function __construct($name = null) {
-        parent::__construct('block', $name);
+        parent::__construct('random', $name);
     }
+
 
     /**
-     * @param $p
-     * @param Block $block
-     * @return $this
+     * @param array $next
+     * @return Block
      */
-    public function rule($p, Block $block) {
-        $this->rules[] = [$p, $block->getName()];
-        return $this;
-    }
-
     public function next($next) {
-        throw new \Exception("call 'next' method is not allowable, use 'rule' method instead");
+        $this->prompts = $next;
+        return $this;
     }
 
     public function toArray() {
         $array = parent::toArray();
-        $array['next'] = $this->rules;
+
+        if ($this->prompts) {
+            $array['next'] = [];
+            foreach ($this->prompts as $prompt) {
+                /** @var Prompt $prompt */
+                $array['next'][$prompt->getText()] = $prompt->getNextBlock()->getName();
+            }
+        }
+
         return $array;
     }
 
