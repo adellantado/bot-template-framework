@@ -490,11 +490,11 @@ Every block extends abstract block, which has next properties:
         {
             "name": "Random Block",
             "type": "random",
-            "next": {
-                "20%": "Block 1",
-                "30%": "Block 2",
-                "40%": "Block 3"
-            }
+            "next": [
+                ["20%", "Block 1"],
+                ["30%": "Block 2"],
+                ["40%": "Block 3"]
+            ]
         }
         
 <h3>Validate Block</h3>

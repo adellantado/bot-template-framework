@@ -789,10 +789,10 @@ class TemplateEngine {
         $eqs = $block['next'];
         $rand = rand(0, 100);
         $value = 0;
-        foreach($eqs as $key=>$eq) {
-            $value += (int)$this->parseText($key);
+        foreach($eqs as $eq) {
+            $value += (int)$this->parseText($eq[0]);
             if ($value >= $rand) {
-                $this->executeBlock($this->getBlock($eq));
+                $this->executeBlock($this->getBlock($eq[1]));
                 return;
             }
         }
