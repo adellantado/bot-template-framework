@@ -652,7 +652,7 @@ class TemplateEngine {
             if (strtolower($block['method']) == "get") {
                 $response = $client->get($this->parseText($block['url']), $json, [], true);
             } elseif (strtolower($block['method']) == "post") {
-                $response = $client->post($this->parseText($block['url']), $json, [], true);
+                $response = $client->post($this->parseText($block['url']), [], $json, [], true);
             }
         } catch (\Exception $e) {
             return null;
