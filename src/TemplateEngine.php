@@ -649,10 +649,16 @@ class TemplateEngine {
             if (array_key_exists('body', $block)) {
                 $json = $this->parseArray($block['body']);
             }
+            $headers = [];
+            if (array_key_exists('headers', $block)) {
+                foreach ($block['headers'] as $type=>$value) {
+                    $headers[] = $type.': '.$value;
+                }
+            }
             if (strtolower($block['method']) == "get") {
-                $response = $client->get($this->parseText($block['url']), $json, [], true);
+                $response = $client->get($this->parseText($block['url']), $json, $headers, true);
             } elseif (strtolower($block['method']) == "post") {
-                $response = $client->post($this->parseText($block['url']), [], $json, [], true);
+                $response = $client->post($this->parseText($block['url']), [], $json, $headers, true);
             }
         } catch (\Exception $e) {
             return null;
