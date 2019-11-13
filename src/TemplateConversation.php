@@ -132,7 +132,16 @@ class TemplateConversation extends Conversation {
             }
 
             if (array_key_exists('result', $block) && array_key_exists('save', $block['result'])) {
-                $engine->saveVariable($block['result']['save'], $answer->getText());
+                if (array_key_exists('validate', $block) && $block['validate'] == 'location') {
+                    $location = $answer->getMessage()->getLocation() ?? null;
+                    $text = '';
+                    if ($location) {
+                        $text = $location->getLatitude().','.$location->getLongitude();
+                    }
+                    $engine->saveVariable($block['result']['save'], $text);
+                } else {
+                    $engine->saveVariable($block['result']['save'], $answer->getText());
+                }
             }
 
             if ($engine->callListener($block) === false) {
