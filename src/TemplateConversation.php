@@ -136,9 +136,20 @@ class TemplateConversation extends Conversation {
                     $location = $answer->getMessage()->getLocation() ?? null;
                     $text = '';
                     if ($location) {
-                        $text = $location->getLatitude().','.$location->getLongitude();
+                        $text = $location->getLatitude() . ',' . $location->getLongitude();
                     }
                     $engine->saveVariable($block['result']['save'], $text);
+                } elseif (array_key_exists('validate', $block) && $block['validate'] == 'audio') {
+                    $engine->saveVariable($block['result']['save'], $answer->getMessage()->getAudio()[0]->getUrl());
+                } elseif (array_key_exists('validate', $block) && $block['validate'] == 'video') {
+                    $engine->saveVariable($block['result']['save'], $answer->getMessage()->getVideos()[0]->getUrl());
+                } elseif (array_key_exists('validate', $block) && $block['validate'] == 'file') {
+                    $engine->saveVariable($block['result']['save'], $answer->getMessage()->getFiles()[0]->getUrl());
+                } elseif (array_key_exists('validate', $block) && $block['validate'] == 'image') {
+                    $engine->saveVariable($block['result']['save'], $answer->getMessage()->getImages()[0]->getUrl());
+                } elseif (array_key_exists('validate', $block) && $block['validate'] == 'phone' && StrategyTrait::driverName($this->bot) == 'Telegram') {
+                    $payload = $answer->getMessage()->getPayload();
+                    $engine->saveVariable($block['result']['save'], $payload->get('contact')['phone_number']);
                 } else {
                     $engine->saveVariable($block['result']['save'], $answer->getText());
                 }
