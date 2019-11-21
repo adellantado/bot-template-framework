@@ -42,7 +42,7 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
 
     public function sendImage($imageUrl, $text = null, $options = null) {
         if ($text) {
-            $this->sendMenuAndImage($imageUrl, $text, $options);
+            $this->sendMenuAndImage($imageUrl, $text, [], $options);
         } else {
             $message = OutgoingMessage::create()->withAttachment(new Image($imageUrl));
             $this->reply($message, [], $options);
