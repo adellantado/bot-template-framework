@@ -42,7 +42,7 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
 
     public function sendImage($imageUrl, $text = null, $options = null) {
         if ($text) {
-            $this->sendMenuAndImage($imageUrl, $text, []);
+            $this->sendMenuAndImage($imageUrl, $text, $options);
         } else {
             $message = OutgoingMessage::create()->withAttachment(new Image($imageUrl));
             $this->reply($message, [], $options);
@@ -60,9 +60,9 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
     public function sendList(array $elements, array $globalButton = null, $options = null) {
         foreach ($elements as $item) {
             if (array_key_exists('buttons', $item)) {
-                $this->sendMenuAndImage($item['url'], $item['title'], $item['buttons']);
+                $this->sendMenuAndImage($item['url'], $item['title'], $item['buttons'], $options);
             } else {
-                $this->sendImage($item['url'], $item['title']);
+                $this->sendImage($item['url'], $item['title'], $options);
             }
         }
 
@@ -141,7 +141,7 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
             $carouselButtonsLine[] = $carouselButtons;
         }
 
-        $this->sendMenu('Select button to switch among carousel elements', $carouselButtonsLine);
+        $this->sendMenu('Select button to switch among carousel elements', $carouselButtonsLine, $options);
     }
 
     /**
@@ -198,15 +198,15 @@ class TelegramComponentsStrategy implements IComponentsStrategy, IStrategy {
     }
 
     public function sendAudio($url, $text = null, $options = null) {
-        $this->reply(OutgoingMessage::create($text, new Audio($url)));
+        $this->reply(OutgoingMessage::create($text, new Audio($url)), [], $options);
     }
 
     public function sendVideo($url, $text = null, $options = null) {
-        $this->reply(OutgoingMessage::create($text, new Video($url)));
+        $this->reply(OutgoingMessage::create($text, new Video($url)), [], $options);
     }
 
     public function sendFile($url, $text = null, $options = null) {
-        $this->reply(OutgoingMessage::create($text, new File($url)));
+        $this->reply(OutgoingMessage::create($text, new File($url)), [], $options);
     }
 
     public function sendPayload($payload){

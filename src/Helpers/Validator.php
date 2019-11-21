@@ -210,4 +210,112 @@ class Validator {
 
         return null;
     }
+
+    public function isBlockFieldsValid($block) {
+        if (!array_key_exists('type', $block)) {
+            throw new \Exception('Field=type is required');
+        }
+        if (!array_key_exists('name', $block)) {
+            throw new \Exception('Field=name is required');
+        }
+        switch ($block['type']) {
+            case 'text':
+                if (!($block['content'] ?? null)) {
+                    throw new \Exception('Field=content is required');
+                }
+                break;
+            case 'image':
+                if (!($block['content']['url'] ?? null)) {
+                    throw new \Exception('Field=url is required');
+                }
+                break;
+            case 'menu':
+                if (!($block['content']['text'] ?? null)) {
+                    throw new \Exception('Field=text is required');
+                }
+                if (!($block['content']['buttons'] ?? null)) {
+                    throw new \Exception('Field=buttons is required');
+                }
+                break;
+            case 'audio':
+            case 'video':
+            case 'file':
+                if (!($block['content']['url'] ?? null)) {
+                    throw new \Exception('Field=url is required');
+                }
+                break;
+            case 'location':
+                if (!($block['content'] ?? null)) {
+                    throw new \Exception('Field=content is required');
+                }
+                if (!($block['result']['save'] ?? null)) {
+                    throw new \Exception('Field=save is required');
+                }
+                break;
+            case 'attachment':
+                if (!($block['content'] ?? null)) {
+                    throw new \Exception('Field=content is required');
+                }
+                break;
+            case 'carousel':
+            case 'list':
+                if (!($block['content'] ?? null)) {
+                    throw new \Exception('Field=content is required');
+                }
+                break;
+            case 'request':
+                if (!($block['url'] ?? null)) {
+                    throw new \Exception('Field=url is required');
+                }
+                break;
+            case 'ask':
+                if (!($block['content'] ?? null)) {
+                    throw new \Exception('Field=content is required');
+                }
+                break;
+            case 'intent':
+                if (!($block['provider'] ?? null)) {
+                    throw new \Exception('Field=provider is required');
+                }
+                if (!($block['template'] ?? null)) {
+                    throw new \Exception('Field=template is required');
+                }
+                break;
+            case 'if':
+                break;
+            case 'method':
+                if (!($block['method'] ?? null)) {
+                    throw new \Exception('Field=method is required');
+                }
+                break;
+            case 'extend':
+                if (!($block['base'] ?? null)) {
+                    throw new \Exception('Field=base is required');
+                }
+                break;
+            case 'save':
+                if (!($block['value'] ?? null)) {
+                    throw new \Exception('Field=value is required');
+                }
+                if (!($block['variable'] ?? null)) {
+                    throw new \Exception('Field=variable is required');
+                }
+                break;
+            case 'validate':
+                if (!($block['validate'] ?? null)) {
+                    throw new \Exception('Field=validate is required');
+                }
+                if (!($block['variable'] ?? null)) {
+                    throw new \Exception('Field=variable is required');
+                }
+                break;
+            case 'payload':
+                if (!($block['payload'] ?? null)) {
+                    throw new \Exception('Field=payload is required');
+                }
+                break;
+            default:
+                throw new \Exception('Field=type has wrong value');
+        }
+    }
 }

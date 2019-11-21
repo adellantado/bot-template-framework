@@ -38,27 +38,27 @@ abstract class Strategy implements IStrategy, IComponentsStrategy {
     //-------------Components
 
     public function sendImage($imageUrl, $text = null, $options = null) {
-        $this->componentsStrategy->sendImage($imageUrl, $text);
+        $this->componentsStrategy->sendImage($imageUrl, $text, $options);
     }
 
     public function sendMenu($text, array $markup, $options = null) {
-        $this->componentsStrategy->sendMenu($text, $markup);
+        $this->componentsStrategy->sendMenu($text, $markup, $options);
     }
 
     public function sendMenuAndImage($imageUrl, $text, array $markup, $options = null) {
-        $this->componentsStrategy->sendMenuAndImage($imageUrl, $text, $markup);
+        $this->componentsStrategy->sendMenuAndImage($imageUrl, $text, $markup, $options);
     }
 
     public function sendText($text, $options = null) {
-        $this->componentsStrategy->sendText($text);
+        $this->componentsStrategy->sendText($text, $options);
     }
 
     public function sendList(array $elements, array $globalButton = null, $options = null) {
-        $this->componentsStrategy->sendList($elements, $globalButton);
+        $this->componentsStrategy->sendList($elements, $globalButton, $options);
     }
 
     public function sendCarousel(array $elements, $options = null) {
-        $this->componentsStrategy->sendCarousel($elements);
+        $this->componentsStrategy->sendCarousel($elements, $options);
     }
 
     public function sendQuickButtons($text, array $markup, $options = null) {
@@ -66,15 +66,15 @@ abstract class Strategy implements IStrategy, IComponentsStrategy {
     }
 
     public function sendAudio($url, $text = null, $options = null) {
-        $this->componentsStrategy->sendAudio($url, $text);
+        $this->componentsStrategy->sendAudio($url, $text, $options);
     }
 
     public function sendVideo($url, $text = null, $options = null) {
-        $this->componentsStrategy->sendVideo($url, $text);
+        $this->componentsStrategy->sendVideo($url, $text, $options);
     }
 
     public function sendFile($url, $text = null, $options = null) {
-        $this->componentsStrategy->sendFile($url, $text);
+        $this->componentsStrategy->sendFile($url, $text, $options);
     }
 
     public function sendPayload($payload) {
