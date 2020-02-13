@@ -77,7 +77,7 @@ class ViberComponentsStrategy implements IComponentsStrategy, IStrategy {
     }
 
     public function sendAudio($url, $text = null, $options = null) {
-        $this->reply(OutgoingMessage::create($text, new Audio($url)));
+        $this->reply(OutgoingMessage::create($text, new Audio($url)), $options ?? []);
     }
 
     public function sendVideo($url, $text = null, $options = null) {
@@ -85,7 +85,7 @@ class ViberComponentsStrategy implements IComponentsStrategy, IStrategy {
     }
 
     public function sendFile($url, $text = null, $options = null) {
-        $this->reply(OutgoingMessage::create($text, new File($url)));
+        $this->reply(OutgoingMessage::create($text, new File($url)), $options ?? []);
     }
 
     public function sendPayload($payload){
