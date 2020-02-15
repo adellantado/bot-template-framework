@@ -684,7 +684,11 @@ class TemplateEngine {
 
     protected function executeAsk($block) {
         $conversation = new TemplateConversation();
-        $conversation->blockName = $block['name'];
+        if (array_key_exists('store', $block))  {
+            $conversation->block = $block;
+        } else {
+            $conversation->blockName = $block['name'];
+        }
         $this->bot->startConversation($conversation);
     }
 

@@ -14,6 +14,15 @@ use BotTemplateFramework\Strategies\StrategyTrait;
 
 class TemplateConversation extends Conversation {
 
+    /**
+     * Alternative to blockName.
+     * Stores whole block in a cache instead of blok's name.
+     * Useful for dynamic blocks
+     *
+     * @var array
+     */
+    public $block;
+
     public $blockName;
 
     /**
@@ -27,10 +36,17 @@ class TemplateConversation extends Conversation {
     public function getBot() {
         return $this->bot;
     }
+    
+    public function getBlock() {
+        if ($this->block) {
+            return $this->block;
+        }
+        return TemplateConversation::$engine->getBlock($this->blockName);
+    }
 
     public function run() {
         $engine = TemplateConversation::$engine;
-        $block = $engine->getBlock($this->blockName);
+        $block = $this->getBlock();
         $question = null;
         if (array_key_exists('validate', $block) && $block['validate'] == 'email') {
             $question = $engine->strategy($this->bot)->requireEmailPayload($engine->getText($block['content']), $block['options'] ?? null);
@@ -55,9 +71,8 @@ class TemplateConversation extends Conversation {
 
 
         $normalCallback = function(Answer $answer) {
-            $engine = TemplateConversation::$engine;
-            $block = $engine->setBot($this->bot)
-                ->getBlock($this->blockName);
+            $engine = TemplateConversation::$engine->setBot($this->bot);
+            $block= $this->getBlock();
 
             if (array_key_exists('validate', $block)) {
                 $validator = new Validator();
@@ -187,12 +202,16 @@ class TemplateConversation extends Conversation {
     public function askAgain($block) {
         $engine = TemplateConversation::$engine;
         $conversation = new TemplateConversation($this);
-        $conversation->blockName = $block['name'];
+        if ($this->block) {
+            $conversation->block = $block;
+        } else {
+            $conversation->blockName = $block['name'];
+        }
         $this->bot->startConversation($conversation);
     }
 
     public function skipsConversation(IncomingMessage $message) {
-        $block = self::$engine->getBlock($this->blockName);
+        $block = $this->getBlock();
         if ($block['skip'] ?? '') {
             $skip = explode(';', $block['skip']) ?? [];
             foreach ($skip as $item) {
@@ -205,7 +224,7 @@ class TemplateConversation extends Conversation {
     }
 
     public function stopsConversation(IncomingMessage $message) {
-        $block = self::$engine->getBlock($this->blockName);
+        $block = $this->getBlock();
         if ($block['stop'] ?? '') {
             $stop = explode(';', $block['stop']) ?? [];
             foreach ($stop as $item) {
