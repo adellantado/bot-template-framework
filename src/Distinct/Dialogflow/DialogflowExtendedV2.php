@@ -34,6 +34,10 @@ class DialogflowExtendedV2 extends ApiAi {
     {
         $response = $this->getResponse($message);
 
+        if ($response == null) {
+            return $next($message);
+        }
+
         $queryResult = $response->getQueryResult();
         $intent = $queryResult->getIntent();
 
@@ -94,8 +98,12 @@ class DialogflowExtendedV2 extends ApiAi {
         $queryInput = new QueryInput();
         $queryInput->setText($textInput);
 
-        // get response and relevant info
-        $response = $sessionsClient->detectIntent($session, $queryInput);
+        $response = null;
+        try {
+            // get response and relevant info
+            $response = $sessionsClient->detectIntent($session, $queryInput);
+        } catch(\Exception $e) {
+        }
         $sessionsClient->close();
         return $response;
     }

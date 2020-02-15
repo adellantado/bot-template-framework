@@ -712,23 +712,27 @@ class TemplateEngine {
             }
         } elseif ($block['provider'] == 'dialogflow') {
             if (array_key_exists('result', $block)) {
-                $result = $this->bot->getMessage()->getExtras()['apiParameters'];
+                $extras = $this->bot->getMessage()->getExtras();
+                if ($extras) {
+                    $result = $extras['apiParameters'];
 
-                if (array_key_exists('field', $block['result'])) {
-                    $result = $this->getSubVariable($block['result']['field'], $result);
+                    if (array_key_exists('field', $block['result'])) {
+                        $result = $this->getSubVariable($block['result']['field'], $result);
+                    }
+
+                    if (array_key_exists('save', $block['result'])) {
+                        $this->saveVariable($block['result']['save'], $result);
+                    }
                 }
-
-                if (array_key_exists('save', $block['result'])) {
-                    $this->saveVariable($block['result']['save'], $result);
-                }
-
             }
             if (array_key_exists('content', $block)) {
                 $this->bot->reply($this->getText($block['content']));
             } else {
                 $extras = $this->bot->getMessage()->getExtras();
-                foreach($extras['apiReply'] as $speech) {
-                    $this->bot->reply($speech);
+                if ($extras) {
+                    foreach($extras['apiReply'] as $speech) {
+                        $this->bot->reply($speech);
+                    }
                 }
             }
         } elseif ($block['provider'] == 'wit') {
