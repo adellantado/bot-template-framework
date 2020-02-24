@@ -175,7 +175,26 @@ class TemplateConversation extends Conversation {
             }
 
             if (array_key_exists('next', $block)) {
-                $engine->executeNextBlock($block, $answer->getText());
+                if ($this->block) {
+                    $nextBlockName = null;
+                    if (is_array($block['next'])) {
+                        $key = $answer->getText();
+                        if ($key && array_key_exists($key, $block['next'])) {
+                            $nextBlockName = $block['next'][$key];
+                        } elseif (array_key_exists('fallback', $block['next'])) {
+                            $nextBlockName = $block['next']['fallback'];
+                        }
+                    } else {
+                        $nextBlockName = $block['next'];
+                    }
+                    if ($nextBlockName && $nextBlockName == $block['name']) {
+                        $engine->executeBlock($block);
+                    } else {
+                        $engine->executeNextBlock($block, $answer->getText());
+                    }
+                } else {
+                    $engine->executeNextBlock($block, $answer->getText());
+                }
             }
         };
 
