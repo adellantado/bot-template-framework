@@ -819,57 +819,18 @@ class TemplateEngine {
     protected function executeValidate($block){
         $validator = new Validator();
         $var = $this->parseText($block['variable']);
-        if ($block['validate'] == 'number') {
-            if (!$validator->number($var)) {
+
+        $rules = explode('|', $block['validate']);
+        foreach ($rules as $rule) {
+            $valid = $validator->validate($rule,$var,function($msg) use ($block){
                 $this->executeBlock($this->getBlock($block['next']['false']));
-                return;
-            }
-        } elseif ($block['validate'] == 'url') {
-            if (!$validator->url($var)) {
-                $this->executeBlock($this->getBlock($block['next']['false']));
-                return;
-            }
-        } elseif ($block['validate'] == 'email') {
-            if (!$validator->email($var)) {
-                $this->executeBlock($this->getBlock($block['next']['false']));
-                return;
-            }
-        } elseif ($block['validate'] == 'phone') {
-            if (!$validator->phone($var)) {
-                $this->executeBlock($this->getBlock($block['next']['false']));
-                return;
-            }
-        } elseif ($block['validate'] == 'image') {
-            if (!$validator->image($var)) {
-                $this->executeBlock($this->getBlock($block['next']['false']));
-                return;
-            }
-        } elseif ($block['validate'] == 'file') {
-            if (!$validator->file($var)) {
-                $this->executeBlock($this->getBlock($block['next']['false']));
-                return;
-            }
-        } elseif ($block['validate'] == 'video') {
-            if (!$validator->video($var)) {
-                $this->executeBlock($this->getBlock($block['next']['false']));
-                return;
-            }
-        } elseif ($block['validate'] == 'audio') {
-            if (!$validator->audio($var)) {
-                $this->executeBlock($this->getBlock($block['next']['false']));
-                return;
-            }
-        } elseif ($block['validate'] == 'location') {
-            if (!$validator->location($var)) {
-                $this->executeBlock($this->getBlock($block['next']['false']));
-                return;
-            }
-        } else {
-            if (!$validator->regexp($block['validate'], $var)) {
-                $this->executeBlock($this->getBlock($block['next']['false']));
+            });
+
+            if (!$valid) {
                 return;
             }
         }
+
         $this->executeBlock($this->getBlock($block['next']['true']));
     }
 

@@ -330,7 +330,7 @@ Every block extends abstract block, which has next properties:
             "name": "Ask Phone",
             "type": "ask",
             "content": "Can you left us your phone to contant you only in case of urgency?",
-            "validate": "number",
+            "validate": "number|min:10",
             "errorMsg": "This is custom error message occurs if validation hasn't been passed",
             "skip": "pause;skip",
             "stop": "stop;off",
@@ -347,7 +347,8 @@ Every block extends abstract block, which has next properties:
    `validate` - (optional) validate user input, doesn't save variable and repeats question when validation isn't passed.
         Possible values: `number` (validates integer), `email` (sends quick button for Facebook and validates email), 
         `url`, `phone` (sends quick button for Telegram and Facebook), `image`, `file`, `video`, `audio`, 
-        `location` (sends quick button for Telegram and Facebook), `confirm` (requires two times input), 
+        `location` (sends quick button for Telegram and Facebook), `confirm` (requires two times input),
+         `size:<number>`, `min:<number>`, `max:<number>` (exactly/minimum/maximum letters),
         `/^[0-9]*$/` (any regexp, similar to this one);<br>
    `errorMsg` - (optional) validation error message;<br>
    `skip`,`stop` - (optional) pause/stop conversation key phrases;<br>
@@ -504,7 +505,7 @@ Every block extends abstract block, which has next properties:
         {
             "name": "Validate Block",
             "type": "validate",
-            "validate": "number",
+            "validate": "number|size:5",
             "variable": "{{myVar}}",
             "next": {
                 "true": "Block 1",
@@ -515,7 +516,8 @@ Every block extends abstract block, which has next properties:
    `variable` - (required) name of variable;<br>
    `validate` - (required) Possible values: `number` (validates integer), `email` (sends quick button for Facebook and validates email), 
                                    `url`, `phone` (sends quick button for Telegram and Facebook), `image`, `file`, `video`, `audio`, 
-                                   `location` (sends quick button for Telegram and Facebook), `/^[0-9]*$/` (any regexp, similar to this one);
+                                   `location` (sends quick button for Telegram and Facebook), `size:<number>`, `min:<number>`, `max:<number>` (exactly/minimum/maximum letters), 
+                                   `/^[0-9]*$/` (any regexp, similar to this one);
     
 <h3>Payload Block</h3>
 

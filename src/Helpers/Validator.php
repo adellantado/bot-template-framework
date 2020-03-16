@@ -8,9 +8,86 @@ use BotMan\BotMan\Messages\Attachments\File;
 use BotMan\BotMan\Messages\Attachments\Image;
 use BotMan\BotMan\Messages\Attachments\Location;
 use BotMan\BotMan\Messages\Attachments\Video;
+use BotTemplateFramework\TemplateConversation;
 
 class Validator {
 
+    public function validate($type, $text, \Closure $fallback){
+        if ($type == 'number') {
+            if (!$this->number($text)) {
+                call_user_func($fallback, $this->errorNumberMsg());
+                return false;
+            }
+        } elseif ($type == 'url') {
+            if (!$this->url($text)) {
+                call_user_func($fallback, $this->errorUrlMsg());
+                return false;
+            }
+        } elseif ($type == 'email') {
+            if (!$this->email($text)) {
+                call_user_func($fallback, $this->errorEmailMsg());
+                return false;
+            }
+        } elseif ($type == 'phone') {
+            if (!$this->phone($text)) {
+                call_user_func($fallback, $this->errorPhoneMsg());
+                return false;
+            }
+        } elseif ($type == 'image') {
+            if (!$this->image($text)) {
+                call_user_func($fallback, $this->errorImageMsg());
+                return false;
+            }
+        } elseif ($type == 'file') {
+            if (!$this->file($text)) {
+                call_user_func($fallback, $this->errorFileMsg());
+                return false;
+            }
+        } elseif ($type == 'video') {
+            if (!$this->video($text)) {
+                call_user_func($fallback, $this->errorVideoMsg());
+                return false;
+            }
+        } elseif ($type == 'audio') {
+            if (!$this->audio($text)) {
+                call_user_func($fallback, $this->errorAudioMsg());
+                return false;
+            }
+        } elseif ($type == 'location') {
+            if (!$this->location($text)) {
+                call_user_func($fallback, $this->errorLocationMsg());
+                return false;
+            }
+        } elseif ($type == 'confirm') {
+            $oldValue = TemplateConversation::$engine->removeVariable('temp.confirmation');
+            if (!$this->confirm($oldValue, $text)) {
+                call_user_func($fallback, $this->errorConfirmMsg());
+                return false;
+            }
+        } elseif (preg_match('/size:(\d+)/', $type, $matches) === 1) {
+            if (!$this->size($text, $matches[1])) {
+                call_user_func($fallback, $this->errorSizeMsg($matches[1]));
+                return false;
+            }
+        } elseif (preg_match('/min:(\d+)/', $type, $matches) === 1) {
+            if (!$this->min($text, $matches[1])) {
+                call_user_func($fallback, $this->errorMinMsg($matches[1]));
+                return false;
+            }
+        } elseif (preg_match('/max:(\d+)/', $type, $matches) === 1) {
+            if (!$this->max($text, $matches[1])) {
+                call_user_func($fallback, $this->errorMaxMsg($matches[1]));
+                return false;
+            }
+        } else {
+            if (!$this->regexp($type, $text)) {
+                call_user_func($fallback, $this->errorRegexpMsg());
+                return false;
+            }
+        }
+        return true;
+    }
+    
     public function number($number) {
         if (preg_match('/^[0-9]*$/', $number) == 1) {
             return true;
@@ -71,6 +148,27 @@ class Validator {
         return false;
     }
 
+    public function size($text, int $limit) {
+        if (mb_strlen($text) == $limit) {
+            return true;
+        }
+        return false;
+    }
+
+    public function min($text, int $limit) {
+        if (mb_strlen($text) >= $limit) {
+            return true;
+        }
+        return false;
+    }
+
+    public function max($text, int $limit) {
+        if (mb_strlen($text) <= $limit) {
+            return true;
+        }
+        return false;
+    }
+
     public function regexp($pattern, $text) {
         if (preg_match($pattern, $text) == 1) {
             return true;
@@ -116,6 +214,18 @@ class Validator {
 
     public function errorLocationMsg() {
         return 'Please, send your location';
+    }
+
+    public function errorSizeMsg(int $limit) {
+        return 'Please, type exactly '.$limit.' letters';
+    }
+
+    public function errorMinMsg(int $limit) {
+        return 'Please, type at least '.$limit.' letters';
+    }
+
+    public function errorMaxMsg(int $limit) {
+        return 'Please, type no more than '.$limit.' letters';
     }
 
     public function errorRegexpMsg() {
