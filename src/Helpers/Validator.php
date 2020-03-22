@@ -79,6 +79,16 @@ class Validator {
                 call_user_func($fallback, $this->errorMaxMsg($matches[1]));
                 return false;
             }
+        } elseif ($type == 'non-free-input') {
+            if (!$this->nonFreeInput($text)) {
+                call_user_func($fallback, $this->errorNonFreeInputMsg());
+                return false;
+            }
+        } elseif ($type == 'free-input') {
+            if (!$this->freeInput($text)) {
+                call_user_func($fallback, $this->errorFreeInputMsg());
+                return false;
+            }
         } else {
             if (!$this->regexp($type, $text)) {
                 call_user_func($fallback, $this->errorRegexpMsg());
@@ -169,6 +179,24 @@ class Validator {
         return false;
     }
 
+    public function freeInput($text) {
+        if (!$text) {
+            return false;
+        } elseif (preg_match('/^\%\%\%_[A-Z]*_\%\%\%$/', $text) == 1) {
+            return false;
+        }
+        return true;
+    }
+
+    public function nonFreeInput($text) {
+        if (!$text) {
+            return true;
+        } elseif (preg_match('/^\%\%\%_[A-Z]*_\%\%\%$/', $text) == 1) {
+            return true;
+        }
+        return false;
+    }
+
     public function regexp($pattern, $text) {
         if (preg_match($pattern, $text) == 1) {
             return true;
@@ -226,6 +254,14 @@ class Validator {
 
     public function errorMaxMsg(int $limit) {
         return 'Please, type no more than '.$limit.' letters';
+    }
+
+    public function errorFreeInputMsg(){
+        return 'Please, type in free input message';
+    }
+
+    public function errorNonFreeInputMsg(){
+        return 'Please, send proper data but not free input message';
     }
 
     public function errorRegexpMsg() {

@@ -103,15 +103,27 @@ class ViberComponentsStrategy implements IComponentsStrategy, IStrategy {
     }
 
     public function requireLocation($text, $options = null) {
-        return $this->reply($text);
+        $this->reply((new KeyboardTemplate($text, $options['DefaultHeight'] ?? false))->addButton(
+            $options['title'] ?? 'Share Your Location',
+            'location-picker', '', $options['TextSize'] ?? 'regular',
+            $options['BgColor'] ?? null, 6, $options['Silent'] ?? false
+        ));
     }
 
     public function requireLocationPayload($text, $options = null) {
-        return null;
+        return (new KeyboardTemplate($text, $options['DefaultHeight'] ?? false))->addButton(
+            $options['title'] ?? 'Share Your Location',
+            'location-picker', '', $options['TextSize'] ?? 'regular',
+            $options['BgColor'] ?? null, 6, $options['Silent'] ?? false
+        );
     }
 
     public function requirePhonePayload($text, $options = null) {
-        return null;
+        return (new KeyboardTemplate($text, $options['DefaultHeight'] ?? false))->addButton(
+            $options['title'] ?? 'Share Your Phone',
+            'share-phone', '', $options['TextSize'] ?? 'regular',
+            $options['BgColor'] ?? null, 6, $options['Silent'] ?? false
+        );
     }
 
     public function requireEmailPayload($text, $options = null) {

@@ -48,13 +48,18 @@ class TemplateConversation extends Conversation {
         $engine = TemplateConversation::$engine;
         $block = $this->getBlock();
         $question = null;
-        if (array_key_exists('validate', $block) && $block['validate'] == 'email') {
-            $question = $engine->strategy($this->bot)->requireEmailPayload($engine->getText($block['content']), $block['options'] ?? null);
-        } elseif (array_key_exists('validate', $block) && $block['validate'] == 'phone') {
-            $question = $engine->strategy($this->bot)->requirePhonePayload($engine->getText($block['content']), $block['options'] ?? null);
-        } elseif (array_key_exists('validate', $block) && $block['validate'] == 'location') {
-            $question = $engine->strategy($this->bot)->requireLocationPayload($engine->getText($block['content']), $block['options'] ?? null);
+        $isValidation = array_key_exists('validate', $block);
+        $rules = explode('|', $block['validate'] ?? '');
+        if ($isValidation) {
+            if (in_array('email', $rules)) {
+                $question = $engine->strategy($this->bot)->requireEmailPayload($engine->getText($block['content']), $block['options'] ?? null);
+            } elseif (in_array('phone', $rules)) {
+                $question = $engine->strategy($this->bot)->requirePhonePayload($engine->getText($block['content']), $block['options'] ?? null);
+            } elseif (in_array('location', $rules)) {
+                $question = $engine->strategy($this->bot)->requireLocationPayload($engine->getText($block['content']), $block['options'] ?? null);
+            }
         }
+
 
         if ($question == null) {
             $question = new Question($engine->getText($block['content']));
@@ -74,10 +79,12 @@ class TemplateConversation extends Conversation {
             $engine = TemplateConversation::$engine->setBot($this->bot);
             $block= $this->getBlock();
 
-            if (array_key_exists('validate', $block)) {
+            $isValidation = array_key_exists('validate', $block);
+            $rules = explode('|', $block['validate'] ?? '');
+
+            if ($isValidation) {
                 $validator = new Validator();
 
-                $rules = explode('|', $block['validate']);
                 foreach ($rules as $rule) {
                     $valid = $validator->validate($rule,$answer->getText(),function($msg) use ($block){
                         $this->say($block['errorMsg'] ?? $msg);
@@ -91,24 +98,30 @@ class TemplateConversation extends Conversation {
             }
 
             if (array_key_exists('result', $block) && array_key_exists('save', $block['result'])) {
-                if (array_key_exists('validate', $block) && $block['validate'] == 'location') {
+                $driver = StrategyTrait::driverName($this->bot);
+                if ($isValidation && in_array('location', $rules)) {
                     $location = $answer->getMessage()->getLocation() ?? null;
                     $text = '';
                     if ($location) {
                         $text = $location->getLatitude() . ',' . $location->getLongitude();
                     }
                     $engine->saveVariable($block['result']['save'], $text);
-                } elseif (array_key_exists('validate', $block) && $block['validate'] == 'audio') {
+                } elseif ($isValidation && in_array('audio', $rules)) {
                     $engine->saveVariable($block['result']['save'], $answer->getMessage()->getAudio()[0]->getUrl());
-                } elseif (array_key_exists('validate', $block) && $block['validate'] == 'video') {
+                } elseif ($isValidation && in_array('video', $rules)) {
                     $engine->saveVariable($block['result']['save'], $answer->getMessage()->getVideos()[0]->getUrl());
-                } elseif (array_key_exists('validate', $block) && $block['validate'] == 'file') {
+                } elseif ($isValidation && in_array('file', $rules)) {
                     $engine->saveVariable($block['result']['save'], $answer->getMessage()->getFiles()[0]->getUrl());
-                } elseif (array_key_exists('validate', $block) && $block['validate'] == 'image') {
+                } elseif ($isValidation && in_array('image', $rules)) {
                     $engine->saveVariable($block['result']['save'], $answer->getMessage()->getImages()[0]->getUrl());
-                } elseif (array_key_exists('validate', $block) && $block['validate'] == 'phone' && StrategyTrait::driverName($this->bot) == 'Telegram') {
+                } elseif ($isValidation && in_array('phone', $rules) && in_array($driver, ['Telegram', 'Viber'])) {
                     $payload = $answer->getMessage()->getPayload();
-                    $engine->saveVariable($block['result']['save'], $payload->get('contact')['phone_number']);
+                    if ($driver == 'Telegram') {
+                        $phone = $payload->get('contact')['phone_number'];
+                    } else {
+                        $phone = $payload->get('message')['contact']['phone_number'];
+                    }
+                    $engine->saveVariable($block['result']['save'], ($phone ? $phone : $answer->getText()));
                 } else {
                     $engine->saveVariable($block['result']['save'], $answer->getText());
                 }
@@ -150,11 +163,11 @@ class TemplateConversation extends Conversation {
             $this->ask($question, $normalCallback);
         };
 
-        if (array_key_exists('validate', $block) && $block['validate'] == 'confirm') {
+        if ($isValidation && in_array('confirm', $rules)) {
             $this->ask($question, $confirmationCallback);
         } else {
 
-            if (array_key_exists('validate', $block) && in_array($block['validate'], ['phone', 'location']) && StrategyTrait::driverName($this->bot) == 'Telegram') {
+            if ($isValidation && (in_array('location', $rules) || in_array('phone', $rules)) && StrategyTrait::driverName($this->bot) == 'Telegram') {
                 $this->ask($question['text'], $normalCallback, $question['additionalParameters']);
             } else {
                 $this->ask($question, $normalCallback);
@@ -163,7 +176,6 @@ class TemplateConversation extends Conversation {
     }
 
     public function askAgain($block) {
-        $engine = TemplateConversation::$engine;
         $conversation = new TemplateConversation($this);
         if ($this->block) {
             $conversation->block = $block;
