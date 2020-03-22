@@ -105,7 +105,7 @@ class ViberComponentsStrategy implements IComponentsStrategy, IStrategy {
     public function requireLocation($text, $options = null) {
         $this->reply((new KeyboardTemplate($text, $options['DefaultHeight'] ?? false))->addButton(
             $options['title'] ?? 'Share Your Location',
-            'location-picker', '', $options['TextSize'] ?? 'regular',
+            'location-picker', 'location-picker', $options['TextSize'] ?? 'regular',
             $options['BgColor'] ?? null, 6, $options['Silent'] ?? false
         ));
     }
@@ -113,7 +113,7 @@ class ViberComponentsStrategy implements IComponentsStrategy, IStrategy {
     public function requireLocationPayload($text, $options = null) {
         return (new KeyboardTemplate($text, $options['DefaultHeight'] ?? false))->addButton(
             $options['title'] ?? 'Share Your Location',
-            'location-picker', '', $options['TextSize'] ?? 'regular',
+            'location-picker', 'location-picker', $options['TextSize'] ?? 'regular',
             $options['BgColor'] ?? null, 6, $options['Silent'] ?? false
         );
     }
@@ -121,7 +121,7 @@ class ViberComponentsStrategy implements IComponentsStrategy, IStrategy {
     public function requirePhonePayload($text, $options = null) {
         return (new KeyboardTemplate($text, $options['DefaultHeight'] ?? false))->addButton(
             $options['title'] ?? 'Share Your Phone',
-            'share-phone', '', $options['TextSize'] ?? 'regular',
+            'share-phone', 'share-phone', $options['TextSize'] ?? 'regular',
             $options['BgColor'] ?? null, 6, $options['Silent'] ?? false
         );
     }
