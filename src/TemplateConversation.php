@@ -105,15 +105,15 @@ class TemplateConversation extends Conversation {
                     if ($location) {
                         $text = $location->getLatitude() . ',' . $location->getLongitude();
                     }
-                    $engine->saveVariable($block['result']['save'], $text);
+                    $engine->clearAndSaveVariable($block, $text);
                 } elseif ($isValidation && in_array('audio', $rules)) {
-                    $engine->saveVariable($block['result']['save'], $answer->getMessage()->getAudio()[0]->getUrl());
+                    $engine->clearAndSaveVariable($block, $answer->getMessage()->getAudio()[0]->getUrl());
                 } elseif ($isValidation && in_array('video', $rules)) {
-                    $engine->saveVariable($block['result']['save'], $answer->getMessage()->getVideos()[0]->getUrl());
+                    $engine->clearAndSaveVariable($block, $answer->getMessage()->getVideos()[0]->getUrl());
                 } elseif ($isValidation && in_array('file', $rules)) {
-                    $engine->saveVariable($block['result']['save'], $answer->getMessage()->getFiles()[0]->getUrl());
+                    $engine->clearAndSaveVariable($block,  $answer->getMessage()->getFiles()[0]->getUrl());
                 } elseif ($isValidation && in_array('image', $rules)) {
-                    $engine->saveVariable($block['result']['save'], $answer->getMessage()->getImages()[0]->getUrl());
+                    $engine->clearAndSaveVariable($block, $answer->getMessage()->getImages()[0]->getUrl());
                 } elseif ($isValidation && in_array('phone', $rules) && in_array($driver, ['Telegram', 'Viber'])) {
                     $payload = $answer->getMessage()->getPayload();
                     if ($driver == 'Telegram') {
@@ -121,9 +121,9 @@ class TemplateConversation extends Conversation {
                     } else {
                         $phone = $payload->get('message')['contact']['phone_number'];
                     }
-                    $engine->saveVariable($block['result']['save'], ($phone ? $phone : $answer->getText()));
+                    $engine->clearAndSaveVariable($block, ($phone ? $phone : $answer->getText()));
                 } else {
-                    $engine->saveVariable($block['result']['save'], $answer->getText());
+                    $engine->clearAndSaveVariable($block,  $answer->getText());
                 }
             }
 

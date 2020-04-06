@@ -382,7 +382,7 @@ class TemplateEngine {
             $blockName = preg_replace('/_+/', ' ', $matches[2]);
             $block = $this->getBlock($blockName);
             $url = $arguments[1][0]->getUrl();
-            $this->saveVariable($block['result']['save'], $url);
+            $this->clearAndSaveVariable($block, $url);
             $this->removeCacheVariable('lastBlock');
             if ($this->callListener($block) === false) {
                 return $this;
@@ -516,6 +516,13 @@ class TemplateEngine {
             $this->executeBlock($this->getBlock($currentBlock['next'],
                 array_key_exists('locale', $currentBlock) ? $currentBlock['locale'] : null));
         }
+    }
+
+    public function clearAndSaveVariable($block, $result){
+        if ($result && isset($block['result']['output'])) {
+            $result = $this->clearOutput($block['result']['output'], $result);
+        }
+        $this->saveVariable($block['result']['save'], $result);
     }
 
     public function saveVariable($name, $value) {
@@ -672,7 +679,7 @@ class TemplateEngine {
                 }
 
                 if (array_key_exists('save', $block['result'])) {
-                    $this->saveVariable($block['result']['save'], $result);
+                    $this->clearAndSaveVariable($block, $result);
                 }
             }
 
@@ -707,7 +714,7 @@ class TemplateEngine {
                 }
 
                 if (array_key_exists('save', $block['result'])) {
-                    $this->saveVariable($block['result']['save'], $result);
+                    $this->clearAndSaveVariable($block, $result);
                 }
 
             }
@@ -725,7 +732,7 @@ class TemplateEngine {
                     }
 
                     if (array_key_exists('save', $block['result'])) {
-                        $this->saveVariable($block['result']['save'], $result);
+                        $this->clearAndSaveVariable($block, $result);
                     }
                 }
             }
@@ -747,7 +754,7 @@ class TemplateEngine {
                     foreach ($result as $name=>$item) {
                         if ($block['result']['field'] == $name) {
                             $result = $item['value'];
-                            $this->saveVariable($block['result']['save'], $result);
+                            $this->clearAndSaveVariable($block, $result);
                         }
                     }
                 }
@@ -901,6 +908,10 @@ class TemplateEngine {
     protected function getRandomResponseText($text) {
         $texts = explode(';', $text);
         return $texts[array_rand($texts)];
+    }
+
+    protected function clearOutput($rule, $text) {
+        return preg_replace('/[^'.$rule.']/', '', $text);
     }
 
     protected function initDialogflow($listenForAction, $locale = null){
