@@ -12,10 +12,27 @@ use BotTemplateFramework\TemplateConversation;
 
 class Validator {
 
+    /**
+     * @var bool Indicates if rules include 'number' validation rule
+     */
+    public $hasNumber = false;
+
     public function validate($type, $text, \Closure $fallback){
         if ($type == 'number') {
+            $this->hasNumber = true;
             if (!$this->number($text)) {
                 call_user_func($fallback, $this->errorNumberMsg());
+                return false;
+            }
+        } elseif ($type == 'numeric') {
+            $this->hasNumber = true;
+            if (!$this->numeric($text)) {
+                call_user_func($fallback, $this->errorNumericMsg());
+                return false;
+            }
+        } elseif ($type == 'digits') {
+            if (!$this->digits($text)) {
+                call_user_func($fallback, $this->errorDigitsMsg());
                 return false;
             }
         } elseif ($type == 'url') {
@@ -105,6 +122,20 @@ class Validator {
         return false;
     }
 
+    public function numeric($number) {
+        if (preg_match('/^[0-9,.]*$/', $number) == 1) {
+            return true;
+        }
+        return false;
+    }
+
+    public function digits($text) {
+        if (preg_match('/^[0-9]*$/', $text) == 1) {
+            return true;
+        }
+        return false;
+    }
+
     public function email($email) {
         if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return true;
@@ -159,6 +190,9 @@ class Validator {
     }
 
     public function size($text, int $limit) {
+        if ($this->hasNumber) {
+            return (float)$text == $limit;
+        }
         if (mb_strlen($text) == $limit) {
             return true;
         }
@@ -166,6 +200,9 @@ class Validator {
     }
 
     public function min($text, int $limit) {
+        if ($this->hasNumber) {
+            return (float)$text >= $limit;
+        }
         if (mb_strlen($text) >= $limit) {
             return true;
         }
@@ -173,6 +210,9 @@ class Validator {
     }
 
     public function max($text, int $limit) {
+        if ($this->hasNumber) {
+            return (float)$text <= $limit;
+        }
         if (mb_strlen($text) <= $limit) {
             return true;
         }
@@ -210,6 +250,14 @@ class Validator {
 
     public function errorNumberMsg() {
         return 'Please, type valid number (no whitespaces)';
+    }
+
+    public function errorNumericMsg() {
+        return 'Please, type valid numeric value (no whitespaces)';
+    }
+
+    public function errorDigitsMsg() {
+        return 'Please, type only digits';
     }
 
     public function errorEmailMsg() {
