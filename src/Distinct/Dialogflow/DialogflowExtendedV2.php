@@ -51,10 +51,8 @@ class DialogflowExtendedV2 extends ApiAi {
         $payloads = [];
         foreach ($reply as $item) {
             $payload = $item->getPayload();
-            if ($payload && $fields = $payload->getFields()) {
-                foreach ($fields as $key=>$field) {
-                    $payloads[$key] = $field->getStringValue();
-                }
+            if ($payload) {
+                $payloads = array_merge($payloads, json_decode($payload->serializeToJsonString(), true));
             }
 
             $text = $item->getText();

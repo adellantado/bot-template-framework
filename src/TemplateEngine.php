@@ -869,10 +869,11 @@ class TemplateEngine {
                                     }
                                 }
                                 if ($extras['apiPayload']) {
-                                    foreach($extras['apiPayload'] as $key=>$value) {
-                                        if ($key == 'next') {
-                                            $this->reply($value);
-                                        }
+                                    if (isset($extras['apiPayload']['blocks'])) {
+                                        $this->addBlocks($extras['apiPayload']['blocks']);
+                                    }
+                                    if (isset($extras['apiPayload']['next'])) {
+                                        $this->reply($extras['apiPayload']['next']);
                                     }
                                 }
                             } elseif (key_exists('default', $fallback)) {
@@ -919,7 +920,14 @@ class TemplateEngine {
             $driver = $this->getDriver('dialogflow');
             $version = $driver['version'] ?? '1';
             if ($version == '2') {
-                $this->dialogflow = DialogflowExtendedV2::createV2($driver['project_id'], $driver['key_path'], $locale ?? $this->getDefaultLocale());
+                if (isset($driver['key'])) {
+                    $key = $driver['key'];
+                    $project_id = $key['project_id'];
+                } else {
+                    $key = $driver['key_path'];
+                    $project_id = $driver['project_id'];
+                }
+                $this->dialogflow = DialogflowExtendedV2::createV2($project_id, $key, $locale ?? $this->getDefaultLocale());
             } else {
                 $this->dialogflow = DialogflowExtended::create($driver['token'], $locale ?? $this->getDefaultLocale());
             }
