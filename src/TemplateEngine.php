@@ -877,9 +877,15 @@ class TemplateEngine {
                                     }
                                 }
                             } elseif (key_exists('default', $fallback)) {
-                                $this->strategy($this->bot)->sendText(
-                                    $fallback['default']
-                                );
+                                if (is_string($fallback['default'])) {
+                                    $this->strategy($this->bot)->sendText(
+                                        $fallback['default']
+                                    );
+                                } elseif (is_array($fallback['default'])) {
+                                    if (($fallback['default']['type'] ?? '') == 'block') {
+                                        $this->reply($fallback['default']['name']);
+                                    }
+                                }
                             }
                         }, $bot);
                 }
