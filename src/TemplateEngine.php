@@ -43,6 +43,8 @@ class TemplateEngine {
 
     protected $botVariables;
 
+    protected $lastMethodArguments = [];
+
     /**
      * @var Wit
      */
@@ -357,7 +359,14 @@ class TemplateEngine {
         $matches = [];
         if (preg_match('/reply_(.*)/', $name, $matches)) {
             $blockName = preg_replace('/_+/', ' ', $matches[1]);
-            $this->reply($blockName);
+            $block = $this->getBlock($blockName);
+            if ($block && $block['type'] == 'method') {
+                $this->lastMethodArguments = $arguments ?? [];
+                if (count($this->lastMethodArguments) > 0) {
+                    array_splice($this->lastMethodArguments, 0, 1);
+                }
+            }
+            $this->executeBlock($block);
         } elseif ($this->getDriverName() == 'telegram' && preg_match('/carousel_(.*)/', $name, $matches)) {
             $blockName = preg_replace('/_+/', ' ', $matches[1]);
             $element = $this->getBlock($blockName)['content'][$arguments[2]];
@@ -457,7 +466,7 @@ class TemplateEngine {
         } elseif ($type == 'request') {
             $result = $this->executeRequest($block);
         } elseif ($type == 'method') {
-            call_user_func([$this->strategy($this->bot), $block['method']]);
+            $this->executeMethod($block);
         } elseif ($type == 'ask') {
             $this->executeAsk($block);
         } elseif ($type == 'intent') {
@@ -839,6 +848,10 @@ class TemplateEngine {
         }
 
         $this->executeBlock($this->getBlock($block['next']['true']));
+    }
+
+    public function executeMethod($block){
+        call_user_func_array([$this->strategy($this->bot), $block['method']], $this->lastMethodArguments);
     }
 
     protected function getCallback($blockName, $prefix, $callback = null) {

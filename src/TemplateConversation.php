@@ -86,8 +86,8 @@ class TemplateConversation extends Conversation {
                 $validator = new Validator();
 
                 foreach ($rules as $rule) {
-                    $valid = $validator->validate($rule,$answer->getText(),function($msg) use ($block){
-                        $this->say($block['errorMsg'] ?? $msg);
+                    $valid = $validator->validate($rule,$answer->getText(),function($msg) use ($block, $engine){
+                        $this->say($engine->parseText($block['errorMsg'] ?? $msg));
                         $this->askAgain($block);
                     });
 
