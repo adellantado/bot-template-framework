@@ -94,7 +94,7 @@ class TemplateEngine {
         return $config;
     }
 
-    public function __construct($template, BotMan $bot, CacheInterface $cache = null) {
+    public function __construct($template, BotMan $bot, CacheInterface $cache) {
         $this->bot = $bot;
         $this->setTemplate($template);
         $this->cache = $cache;
@@ -286,6 +286,7 @@ class TemplateEngine {
     }
 
     public function listen($callback = null) {
+        $lastBlock = $this->getCacheVariable('lastBlock');
         foreach ($this->template['blocks'] as $block) {
             if (!$this->validBlock($block)) {
                 continue;
@@ -300,11 +301,21 @@ class TemplateEngine {
                 }
             }
 
-            if ($block['type'] == 'location' && $this->getCacheVariable('lastBlock') == $block['name']) {
+            $this->bot->hears('run_block '.$block['name'], $this->getCallback($block['name'], 'reply_', $callback));
+
+            if ($block['name'] == 'menu2' && $lastBlock == $block['name']) {
+                foreach($block['content']['buttons'] as $rows) {
+                    foreach($rows as $blockName=>$title) {
+                        $this->bot->hears($title, $this->getCallback($blockName, 'menu2_', $callback));
+                    }
+                }
+            }
+
+            if ($block['type'] == 'location' && $lastBlock == $block['name']) {
                 $this->bot->receivesLocation($this->getCallback($block['name'], 'location_', $callback));
             }
 
-            if ($block['type'] == 'attachment' && $this->getCacheVariable('lastBlock') == $block['name']) {
+            if ($block['type'] == 'attachment' && $lastBlock == $block['name']) {
                 if ($block['mode'] == 'image') {
                     $this->bot->receivesImages($this->getCallback($block['name'], 'attachment_image_', $callback));
                 } elseif ($block['mode'] == 'video') {
@@ -366,6 +377,11 @@ class TemplateEngine {
                     array_splice($this->lastMethodArguments, 0, 1);
                 }
             }
+            $this->executeBlock($block);
+        }elseif (preg_match('/menu2_(.*)/', $name, $matches)) {
+            $blockName = preg_replace('/_+/', ' ', $matches[1]);
+            $block = $this->getBlock($blockName);
+            $this->removeCacheVariable('lastBlock');
             $this->executeBlock($block);
         } elseif ($this->getDriverName() == 'telegram' && preg_match('/carousel_(.*)/', $name, $matches)) {
             $blockName = preg_replace('/_+/', ' ', $matches[1]);
@@ -448,13 +464,9 @@ class TemplateEngine {
                 array_key_exists('text', $content) ? $this->getText($content['text']) : null,
                 $block['options'] ?? null);
         } elseif ($type == 'menu') {
-            if (array_key_exists('mode', $block) && $block['mode'] == 'quick') {
-                $this->strategy($this->bot)->sendQuickButtons($this->getText($content['text']),
-                    $this->parseArray($content['buttons']), $block['options'] ?? null);
-            } else {
-                $this->strategy($this->bot)->sendMenu($this->getText($content['text']),
-                    $this->parseArray($content['buttons']), $block['options'] ?? null);
-            }
+            $this->executeMenu($block);
+        } elseif ($type == 'menu2') {
+            $this->executeMenu2($block);
         } elseif ($type == 'list') {
             $this->strategy($this->bot)->sendList($this->parseArray($content), null, $block['options'] ?? null);
         } elseif ($type == 'carousel') {
@@ -657,6 +669,40 @@ class TemplateEngine {
         return $value;
     }
 
+    protected function executeMenu($block){
+        $text = $block['content']['text'] ?? '';
+        $buttons = $block['content']['buttons'] ?? [];
+        if (array_key_exists('mode', $block) && $block['mode'] == 'quick') {
+            $this->strategy($this->bot)->sendQuickButtons($this->getText($text),
+                $this->parseArray($buttons), $block['options'] ?? null);
+        } else {
+            $this->strategy($this->bot)->sendMenu($this->getText($text),
+                $this->parseArray($buttons), $block['options'] ?? null);
+        }
+    }
+
+    protected function executeMenu2($block){
+        $text = $block['content']['text'] ?? '';
+        $buttons = $block['content']['buttons'] ?? [];
+        if (array_key_exists('mode', $block) && $block['mode'] == 'quick') {
+            $this->strategy($this->bot)->sendQuickButtons($this->getText($text),
+                $this->parseArray($buttons), $block['options'] ?? null);
+            // store menu2 to support quick mode
+            $this->putCacheVariable('lastBlock', $block['name']);
+        } else {
+            $parsedButtons = [];
+            foreach ($buttons as $i=>$row) {
+                $parsedRow = [];
+                foreach ($row as $callback=>$title) {
+                    $parsedRow['run_block '.$callback] = $title;
+                }
+                $parsedButtons[] = $parsedRow;
+            }
+            $this->strategy($this->bot)->sendMenu($this->getText($text),
+                $this->parseArray($parsedButtons), $block['options'] ?? null);
+        }
+    }
+    
     protected function executeRequest($block) {
         $response = null;
         try {

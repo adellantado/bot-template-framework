@@ -16,7 +16,7 @@ class TemplateConversation extends Conversation {
 
     /**
      * Alternative to blockName.
-     * Stores whole block in a cache instead of blok's name.
+     * Stores whole block in a cache instead of block's name.
      * Useful for dynamic blocks
      *
      * @var array
