@@ -306,6 +306,9 @@ class TemplateEngine {
             if ($block['name'] == 'menu2' && $lastBlock == $block['name']) {
                 foreach($block['content']['buttons'] as $rows) {
                     foreach($rows as $blockName=>$title) {
+                        if (in_array(parse_url($blockName, PHP_URL_SCHEME), ['mailto', 'http', 'https', 'tel'])) {
+                            continue;
+                        }
                         $this->bot->hears($title, $this->getCallback($blockName, 'menu2_', $callback));
                     }
                 }
@@ -694,6 +697,10 @@ class TemplateEngine {
             foreach ($buttons as $i=>$row) {
                 $parsedRow = [];
                 foreach ($row as $callback=>$title) {
+                    if (in_array(parse_url($callback, PHP_URL_SCHEME), ['mailto', 'http', 'https', 'tel'])) {
+                        $parsedRow[$callback] = $title;
+                        continue;
+                    }
                     $parsedRow['run_block '.$callback] = $title;
                 }
                 $parsedButtons[] = $parsedRow;
