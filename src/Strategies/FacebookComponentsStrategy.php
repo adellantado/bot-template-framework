@@ -129,12 +129,6 @@ class FacebookComponentsStrategy implements IComponentsStrategy, IStrategy {
     }
 
     public function sendPayload($payload){
-        $payload = array_map(function($val){
-            if (is_array($val)) {
-                return json_encode($val);
-            }
-            return $val;
-        }, $payload);
         $driverEvent = $this->bot->getDriver()->hasMatchingEvent();
         if ($driverEvent) {
             $data = $driverEvent->getPayload();
