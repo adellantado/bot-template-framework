@@ -697,7 +697,7 @@ class TemplateEngine {
             foreach ($buttons as $i=>$row) {
                 $parsedRow = [];
                 foreach ($row as $callback=>$title) {
-                    if (in_array(parse_url($callback, PHP_URL_SCHEME), ['mailto', 'http', 'https', 'tel'])) {
+                    if (in_array(parse_url($callback, PHP_URL_SCHEME), ['mailto', 'http', 'https', 'tel', 'share'])) {
                         $parsedRow[$callback] = $title;
                         continue;
                     }
