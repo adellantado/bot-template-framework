@@ -357,6 +357,7 @@ Every block extends abstract block, which has next properties:
    `next.<user answer>` - (optional) depends on user answer, run next block 
         ('fallback' - reserved for any answer which are not in the list).
         
+   note: Rules could be combined with "|" symbol (e.g. numeric|min:10|max:12)	
    note: Learn more about results<br>
    note: You need to set up persistent cache (like Redis), learn more on Botman website
    
@@ -518,6 +519,7 @@ Every block extends abstract block, which has next properties:
    `validate` - (required) Possible values: `number` (validates integer), `email` (sends quick button for Facebook and validates email), 
                                    `url`, `phone` (sends quick button for Telegram and Facebook), `image`, `file`, `video`, `audio`, 
                                    `location` (sends quick button for Telegram and Facebook), `size:<number>`, `min:<number>`, `max:<number>` (exactly/minimum/maximum letters), 
+				   `numeric` (validates float values), `digits`, `non-free-input` and `free-input` (for values inputed with text input bar),
                                    `/^[0-9]*$/` (any regexp, similar to this one);
     
 <h3>Payload Block</h3>
