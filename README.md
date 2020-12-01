@@ -357,7 +357,7 @@ Every block extends abstract block, which has next properties:
    `next.<user answer>` - (optional) depends on user answer, run next block 
         ('fallback' - reserved for any answer which are not in the list).
         
-   note: Rules could be combined with "|" symbol (e.g. numeric|min:10|max:12)	
+   note: Rules could be combined with "|" symbol (e.g. numeric|min:10|max:12)<br>
    note: Learn more about results<br>
    note: You need to set up persistent cache (like Redis), learn more on Botman website
    
