@@ -349,6 +349,7 @@ Every block extends abstract block, which has next properties:
         `url`, `phone` (sends quick button for Telegram and Facebook), `image`, `file`, `video`, `audio`, 
         `location` (sends quick button for Telegram and Facebook), `confirm` (requires two times input),
          `size:<number>`, `min:<number>`, `max:<number>` (exactly/minimum/maximum letters),
+	 `numeric` (validates float values), `digits`, `non-free-input` and `free-input` (for values inputed with text input bar),
         `/^[0-9]*$/` (any regexp, similar to this one);<br>
    `errorMsg` - (optional) validation error message;<br>
    `skip`,`stop` - (optional) pause/stop conversation key phrases;<br>
